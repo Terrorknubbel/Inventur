@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.semanticui.min.css">
+    <title>Document</title>
+</head>
+<body>
+    <ul id="navUl">
+        <li>
+            <a href="">Startseite</a>
+        </li>
+        <li>
+            <a href="">Logs</a>
+        </li>
+    </ul>
+
+
+    <div id="tableDiv">
+        <table id="table" class="ui celled table display" style="width:100%">
+            <thead>
+                <tr>
+                    <th style="display:none"></th>
+                    <th>Artikel</th>
+                    <th>Anzahl</th>
+                    <th>Kategorie</th>
+                    <th>Ort</th>
+                    <th>Änderungsdatum</th>
+                    <th>Änderungsuhrzeit</th>
+                    <th>Mindestanzahl</th>
+                </tr>
+            </thead>
+           <tbody id="dataTbody">
+            <% for(var i=0; i < dbres.length; i++){ %>
+                <tr>
+                    <td style="display:none">
+                        <%= dbres[i].id %>
+                    </td>
+                    <td>
+                        <%= dbres[i].artikel %>
+                    </td>
+                    <td>
+                        <%= dbres[i].anzahl %>
+                    </td>
+                    <td>
+                        <%= dbres[i].kategorie %>
+                    </td>
+                    <td>
+                        <%= dbres[i].ort %>
+                    </td>
+                    <td>
+                        <%= dbres[i].aenderungsdatum %>
+                    </td>
+                    <td>
+                        <%= dbres[i].aenderungsuhrzeit %>
+                    </td>
+                    <td>
+                        <%= dbres[i].mindestanzahl %>
+                    </td>
+                </tr>
+            <% } %>
+            <tfoot>
+                <tr id='inputTr'>
+                    <th>Artikel</th>
+                    <th>Anzahl</th>
+                    <th>Kategorie</th>
+                    <th>Ort</th>
+                    <th>Änderungsdatum</th>
+                    <th>Änderungsuhrzeit</th>
+                    <th>Mindestanzahl</th>
+                </tr>
+            </tfoot>
+           </tbody>
+        </table>
+    </div>
+
+    <div id="PopUp">
+        <form id="createForm" action="/create" method="post">
+
+        <div id="PopUp_topBar">
+            Create new Entry
+            <span>x</span>
+        </div>
+            <table>
+                <tr>
+                    <td>Artikel:</td>
+                    <td><input type="text" id="artikel" name="artikel" required></td>
+                </tr>
+                <tr>
+                    <td>Anzahl:</td>
+                    <td><input type="text" id="anzahl" name="anzahl" required></td>
+                </tr>
+                <tr>
+                    <td>Kategorie:</td>
+                    <td><input type="text" id="kategorie name="kategorie" required></td>
+                </tr>
+                <tr>
+                    <td>Ort:</td>
+                    <td><input type="text" id="ort" name="ort" required></td>
+                </tr>
+                <tr>
+                    <td>Mindestanzahl:</td>
+                    <td><input type="text" id="mindestanzahl" name="mindestanzahl" required></td>
+                </tr>
+            </table>
+        
+        <div id="PopUp_footer">
+            <button type="submit">Create</button>
+        </div>
+        </form>
+    </div>
+    
+    <div id="cover"></div>
+
+    <footer>
+
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.semanticui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.js"></script>
+
+    <script src="assets/js/datatables.js"></script>
+    <script src="assets/js/main.js"></script>
+
+</body>
+</html>
