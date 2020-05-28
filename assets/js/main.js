@@ -1,9 +1,13 @@
 $(document).ready(function() {
 
-    $('<button id="New">New</button><button>Edit</button><button>Delete</button>').insertBefore('.dt-table');
+    $('<button id="New">New</button><button id="Edit" disabled>Edit</button><button id="Delete" disabled>Delete</button>').insertBefore('.dt-table');
 
     $("button").css("margin","0px -5px 5px 15px");
 
+    $('.sorting').click(function(){
+        $("#dataTbody tr:nth-child(odd)").css("background-color", "rgb(255, 255, 255)");
+        $("#dataTbody tr:nth-child(even)").css("background-color", "rgb(238, 238, 238)");
+    });
 
     $("#table tbody tr").click(function(e){
 
@@ -14,7 +18,7 @@ $(document).ready(function() {
         if (e.ctrlKey) {
             if($(this).css('background-color') == grey){
                 $(this).css('background-color', white);
-                $("#dataTbody tr:nth-child(2)").css("background-color", "rgb(238, 238, 238)");
+                $("#dataTbody tr:nth-child(even)").css("background-color", "rgb(238, 238, 238)");
 
             }else{
                 $(this).css("background-color", grey);
@@ -25,12 +29,12 @@ $(document).ready(function() {
             if($(this).css('background-color') == grey){
                 console.log("weis");
                 $("#dataTbody tr").css("background-color", white);
-                $("#dataTbody tr:nth-child(2)").css("background-color", "rgb(238, 238, 238)");
+                $("#dataTbody tr:nth-child(even)").css("background-color", "rgb(238, 238, 238)");
 
             }else{
                 console.log("grau");
                 $("#dataTbody tr").css("background-color", white);
-                $("#dataTbody tr:nth-child(2)").css("background-color", "rgb(238, 238, 238)");
+                $("#dataTbody tr:nth-child(even)").css("background-color", "rgb(238, 238, 238)");
 
                 $(this).css("background-color", grey);
 
@@ -80,22 +84,15 @@ $(document).ready(function() {
 
         var isnum = /^\d+$/.test($("#anzahl").val());
         if(isnum){
-            console.log("Number");
+            $.post( post_url, form_data, function( response ) {
+                console.log( response );
+              });
+
+            location.reload();
         }else{
             $("#anzahl").parent().append("<span>Bitte geben Sie hier nur Zahlen ein.</span>");
             $("#anzahl").css("border", "1px solid red");
         }
 
-        $.post( post_url, form_data, function( response ) {
-            console.log( response );
-          });
-
-        // $.ajax({
-        //     url : post_url,
-        //     type: request_method,
-        //     data : form_data
-        // }).done(function(response){ //
-        //     console.log(response);
-        // });
     });
 });

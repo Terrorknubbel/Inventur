@@ -22,11 +22,11 @@ module.exports = function(app){
     app.post('/create', function (req, res) {
 
         console.log(req.body);
-        // var sql = "INSERT INTO artikelliste (artikel, anzahl, kategorie, ort, aenderungsdatum, aenderungsuhrzeit, mindestanzahl) VALUES ('Company Inc', 'Highway 37')";
-        // con.query(sql, function (err, result) {
-        //     if (err) throw err;
-        //     console.log("1 record inserted");
-        //  });
+        var sql = "INSERT INTO artikelliste (artikel, anzahl, kategorie, ort, aenderungsdatum, aenderungsuhrzeit, mindestanzahl) VALUES ('"+req.body.artikel+"', '"+req.body.anzahl+"', '"+req.body.kategorie+"', '"+req.body.ort+"', '28.05.2020', '14:00', '"+req.body.mindestanzahl+"')";
+        con.query(sql, function (err, result) {
+            if (err) throw err;
+            console.log("1 record inserted");
+         });
 
     });
 }
