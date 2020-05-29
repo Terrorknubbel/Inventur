@@ -7,7 +7,9 @@ $(document).ready(function() {
  
     // DataTable
     var table = $('#table').DataTable({
-        initComplete: function () {
+        initComplete: function () 
+        {
+          
             // Apply the search
             this.api().columns().every( function () {
                 var that = this;
@@ -20,6 +22,12 @@ $(document).ready(function() {
                     }
                 } );
             } );
+            var r = $('#table tfoot tr');
+            r.find('th').each(function(){
+                $(this).css('padding', 8);
+            });
+            $('#table thead').append(r);
+            $('#search_0').css('text-align', 'center');
         }
     });
  
