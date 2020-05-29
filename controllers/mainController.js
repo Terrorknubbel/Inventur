@@ -29,4 +29,17 @@ module.exports = function(app){
          });
 
     });
+
+    app.post('/delete', function (req, res) {
+        
+        var id = parseInt(req.body.id);
+    
+        var sql = "DELETE FROM artikelliste WHERE id = '"+id+"'";
+        con.query(sql, function (err, result) {
+            if (err) throw err;
+            console.log("1 record deleted");
+            res.send("success");
+         });
+
+    });
 }

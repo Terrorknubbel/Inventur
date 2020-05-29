@@ -64,6 +64,7 @@
             <% } %>
             <tfoot>
                 <tr id='inputTr'>
+                    <th style="display:none">Id</th>
                     <th>Artikel</th>
                     <th>Anzahl</th>
                     <th>Kategorie</th>
@@ -80,10 +81,11 @@
     <div id="PopUp">
         <form id="createForm" action="/create" method="post">
 
-        <div id="PopUp_topBar">
+        <div class="PopUp_topBar">
             Create new Entry
             <span>x</span>
         </div>
+        <div clas="PopUp_middle">
             <table>
                 <tr>
                     <td>Artikel:</td>
@@ -95,7 +97,7 @@
                 </tr>
                 <tr>
                     <td>Kategorie:</td>
-                    <td><input type="text" id="kategorie name="kategorie" required></td>
+                    <td><input type="text" id="kategorie" name="kategorie" required></td>
                 </tr>
                 <tr>
                     <td>Ort:</td>
@@ -106,11 +108,27 @@
                     <td><input type="text" id="mindestanzahl" name="mindestanzahl" required></td>
                 </tr>
             </table>
-        
-        <div id="PopUp_footer">
+        </div>
+        <div class="PopUp_footer">
             <button type="submit">Create</button>
         </div>
         </form>
+    </div>
+
+    <div id="PopUpDelete">
+        <form id="deleteForm" action="/delete" method="post">
+
+            <div class="PopUp_topBar">
+                Remove Entry
+                <span>x</span>
+            </div>
+            <div class="PopUpDelete_middle">
+                
+            </div>
+            <div class="PopUp_footer">
+                <button type="submit">Delete</button>
+            </div>
+            </form>
     </div>
     
     <div id="cover"></div>
@@ -126,6 +144,7 @@
 
     <script src="assets/js/datatables.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="assets/js/ui.js"></script>
 
 </body>
 </html>
