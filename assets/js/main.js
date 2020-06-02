@@ -1,5 +1,7 @@
 $(document).ready(function() {
 
+    
+
     $("#createForm").submit(function(event){
         event.preventDefault(); //prevent default action 
 
@@ -8,11 +10,12 @@ $(document).ready(function() {
 
         var isnum = /^\d+$/.test($("#anzahl").val());
         if(isnum){
-            $.post( post_url, form_data, function( response ) {
-                console.log( response );
-              });
+            console.log(form_data);
+            // $.post( post_url, form_data, function( response ) {
+            //     console.log( response );
+            //   });
 
-            location.reload();
+            // location.reload();
         }else{
             $("#anzahl").parent().append("<span>Bitte geben Sie hier nur Zahlen ein.</span>");
             $("#anzahl").css("border", "1px solid red");

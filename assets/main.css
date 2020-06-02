@@ -86,6 +86,12 @@ thead input{
     background-color: white;
 }
 
+.ui-autocomplete {
+    z-index: 100;
+    background-color: white;
+    border: 1px solid black;
+    }
+
 #PopUpDelete{
     display: none;
     width: 40%;

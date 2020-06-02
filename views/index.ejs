@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="assets/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.semanticui.min.css">
+    <link rel="shortcut icon" href="assets/favicon.jpg" />
+
     <title>Document</title>
 </head>
 <body>
@@ -26,11 +28,14 @@
                     <th style="display:none"></th>
                     <th>Artikel</th>
                     <th>Anzahl</th>
-                    <th>Kategorie</th>
+                    <th>Mindestanzahl</th>
                     <th>Ort</th>
+                    <th>Kategorie</th>
+                    <th>Erstellt von</th>
+                    <th>Zuletzt geändert von</th>
                     <th>Änderungsdatum</th>
                     <th>Änderungsuhrzeit</th>
-                    <th>Mindestanzahl</th>
+                    <th>Keywords</th>
                 </tr>
             </thead>
            <tbody id="dataTbody">
@@ -40,25 +45,34 @@
                         <%= dbres[i].id %>
                     </td>
                     <td>
-                        <%= dbres[i].artikel %>
+                        <%= dbres[i].name %>
                     </td>
                     <td>
-                        <%= dbres[i].anzahl %>
+                        <%= dbres[i].number %>
                     </td>
                     <td>
-                        <%= dbres[i].kategorie %>
+                        <%= dbres[i].minimum_number %>
                     </td>
                     <td>
-                        <%= dbres[i].ort %>
+                        <%= dbres[i].location %>
                     </td>
                     <td>
-                        <%= dbres[i].aenderungsdatum %>
+                        <%= dbres[i].category %>
                     </td>
                     <td>
-                        <%= dbres[i].aenderungsuhrzeit %>
+                        <%= dbres[i].creator %>
                     </td>
                     <td>
-                        <%= dbres[i].mindestanzahl %>
+                        <%= dbres[i].change_by %>
+                    </td>
+                    <td>
+                        <%= dbres[i].date %>
+                    </td>
+                    <td>
+                        <%= dbres[i].time %>
+                    </td>
+                    <td>
+                        <%= dbres[i].keywords %>
                     </td>
                 </tr>
             <% } %>
@@ -67,11 +81,14 @@
                     <th style="display:none">Id</th>
                     <th>Artikel</th>
                     <th>Anzahl</th>
-                    <th>Kategorie</th>
+                    <th>Mindestanzahl</th>
                     <th>Ort</th>
+                    <th>Kategorie</th>
+                    <th>Erstellt von</th>
+                    <th>Zuletzt geändert von</th>
                     <th>Änderungsdatum</th>
                     <th>Änderungsuhrzeit</th>
-                    <th>Mindestanzahl</th>
+                    <th>Keywords</th>
                 </tr>
             </tfoot>
            </tbody>
@@ -89,24 +106,22 @@
             <table>
                 <tr>
                     <td>Artikel:</td>
-                    <td><input type="text" id="artikel" name="artikel" required></td>
-                </tr>
-                <tr>
-                    <td>Anzahl:</td>
-                    <td><input type="text" id="anzahl" name="anzahl" required></td>
-                </tr>
-                <tr>
-                    <td>Kategorie:</td>
-                    <td><input type="text" id="kategorie" name="kategorie" required></td>
+                    <td><input autocomplete="off"  type="text" id="artikel" name="artikel" required></td>
                 </tr>
                 <tr>
                     <td>Ort:</td>
                     <td><input type="text" id="ort" name="ort" required></td>
                 </tr>
-                <tr>
+                <tr class="Anzahl">
+                    <td>Anzahl:</td>
+                    <td><input type="text" id="anzahl" name="anzahl" required></td>
+                </tr>
+                <tr class="Mindestanzahl">
                     <td>Mindestanzahl:</td>
                     <td><input type="text" id="mindestanzahl" name="mindestanzahl" required></td>
                 </tr>
+                               
+                
             </table>
         </div>
         <div class="PopUp_footer">
@@ -137,7 +152,8 @@
 
     </footer>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="assets/js/jquery-3.2.1.js"></script>
+    <script src="assets/js/jquery-ui-1.12.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/dataTables.semanticui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.js"></script>

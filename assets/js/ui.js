@@ -7,6 +7,92 @@ $(function(){
 
     $("button").css("margin","0px -5px 5px 15px");
 
+
+    //~~~~Autocomplete~~~~
+
+    $('#artikel').autocomplete({
+        source: function(request, response){
+            var form_data = {
+                entry : 'name',
+                val : $('#artikel').val()
+            }
+    
+            var data;
+            $.post( "checkValue", form_data, function( res ) {
+                data = res;
+                console.log(res);
+                response(data);
+                
+              });
+        },
+        autoFocus: true,
+        delay: 0,
+        focus: function(event, ui) {
+            $(this).on( 'keyup', function( e ) {
+                if( e.which == 9 ) {
+                    $(this).val(ui.item.value);
+                }
+            } );
+        }
+    });
+
+    $('#ort').autocomplete({
+        source: function(request, response){
+            var form_data = {
+                entry : 'location',
+                val : $('#ort').val()
+            }
+    
+            var data;
+            $.post( "checkValue", form_data, function( res ) {
+                data = res;
+                console.log(res);
+                response(data);
+                
+              });
+        },
+        autoFocus: true,
+        delay: 0,
+        focus: function(event, ui) {
+            $(this).on( 'keyup', function( e ) {
+                if( e.which == 9 ) {
+                    $(this).val(ui.item.value);
+                }
+            } );
+        }
+    });
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    $('#artikel, #ort').on('change keyup', function(){
+        var artikel = $('#artikel').val();
+        var ort = $('#ort').val();
+        if(artikel !== "" && ort !== ""){
+            $.get("entry", {name:artikel, location:ort}, function(data){
+                console.log(data[0]);
+                if(data[0]){
+                    $("#ort").parent().append("<span id='notification'>Dieser Artikel schon an diesem Ort. Sie können ihn nun anpassen</span>");
+                    $("#ort").css("border", "1px solid rgb(243, 178, 57)");
+                    $('.ui-autocomplete').css("z-index", "0");
+                    
+                    $('#anzahl').val(data[0].number);
+                }else{
+                    $("#notification").remove();
+                    $('.ui-autocomplete').css("z-index", "100");
+
+                }
+                
+
+            });
+        }
+    });
+
+    $('.Anzahl').each(function(index){
+        console.log($(this));
+    });
+
+    //~~~~ click functions ~~~~
+
     $('.sorting').click(function(){
         $("#dataTbody tr:nth-child(odd)").css("background-color", white);
         $("#dataTbody tr:nth-child(even)").css("background-color", "rgb(238, 238, 238)");
