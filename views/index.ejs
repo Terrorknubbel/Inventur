@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.semanticui.min.css">
+    <link rel="stylesheet" href="assets/dataTables.semanticui.min.css">
+    <link rel="stylesheet" href="assets/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
     <link rel="shortcut icon" href="assets/favicon.jpg" />
 
     <title>Document</title>
@@ -18,8 +20,13 @@
         <li>
             <a href="">Logs</a>
         </li>
+        <li id="Logoutli">
+            <button id="Logout">Logout</button>
+        </li>
+        <li id="loggedAs">
+            Eingeloggt als <%= session.username %>
+        </li>
     </ul>
-
 
     <div id="tableDiv">
         <table id="table" class="ui celled table display" style="width:100%">
@@ -36,6 +43,7 @@
                     <th>Änderungsdatum</th>
                     <th>Änderungsuhrzeit</th>
                     <th>Keywords</th>
+                    <th>Logs</th>
                 </tr>
             </thead>
            <tbody id="dataTbody">
@@ -74,6 +82,9 @@
                     <td>
                         <%= dbres[i].keywords %>
                     </td>
+                    <td>
+                        <img class="log" src="assets/iconfinder_link.svg" alt="">
+                    </td>
                 </tr>
             <% } %>
             <tfoot>
@@ -89,6 +100,7 @@
                     <th>Änderungsdatum</th>
                     <th>Änderungsuhrzeit</th>
                     <th>Keywords</th>
+                    <th></th>
                 </tr>
             </tfoot>
            </tbody>
@@ -102,36 +114,40 @@
             Create new Entry
             <span>x</span>
         </div>
-        <div clas="PopUp_middle">
+        <div class="PopUp_middle">
             <table>
                 <tr>
                     <td>Artikel:</td>
                     <td><input autocomplete="off"  type="text" id="artikel" name="artikel" required></td>
-                </tr>
-                <tr>
+                    <td></td>
                     <td>Ort:</td>
                     <td><input type="text" id="ort" name="ort" required></td>
                 </tr>
-                <tr class="Anzahl">
+                <tr>
                     <td>Anzahl:</td>
                     <td><input type="text" id="anzahl" name="anzahl" required></td>
-                </tr>
-                <tr class="Mindestanzahl">
+                    <td></td>
                     <td>Mindestanzahl:</td>
                     <td><input type="text" id="mindestanzahl" name="mindestanzahl" required></td>
                 </tr>
-                               
+                <tr>
+                    <td>Kategorie:</td>
+                    <td><input type="text" id="Kategorie" name="kategorie" required></td>
+                    <td></td>
+                    <td>Keywords:</td>
+                    <td><textarea style="resize: none;" name="keywords" required id="keywords" cols="23" rows="4" placeholder="Keyword1, Keyword2, ..."></textarea></td>
+                </tr>                    
                 
             </table>
         </div>
         <div class="PopUp_footer">
-            <button type="submit">Create</button>
+            <button type="submit" id="CreateSubmit">Create</button>
         </div>
         </form>
     </div>
 
     <div id="PopUpDelete">
-        <form id="deleteForm" action="/delete" method="post">
+        <form id="deleteForm" action="/entry">
 
             <div class="PopUp_topBar">
                 Remove Entry

@@ -3,6 +3,9 @@
     padding:0;
 }
 
+body{
+    font-family: 'Roboto', sans-serif;
+}
 
 #navUl{
     background-color: rgb(65, 182, 255);
@@ -27,6 +30,36 @@
     text-decoration: none;
     color: black;
 
+}
+
+#loggedAs{
+    float: right !important;
+    margin-top: 16px;
+    margin-bottom: -16px;
+    padding-right: 16px;
+    font-weight: 400;
+    font-size: 1vw;
+}
+
+#Logoutli{
+    float: right !important;
+    margin-top: 8px;
+    margin-right: 16px;
+}
+
+#Logout{
+    background-color: white;
+    border: none;
+    font-size: 1vw;
+}
+
+.log{
+    width: 24px;
+    height: auto;
+}
+
+.log:hover{
+    cursor: pointer;
 }
 
 button{
@@ -76,21 +109,41 @@ thead input{
 #PopUp{
     display: none;
     width: 40%;
-    min-width: 500px;
+    min-width: 650px;
     position: absolute;
     margin-left: 30%;
     bottom: 40%;
     border-radius: 10px;
     text-align: center;
     z-index: 2;
-    background-color: white;
+    background-color: #efefef;
+    font-weight: bold;
+    color: black;
+}
+
+.PopUp_middle input{
+    border: none;
+    background-color: transparent;
+    border-bottom: 1px solid rgb(65, 182, 255);
+    padding-left: 5px;
+    color: black;
+    height: 25px;
+}
+
+.PopUp_middle input:focus {
+    outline-width: 0;
+    background-color: rgb(236, 228, 228);
 }
 
 .ui-autocomplete {
     z-index: 100;
     background-color: white;
     border: 1px solid black;
-    }
+}
+
+.ui-helper-hidden-accessible{
+    display: none;
+}
 
 #PopUpDelete{
     display: none;
@@ -120,25 +173,27 @@ thead input{
     padding: 10px;
 }
 
-#PopUp table tr td span{
+#PopUp table tr td span{ 
+    /*Notification*/
     position: absolute;
-    padding-left: 5px;
-    color: red;
-}
-
-#PopUp table tr td input{
-    border-radius: 5px;
-    height: 25px;
+    margin-left: -88px;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgb(250, 82, 82);
 }
 
 .PopUp_topBar{
     width: 100%;
+    margin-left: auto;
+    margin-right: auto;
     height: 40px;
     padding-left: 1vw;
     padding-top: 0.5vw;
     font-weight: 500;
     font-size: 20px;
-    background-color: lightgrey;
+    background-color: rgb(65, 182, 255);
+    border-bottom: 1px solid rgb(111, 121, 138);
+    color: black;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
@@ -154,16 +209,36 @@ thead input{
     padding: 2.5px 10px 5px 10px;
     margin-top: -20px;
     margin-right: -10px;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .PopUp_topBar span:hover{
     cursor: pointer;
 }
 
+.PopUp_middle td{
+    text-align: left;
+}
+
+#keywords{
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    background-color: #e9e6e6;
+    color: black;
+}
+
+#keywords::placeholder{
+    color: rgb(109, 107, 107);
+}
+
+#keywords:focus{
+    outline-width: 0;
+
+}
+
 .PopUp_footer{
     width: 100%;
-    background: lightgrey;
+    background-color: rgb(65, 182, 255);
     bottom: 0;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -171,17 +246,20 @@ thead input{
 }
 
 .PopUp_footer button{
-    padding: 10px !important;
     margin: 6px !important;
     box-shadow: none;
+    border: rgb(162, 214, 247);
     background-color: white;
+    height: 1.5vw;
+    width: 5vw;
+    border-radius: 10px;
+    font-weight: bold;
 }
 
 .PopUp_footer button:hover{
     cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.856);
-    box-shadow: 1px 0px 0px 1px #888888;
-
+    outline-width: 0;
+    background-color: rgb(209, 234, 250);
 }
 
 footer{

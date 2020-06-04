@@ -18,11 +18,10 @@ $(function(){
             }
     
             var data;
-            $.post( "checkValue", form_data, function( res ) {
+            $.post( "/checkValue", form_data, function( res ) {
                 data = res;
                 console.log(res);
-                response(data);
-                
+                response(data);                
               });
         },
         autoFocus: true,
@@ -71,14 +70,34 @@ $(function(){
             $.get("entry", {name:artikel, location:ort}, function(data){
                 console.log(data[0]);
                 if(data[0]){
-                    $("#ort").parent().append("<span id='notification'>Dieser Artikel schon an diesem Ort. Sie können ihn nun anpassen</span>");
-                    $("#ort").css("border", "1px solid rgb(243, 178, 57)");
+                    if(!$("#notification").length){
+                        $("#artikel").parent().append("<br><span id='notification'>Dieser Artikel extistiert schon an diesem Ort. Sie können ihn nun anpassen</span>");
+                    }
                     $('.ui-autocomplete').css("z-index", "0");
                     
                     $('#anzahl').val(data[0].number);
+                    $('#mindestanzahl').val(data[0].minimum_number);
+                    $('#Kategorie').val(data[0].category);
+                    $('#keywords').val(data[0].keywords);
+
+                    $('#CreateSubmit').html("Update");
+                    $('#createForm').attr("action", "/update");
+
+                    var id = data[0].id;
+
+                    $('<input type="text" style="display:none" class="id" name="id" value="'+ id +'"/>').insertAfter('#anzahl');
+                    if($(".id").length > 1){
+                        for (let i = 1; i < $('.id').length; i++) {
+                            $('.id')[i].remove();
+                            
+                        }
+                    }
+
+                    console.log("id: " + id);
                 }else{
                     $("#notification").remove();
                     $('.ui-autocomplete').css("z-index", "100");
+                    $('#CreateSubmit').html("Create");
 
                 }
                 
@@ -87,9 +106,6 @@ $(function(){
         }
     });
 
-    $('.Anzahl').each(function(index){
-        console.log($(this));
-    });
 
     //~~~~ click functions ~~~~
 
@@ -175,14 +191,25 @@ $(function(){
     $("#cover").click(function(){
         $("#PopUp").fadeOut();
         $("#PopUpDelete").fadeOut();
-
         $("#cover").fadeOut();
+
+        $("#PopUp input").each(function(i){
+            $(this).val("");
+        })
+
+        $("#keywords").val("");
     });
 
     $(".PopUp_topBar span").click(function(){
         $("#PopUp").fadeOut();
         $("#PopUpDelete").fadeOut();
         $("#cover").fadeOut();
+
+        $("#PopUp input").each(function(i){
+            $(this).val("");
+        })
+
+        $("#keywords").val("");
     });
 
 
