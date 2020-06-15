@@ -12,6 +12,12 @@ var con = mysql.createConnection({
   database: "inventur"
 });
 
+var client = ldap.createClient({
+    url: 'ldap://bbw-azubi.local'          //domain
+  });
+client.on('error', function(err) {
+    console.warn('LDAP connection failed, but fear not, it will reconnect OK', err);
+});
 
 module.exports = function(app){
 
@@ -43,10 +49,6 @@ module.exports = function(app){
         var name = "ABBW" + "\\" + username;    
 
         if(username && password){
-
-            var client = ldap.createClient({
-                url: 'ldap://bbw-azubi.local'          //domain
-              });
 
             client.bind(name, password, function(err) {
                 console.log(err);
@@ -125,6 +127,17 @@ module.exports = function(app){
         })
     }
 
+    function createItem(){
+        console.log("create Entry function");
+        return new Promise((resolve, reject) => {
+            con.query("INSERT INTO artikelliste (artikelid, number, minimum_number, location, creator, change_by, date, time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",[artikelid, number, minimum_number, location, creator, change_by, date, time], function (err, result) {    
+                if (err)  reject(err);
+                console.log(result);
+                console.log(err);
+                resolve(result);
+             });
+        })
+    }
 
 
     app.delete('/entry/:id', async (req, res) => {   //delete item
@@ -156,13 +169,36 @@ module.exports = function(app){
         }
     })
 
+    function QueryValidator(query){
+        var sql = " WHERE ";
+        Object.keys(query).forEach(function(key) {  //build WHERE clause with get params
+            sql += key + " = '"+ query[key] +"' AND "
+        });
+
+        if(Object.keys(query).length === 0){
+            sql = sql.substring(0, sql.length - 7);   //cut 'WHERE'
+            
+        }else{
+            sql = sql.substring(0, sql.length - 5);   //cut last 'AND'
+        }
+
+        return sql;
+    }
+
     app.get('/entry', function(req, res){       //get entries from db
         console.log("Get erhalten");
         //console.log(req.query);
         var sql = "SELECT artikel.name, artikel.category, artikel.keywords, artikelliste.* FROM artikelliste LEFT JOIN artikel ON artikel.id = artikelliste.artikelid WHERE ";
 
         Object.keys(req.query).forEach(function(key) {  //build WHERE clause with get params
-            sql += key + " = '"+ req.query[key] +"' AND "
+            if(key == "id"){
+                newKey = "artikelliste." + key;
+                sql += newKey + " = '"+ req.query[key] +"' AND "
+                
+            }else{
+                sql += key + " = '"+ req.query[key] +"' AND "
+            }
+            
         });
 
         if(Object.keys(req.query).length === 0){
@@ -171,7 +207,7 @@ module.exports = function(app){
         }else{
             sql = sql.substring(0, sql.length - 5);   //cut last 'AND'
         }
- 
+
         
         try{
             console.log(sql);               
@@ -201,16 +237,9 @@ module.exports = function(app){
 
         try {
             const item = await getItemByName(req.body.artikel);
-            console.log(item);
-
-      
-
-            const bla = await createEntry(item.id, req.body.anzahl, req.body.mindestanzahl, req.body.ort, username, username, fulldate, time);
-            console.log("entry erstellt");
-
-            res.status(200).json({
-                entry: bla
-            })
+            const create = await createEntry(item.id, req.body.anzahl, req.body.mindestanzahl, req.body.ort, username, username, fulldate, time);
+            res.send("Entry Created");
+            res.status(200).send("Entry Created");
         } catch  (err) {
             res.status(500).send("Internal Server Error");
         }
@@ -246,43 +275,60 @@ module.exports = function(app){
 
     
 
-    app.post('/checkValue', function (req, res) {   //checks itemname for autocomplete
+    app.post('/checkValue', async (req, res) => {   //checks itemname for autocomplete
         
         var postVal = req.body;
         var sql;
         console.log(req.body.entry);
         if(req.body.entry === "name"){
-            sql = "SELECT name FROM `artikel`";
+            // try {
+            //     const resultAll = await getAll();
+            //     var resArr = [];
+            //     for(var i = 0; i < resultAll.length; i++){
+            //         if(postVal.val.length > 0){
+            //             if(resultAll[i].deleted == 0 && resultAll[i].name.startsWith(postVal.val)){
+             
+            //                 resArr.push(resultAll[i].name);
+            //             }
+            //         }
+            //     }
+            //     console.log("resultAll: " + resultAll);
+            //     console.log("-----------");
+            //     console.log("res: " + resArr);
+            // } catch  (err) {
+            //     res.status(500).send("Internal Server Error");
+            // }
+
+            sql = "SELECT name FROM `artikel`";     //get all names from artikel
             con.query(sql, function (err, result) {
                 if (err) throw err;
-                var results = [];
+                var autoFillResults = [];
                 for(var i = 0; i < result.length; i++){
                     if(postVal.val.length > 0){
-                        if(result[i].name.startsWith(postVal.val)){
-                            results.push(result[i].name);
-                            
+                        if(result[i].name.startsWith(postVal.val)){ //if a name starts with the user input
+                            autoFillResults.push(result[i].name);           //add name to autoFillResults
                         }
                     }
                     
                 }
-                res.send(results);
+                res.send(autoFillResults);       //send array with autofill values back
              });
              
         }else if(req.body.entry === "location"){
-            sql = "SELECT location FROM `artikelliste`";
+            sql = "SELECT location FROM `artikelliste`";    //get all locations from artikelliste
             con.query(sql, function (err, result) {
                 if (err) throw err;
-                var results = [];
+                var autoFillResults = [];
                 for(var i = 0; i < result.length; i++){
                     if(postVal.val.length > 0){
-                        if(result[i].location.startsWith(postVal.val)){
-                            results.push(result[i].location);
+                        if(result[i].location.startsWith(postVal.val)){ //if a location starts with the user input
+                            autoFillResults.push(result[i].location);       //add location to autoFillResults
                             
                         }
                     }
                     
                 }
-                res.send(results);
+                res.send(autoFillResults);
              });
         }
         
