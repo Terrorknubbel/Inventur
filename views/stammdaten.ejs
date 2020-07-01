@@ -1,0 +1,16 @@
+<%- include('topbar'); %>
+
+<body>
+    <%- include('navbar'); %>
+
+    <% for(var i=0; i < result.length; i++){ %>
+    <span>
+        <%= result[i] %>
+    </span>
+    <% } %>
+
+    <%- include('scripts'); %>
+
+</body>
+
+</html>

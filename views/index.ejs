@@ -1,32 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css">
-    <link rel="stylesheet" href="assets/dataTables.semanticui.min.css">
-    <link rel="stylesheet" href="assets/main.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+<%- include('topbar'); %>
 
-    <link rel="shortcut icon" href="assets/favicon.jpg" />
-
-    <title>Document</title>
-</head>
 <body>
-    <ul id="navUl">
-        <li>
-            <a href="">Startseite</a>
-        </li>
-        <li>
-            <a href="">Logs</a>
-        </li>
-        <li id="Logoutli">
-            <button id="Logout">Logout</button>
-        </li>
-        <li id="loggedAs">
-            Eingeloggt als <%= session.username %>
-        </li>
-    </ul>
+    <%- include('navbar'); %>
 
     <div id="tableDiv">
         <table id="table" class="ui celled table display" style="width:100%">
@@ -42,12 +17,12 @@
                     <th>Zuletzt geändert von</th>
                     <th>Änderungsdatum</th>
                     <th>Änderungsuhrzeit</th>
-                    <th>Keywords</th>
+                    <th>Stichwörter</th>
                     <th>Logs</th>
                 </tr>
             </thead>
-           <tbody id="dataTbody">
-            <% for(var i=0; i < dbres.length; i++){ %>
+            <tbody id="dataTbody">
+                <% for(var i=0; i < dbres.length; i++){ %>
                 <tr>
                     <td style="display:none">
                         <%= dbres[i].id %>
@@ -86,63 +61,116 @@
                         <img class="log" src="assets/iconfinder_link.svg" alt="">
                     </td>
                 </tr>
-            <% } %>
+                <% } %>
             <tfoot>
                 <tr id='inputTr'>
                     <th style="display:none">Id</th>
-                    <th>Artikel</th>
-                    <th>Anzahl</th>
-                    <th>Mindestanzahl</th>
-                    <th>Ort</th>
-                    <th>Kategorie</th>
-                    <th>Erstellt von</th>
-                    <th>Zuletzt geändert von</th>
-                    <th>Änderungsdatum</th>
-                    <th>Änderungsuhrzeit</th>
-                    <th>Keywords</th>
+                    <th><input type="text" placeholder="Suche Artikel"></th>
+                    <th><input type="text" placeholder="Suche Anzahl"></th>
+                    <th><input type="text" placeholder="Suche Mindestanzahl"></th>
+                    <th><input type="text" placeholder="Suche Ort"></th>
+                    <th><input type="text" placeholder="Suche Kategorie"></th>
+                    <th><input type="text" placeholder="Suche Erstellt von"></th>
+                    <th><input type="text" placeholder="Suche Zuletzt geändert von"></th>
+                    <th><input type="text" placeholder="Suche Änderungsdatum"></th>
+                    <th><input type="text" placeholder="Suche Änderungsuhrzeit"></th>
+                    <th><input type="text" placeholder="Suche Stichwörter"></th>
                     <th></th>
                 </tr>
             </tfoot>
-           </tbody>
+            </tbody>
         </table>
     </div>
 
     <div id="PopUp">
         <form id="createForm" action="/create" method="post">
 
-        <div class="PopUp_topBar">
-            Create new Entry
-            <span>x</span>
-        </div>
-        <div class="PopUp_middle">
-            <table>
-                <tr>
-                    <td>Artikel:</td>
-                    <td><input autocomplete="off"  type="text" id="artikel" name="artikel" required></td>
-                    <td></td>
-                    <td>Ort:</td>
-                    <td><input type="text" id="ort" name="ort" required></td>
-                </tr>
-                <tr>
-                    <td>Anzahl:</td>
-                    <td><input type="text" id="anzahl" name="anzahl" required></td>
-                    <td></td>
-                    <td>Mindestanzahl:</td>
-                    <td><input type="text" id="mindestanzahl" name="mindestanzahl" required></td>
-                </tr>
-                <tr>
-                    <td>Kategorie:</td>
-                    <td><input type="text" id="Kategorie" name="kategorie" required></td>
-                    <td></td>
-                    <td>Keywords:</td>
-                    <td><textarea style="resize: none;" name="keywords" required id="keywords" cols="23" rows="4" placeholder="Keyword1, Keyword2, ..."></textarea></td>
-                </tr>                    
-                
-            </table>
-        </div>
-        <div class="PopUp_footer">
-            <button type="submit" id="CreateSubmit">Create</button>
-        </div>
+            <div class="PopUp_topBar">
+                Neuen Artikel anlegen
+                <span>x</span>
+            </div>
+            <div class="PopUp_middle">
+                <table>
+                    <tr>
+                        <td>Artikel:</td>
+                        <td><input autocomplete="off" type="text" id="name" name="name" maxlength="20" required></td>
+                        <td></td>
+                        <td>Ort:</td>
+                        <td><input type="text" id="location" name="location" maxlength="20" required></td>
+                    </tr>
+                    <tr>
+                        <td>Anzahl:</td>
+                        <td><input type="text" id="number" name="number" maxlength="10" required></td>
+                        <td></td>
+                        <td>Mindestanzahl:</td>
+                        <td><input type="text" id="minimum_number" name="minimum_number" maxlength="10" required></td>
+                    </tr>
+                    <tr>
+                        <td>Kategorie:</td>
+                        <td>
+                            <input type="text" id="category" name="category" maxlength="20" required>
+                            <select name="category" id="category">
+                                <% for(var i=0; i < stammdaten.kategorie.length; i++){ %>
+                                <option value="">
+                                    <%= stammdaten.kategorie[i]; %>
+                                </option>
+                                <% } %>
+                            </select>
+                        </td>
+                        <td></td>
+                        <td>Stichwörter:</td>
+                        <td><textarea style="resize: none;" name="keywords" maxlength="100" required id="keywords"
+                                cols="23" rows="4" placeholder="Stichwort1, Stichwort2, ..."></textarea></td>
+                    </tr>
+
+                </table>
+            </div>
+            <div class="PopUp_footer">
+                <button type="submit" id="CreateSubmit">Speichern</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="PopUpUpdate">
+        <form id="updateForm" action="/entry">
+
+            <div class="PopUp_topBar">
+                Artikel bearbeiten
+                <span>x</span>
+            </div>
+            <div class="PopUp_middle">
+                <table>
+                    <tr>
+                        <td>Artikel:</td>
+                        <td><input autocomplete="off" type="text" id="name_update" maxlength="20" name="name" required>
+                        </td>
+                        <td></td>
+                        <td>Ort:</td>
+                        <td><input type="text" id="location_update" maxlength="20" name="location" required></td>
+                    </tr>
+                    <tr>
+                        <td>Anzahl:</td>
+                        <td><input type="text" id="number_update" maxlength="10" name="number" required></td>
+                        <td></td>
+                        <td>Mindestanzahl:</td>
+                        <td><input type="text" id="minimum_number_update" maxlength="10" name="minimum_number" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Kategorie:</td>
+                        <td><input type="text" id="category_update" name="category" maxlength="20" required></td>
+                        <td></td>
+                        <td>Stickwort:</td>
+                        <td><textarea style="resize: none;" name="keywords" maxlength="100" required
+                                id="keywords_update" cols="23" rows="4"
+                                placeholder="Stichwort1, Stichwort2, ..."></textarea></td>
+                    </tr>
+
+                </table>
+            </div>
+            <div class="PopUp_footer">
+                <button type="submit" id="UpdateSubmit">Aktualisieren</button>
+            </div>
         </form>
     </div>
 
@@ -150,33 +178,26 @@
         <form id="deleteForm" action="/entry">
 
             <div class="PopUp_topBar">
-                Remove Entry
+                Eintrag Löschen
                 <span>x</span>
             </div>
             <div class="PopUpDelete_middle">
-                
+
             </div>
             <div class="PopUp_footer">
-                <button type="submit">Delete</button>
+                <button type="submit">Löschen</button>
             </div>
-            </form>
+        </form>
     </div>
-    
+
     <div id="cover"></div>
 
     <footer>
 
     </footer>
 
-    <script src="assets/js/jquery-3.2.1.js"></script>
-    <script src="assets/js/jquery-ui-1.12.1.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.semanticui.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.js"></script>
-
-    <script src="assets/js/datatables.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script src="assets/js/ui.js"></script>
+    <%- include('scripts'); %>
 
 </body>
+
 </html>

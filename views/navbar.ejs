@@ -1,0 +1,25 @@
+<ul id="navUl">
+    <li>
+        <a href="/">Inventur | </a>
+    </li>
+    <li>
+        <a href="">Logs</a>
+    </li>
+    <li>
+        <div class="dropdown">
+            <button class="dropbtn">Stammdaten
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                <a href="/stammdaten/kategorie">Kategorien</a>
+                <a href="/stammdaten/keywords">Stichwörter</a>
+            </div>
+        </div>
+    </li>
+    <li id="Logoutli">
+        <button id="Logout">Logout</button>
+    </li>
+    <li id="loggedAs">
+        Eingeloggt als <%= session.title %> <%= session.username %>
+    </li>
+</ul>
