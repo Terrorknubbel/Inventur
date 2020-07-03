@@ -2,7 +2,7 @@ $(document).ready(function () {
 
   // DataTable
   var table = $("#table").DataTable({
-
+    "columnDefs": [{ "targets": 11, "orderable": false }],
     "initComplete": function () {
       // Apply the search
       this.api()
@@ -27,6 +27,41 @@ $(document).ready(function () {
       "url": "/assets/js/German.json"
     },
 
+  });
+
+  var ortTable = $('#ortTable').DataTable({
+    "columnDefs": [
+      { "width": "20%", "targets": 0 },
+      { "width": "20%", "targets": 1 },
+      { "width": "20%", "targets": 2 },
+      { "width": "1%", "targets": 3, "orderable": false }
+    ],
+    language: {
+      "url": "/assets/js/German.json"
+    },
+  });
+
+  var kategorieTable = $('#kategorieTable').DataTable({
+    "columnDefs": [
+      { "width": "20%", "targets": 0 },
+      { "width": "20%", "targets": 1 },
+      { "width": "20%", "targets": 2 },
+      { "width": "1%", "targets": 3, "orderable": false }
+    ],
+    language: {
+      "url": "/assets/js/German.json"
+    },
+  });
+  var keywordsTable = $('#keywordsTable').DataTable({
+    "columnDefs": [
+      { "width": "20%", "targets": 0 },
+      { "width": "20%", "targets": 1 },
+      { "width": "20%", "targets": 2 },
+      { "width": "1%", "targets": 3, "orderable": false }
+    ],
+    language: {
+      "url": "/assets/js/German.json"
+    },
   });
 
   $(
@@ -73,6 +108,15 @@ $(document).ready(function () {
       $("#Delete").prop("title", "Wähle mindestens eine Zeile aus um sie löschen zu können");
 
     }
+  });
+
+  $(document).on("keypress", function (e) {
+    if ($("#ortInput").is(":focus")) {
+      if (e.which == 13) {
+        alert($("#ortInput").val());
+      };
+    }
+
   });
 
   //------------------------------------

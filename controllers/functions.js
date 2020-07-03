@@ -175,27 +175,101 @@ function getTime() {
     return time;
 }
 
-function getStammdaten(name) {
-    return new Promise((resolve, reject) => {
-        con.query(
-            `SELECT
-              ${name}
-          FROM ${name}`,
-            function (err, result) {
-                if (err) reject(err);
 
-                var array = [];
-                for (var i = 0; i < result.length; i++) {
-                    for (const [key, value] of Object.entries(result[i])) {
-                        array.push(result[i][`${key}`]);
-                    }
+async function getStammdaten() {
+    var ort = await getOrt();
+    var kategorie = await getKategorie();
+    var keywords = await getKeywords();
+    var res = {
+        "ort": ort,
+        "kategorie": kategorie,
+        "keywords": keywords
+    };
+    return res;
+
+}
+
+function getOrt() {
+    return new Promise((resolve, reject) => {
+        var res = {};
+        con.query(
+            `SELECT * FROM ort`,
+            function (err, result) {
+                if (err) {
+                    //reject(err)
+                    res.ort = result;
+                } else {
+                    console.log("error");
+                    resolve(result);
                 }
 
-                resolve(array);
             }
         );
     });
 }
+
+function getKategorie() {
+    return new Promise((resolve, reject) => {
+        var res = {};
+        con.query(
+            `SELECT * FROM kategorie`,
+            function (err, result) {
+                if (err) {
+                    //reject(err)
+                    res.Kategorie = result;
+                } else {
+                    console.log("error");
+                    resolve(result);
+                }
+
+            }
+        );
+    });
+}
+
+function getKeywords() {
+    return new Promise((resolve, reject) => {
+        var res = {};
+        con.query(
+            `SELECT * FROM keywords`,
+            function (err, result) {
+                if (err) {
+                    //reject(err)
+                    res.Keywords = result;
+                } else {
+                    console.log("error");
+                    resolve(result);
+                }
+
+            }
+        );
+    });
+}
+
+// function getStammdaten(name) {
+//     return new Promise((resolve, reject) => {
+//         con.query(
+//             `SELECT
+//               ${name}
+//           FROM ${name}`,
+//             function (err, result) {
+//                 if (err) {
+//                     reject(err)
+//                 } else {
+//                     var array = [];
+//                     for (var i = 0; i < result.length; i++) {
+//                         for (const [key, value] of Object.entries(result[i])) {
+//                             array.push(result[i][`${key}`]);
+//                         }
+//                     }
+
+//                     resolve(array);
+//                 }
+
+//             }
+//         );
+//     });
+// }
 
 function UserSearch(client, base, search_options) {
     return new Promise(function (resolve, reject) {

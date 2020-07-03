@@ -1,14 +1,157 @@
-<%- include('topbar'); %>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css">
+    <link rel="stylesheet" href="../assets/dataTables.semanticui.min.css">
+    <link rel="stylesheet" href="../assets/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/8abfe07619.js" crossorigin="anonymous"></script>
+
+
+    <link rel="shortcut icon" href="../assets/favicon.jpg" />
+
+    <title>Document</title>
+</head>
 
 <body>
     <%- include('navbar'); %>
 
-    <% for(var i=0; i < result.length; i++){ %>
+    <h1><u>Stammdaten</u></h1>
+
+    <div class="container">
+        <div>
+            <table id="ortTable" class="ui celled table display" style="width:100%">
+                <h2>Ort</h2>
+                <thead>
+                    <tr>
+                        <th style="display:none"></th>
+                        <th>Ort</th>
+                        <th>Aktuell von Artikeln genutzt</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="dataTbody">
+                    <% for(var i=0; i < result.ort.length; i++){ %>
+                    <tr>
+                        <td style="display:none">
+                            <%= result.ort[i].id %>
+                        </td>
+                        <td>
+                            <%= result.ort[i].ort %>
+                        </td>
+                        <td>
+                            <%= result.ort[i].number %>
+                        </td>
+                        <td>
+                            <i class="fas fa-trash"></i>
+                        </td>
+                    </tr>
+                    <% } %>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="AddRow" colspan="3" style="text-align:center">
+                            Neuer Eintrag <i class="fas fa-chevron-down"></i>
+                        </th>
+                    </tr>
+                </tfoot>
+
+            </table>
+
+        </div>
+        <div>
+            <table id="kategorieTable" class="ui celled table display" style="width:100%">
+                <h2>Kategorie</h2>
+                <thead>
+                    <tr>
+                        <th style="display:none"></th>
+                        <th>Kategorie</th>
+                        <th>Aktuell von Artikeln genutzt</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="dataTbody">
+                    <% for(var i=0; i < result.kategorie.length; i++){ %>
+                    <tr>
+                        <td style="display:none">
+                            <%= result.kategorie[i].id %>
+                        </td>
+                        <td>
+                            <%= result.kategorie[i].kategorie %>
+                        </td>
+                        <td>
+                            <%= result.kategorie[i].number %>
+                        </td>
+                        <td>
+                            <i class="fas fa-trash"></i>
+                        </td>
+                    </tr>
+                    <% } %>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="AddRow" colspan="3" style="text-align:center">
+                            Neuer Eintrag <i class="fas fa-chevron-down"></i>
+                        </th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div>
+            <table id="keywordsTable" class="ui celled table display" style="width:100%">
+                <h2>Stichwort</h2>
+                <thead>
+                    <tr>
+                        <th style="display:none"></th>
+                        <th>Stichwörter</th>
+                        <th>Aktuell von Artikeln genutzt</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="dataTbody">
+                    <% for(var i=0; i < result.keywords.length; i++){ %>
+                    <tr>
+                        <td style="display:none">
+                            <%= result.keywords[i].id %>
+                        </td>
+                        <td>
+                            <%= result.keywords[i].keywords %>
+                        </td>
+                        <td>
+                            <%= result.keywords[i].number %>
+                        </td>
+                        <td>
+                            <i class="fas fa-trash"></i>
+                        </td>
+                    </tr>
+                    <% } %>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="AddRow" colspan="3" style="text-align:center">
+                            Neuer Eintrag <i class="fas fa-chevron-down"></i>
+                        </th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- <% for(var i=0; i < result.length; i++){ %>
     <span>
         <%= result[i] %>
     </span>
-    <% } %>
+    <table>
 
+    </table>
+    <% } %> -->
+    <footer>
+
+    </footer>
     <%- include('scripts'); %>
 
 </body>

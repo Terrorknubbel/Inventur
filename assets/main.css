@@ -7,6 +7,21 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
+h1{
+  text-align: center;
+  margin-top: 5px;
+}
+h2, h3{
+  text-align: center;
+}
+
+h2{
+  border-bottom: 1px solid rgba(0, 0, 0, 0.151);
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 #navUl {
   background-color: #0096c7;
   width: 100%;
@@ -20,12 +35,12 @@ body {
   float: left;
 }
 
-.dropdown {
+.Navdropdown {
   float: left;
   overflow: hidden;
 }
 
-.dropdown .dropbtn { 
+.Navdropdown .dropbtn { 
   border: none;
   outline: none;
   color: white;
@@ -35,13 +50,21 @@ body {
   margin-top: 0;
 }
 
-.dropdown-content {
+.Navdropdown-content {
   display: none;
   position: absolute;
   margin-top: -2px;
   background-color: #0096c7;
   min-width: 160px;
   z-index: 1;
+}
+
+.container {
+  display: flex;
+}
+.container > div {
+  flex: 1; /*grow*/
+  padding: 20px;
 }
 
 #navUl li a {
@@ -54,7 +77,7 @@ body {
   color: white;
 }
 
-.dropdown-content a {
+.Navdropdown-content a {
   float: none;
   color: black;
   padding: 5px !important;
@@ -64,16 +87,35 @@ body {
   text-align: left;
 }
 
-.dropdown-content a:hover {
+.Navdropdown-content a:hover {
   background-color: #2da0c7;
 }
 
-.dropdown:hover .dropdown-content {
+.Navdropdown:hover .Navdropdown-content {
   display: block;
+}
+
+.dataTables_wrapper{
+  padding-bottom: 50px;
 }
 
 #table > tbody > tr > td {
   word-break: break-all;
+}
+
+.StammInput{
+  width: 100%;
+  line-height: 25px;
+  padding-left: 5px;
+}
+
+.StammSave{
+  background-color: #e0f7ff;
+  border-radius: 5px;
+}
+
+.fa-trash:hover{
+  cursor: pointer;
 }
 
 #loggedAs {

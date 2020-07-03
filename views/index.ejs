@@ -1,4 +1,19 @@
-<%- include('topbar'); %>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css">
+    <link rel="stylesheet" href="assets/dataTables.semanticui.min.css">
+    <link rel="stylesheet" href="assets/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="shortcut icon" href="assets/favicon.jpg" />
+
+    <title>Document</title>
+</head>
 
 <body>
     <%- include('navbar'); %>
@@ -75,7 +90,7 @@
                     <th><input type="text" placeholder="Suche Änderungsdatum"></th>
                     <th><input type="text" placeholder="Suche Änderungsuhrzeit"></th>
                     <th><input type="text" placeholder="Suche Stichwörter"></th>
-                    <th></th>
+
                 </tr>
             </tfoot>
             </tbody>
@@ -108,7 +123,7 @@
                     <tr>
                         <td>Kategorie:</td>
                         <td>
-                            <input type="text" id="category" name="category" maxlength="20" required>
+                            <!-- <input type="text" id="category" name="category" maxlength="20" required> -->
                             <select name="category" id="category">
                                 <% for(var i=0; i < stammdaten.kategorie.length; i++){ %>
                                 <option value="">

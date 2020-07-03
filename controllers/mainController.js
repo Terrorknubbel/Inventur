@@ -120,18 +120,6 @@ module.exports = function (app) {
           };
 
           var searchRes = await functions.UserSearch(client, base, search_options);
-          // client.search(base, search_options, function (err, resSearch) {
-          //   if (err) {
-          //     console.log('Error occurred while ldap search');
-          //   } else {
-          //     resSearch.on('searchEntry', function (entry) {
-          //       //console.log('Entry', JSON.stringify(entry.object));
-          //       console.log(entry.object.title);
-          //       test = entry.object.title;
-
-          //     });
-          //   }
-          // });
 
           req.session.loggedin = true; //set session
           req.session.title = searchRes.title;
@@ -147,6 +135,22 @@ module.exports = function (app) {
 
       //if no username/passwort exists
       res.end();
+    }
+  });
+
+  app.get("/stammdaten", async (req, res) => {
+    if (req.session.loggedin) {
+      try {
+        var results = await functions.getStammdaten();
+        console.log(results);
+        res.render("stammdaten", { result: results, session: req.session });
+      } catch (e) {
+        res.status(404).send("404 Not Found");
+        console.log(e);
+      }
+    } else {
+      res.redirect("/"); //redirect to home
+
     }
   });
 
