@@ -131,27 +131,6 @@ $(function () {
     });
   });
 
-  $(".AddRow").click(function () {
-    $(this).find("i").toggleClass("fa-chevron-down fa-chevron-up");
-    var th = $(this).parent().parent().parent().find("th:eq(1)").html();
-
-    if ($(this).parent().siblings().length == 0) {
-      $(this).parent().after(`
-      <tr>
-      <td><input maxlength="32" class="StammInput" type="text" placeholder="${th}..."></td>
-      <td><button class="StammSave">Speichern</button></td>
-      </tr>
-    `);
-
-    } else {
-      $(this).parent().siblings().first().remove();
-    }
-
-  })
-
-  $(".AddRow").hover(function () {
-    $(this).css("cursor", "pointer");
-  });
 
   $("#cover, .PopUp_topBar span").click(function () {
     //when grey background or x button is clicked

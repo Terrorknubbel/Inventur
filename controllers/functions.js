@@ -189,6 +189,50 @@ async function getStammdaten() {
 
 }
 
+function saveStammdaten(table, value) {
+    return new Promise((resolve, reject) => {
+        console.log(table, value);
+        con.query(
+            'INSERT INTO ' + table + ' (' + table + ') VALUES ("' + value + '")',
+            function (err, result) {
+                if (err) {
+                    //reject(err)
+                    console.log("---------");
+                    console.log("error");
+                    console.log(err);
+                    console.log("---------");
+                } else {
+                    resolve(result);
+
+                }
+
+            }
+        );
+    });
+}
+
+function deleteStammdaten(table, value) {
+    return new Promise((resolve, reject) => {
+        console.log(table, value);
+        con.query(
+            `DELETE FROM ${table} WHERE id = ${value}`,
+            function (err, result) {
+                if (err) {
+                    //reject(err)
+                    console.log("---------");
+                    console.log("error");
+                    console.log(err);
+                    console.log("---------");
+                } else {
+                    resolve(result);
+
+                }
+
+            }
+        );
+    });
+}
+
 function getOrt() {
     return new Promise((resolve, reject) => {
         var res = {};
@@ -300,5 +344,7 @@ module.exports = {
     getDate,
     getTime,
     UserSearch,
-    getStammdaten
+    getStammdaten,
+    saveStammdaten,
+    deleteStammdaten
 }

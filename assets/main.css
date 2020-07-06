@@ -111,7 +111,18 @@ h2{
 
 .StammSave{
   background-color: #e0f7ff;
+  padding: 5px;
   border-radius: 5px;
+}
+
+.AddRow{
+  user-select: none;
+}
+
+.numberUsed{
+  cursor: not-allowed;
+  user-select: none;
+
 }
 
 .fa-trash:hover{

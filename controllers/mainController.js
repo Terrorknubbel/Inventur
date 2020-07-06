@@ -165,6 +165,24 @@ module.exports = function (app) {
 
   });
 
+  app.post("/stammdaten/:table", async (req, res) => {
+    console.log(req.params.table);
+    console.log(req.body.value);
+    if (req.params.table == "Stichwörter") {
+      console.log("changeeeeeeeeeeeeeeeee");
+      req.params.table = "keywords";
+    }
+    var results = await functions.saveStammdaten(req.params.table.toLowerCase(), req.body.value);
+    res.send("Entry Created");
+  });
+
+  app.delete("/stammdaten/:table/:id", async (req, res) => {
+    console.log(req.params.table);
+    console.log(req.params.id);
+    var results = await functions.deleteStammdaten(req.params.table, req.params.id);
+    res.send(results);
+  });
+
   app.get("/checkValue/:title/:value", function (req, res) {
 
     var title = req.params.title;
@@ -218,10 +236,7 @@ module.exports = function (app) {
 
   app.post("/create", async (req, res) => {
     //create entry in db
-    console.log("----------------");
-    console.log("post create");
-    console.log("----------------");
-    console.log(req.body, req.session.username);
+
     var username = req.session.username;
     var sql =
       "INSERT INTO artikel (name, category, keywords) VALUES ('" +
