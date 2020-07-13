@@ -45,15 +45,52 @@ function addStamm(x) {
 }
 
 $(".fa-trash").click(function () {
-
+    let table = $(this).attr('class').split(' ').pop();
+    let val = $(this).parent().parent().children().eq(1).html().trim();
     var id = $(this).parent().siblings().first().html().trim();
-    var table = $(this).attr('class').split(' ').pop();
 
-    $.ajax({
-        url: `/stammdaten/${table}/${id}`,
-        type: "DELETE",
-        success: function (result) {
-            location.reload();
-        },
+    let popUp = `
+        <div class="popup">
+            <form>
+            <div class="popup_top">
+                Stammdatum von "${table}" löschen
+                <span>x</span>
+            </div>
+            <div class="popup_mid">
+                Sicher, dass Sie "${val}" <b><u>unwiderruflich</u></b> löschen wollen?
+                <br>
+                <input type="button" value="Löschen" />
+                <input type="button" value="Abbrechen" />
+            </div>
+            <div class="popup_foot">
+            
+                
+            </div>
+            </form>
+        </div>
+    `;
+
+    let cover = '<div class="cover"></div>';
+
+    console.log($(popUp));
+    $(".container").prepend($(cover + popUp).hide().fadeIn());
+
+    $(".cover, .popup_top > span, .popup_mid > input:nth-of-type(2").click(function () {
+        $(".cover").remove();
+        $(".popup").remove();
+    })
+
+    $(".popup_mid > input:first-of-type").click(function () {
+        //var table = $(this).attr('class').split(' ').pop();
+        //console.log(val);
+        $.ajax({
+            url: `/stammdaten/${table}/${id}`,
+            type: "DELETE",
+            success: function (result) {
+                location.reload();
+            },
+        });
     });
+
+
 });

@@ -42,9 +42,10 @@ $(function () {
 
   //~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  $("#name, #location").on("change keyup", function () {
+  $("#name, #location").on("change", function () {
     var artikel = $("#name").val();
     var ort = $("#location").val();
+    console.log(artikel, ort);
     if (artikel !== "" && ort !== "") {
       $.get("entry", { name: artikel, location: ort }, function (data) {
         console.log(data[0]);
@@ -53,7 +54,7 @@ $(function () {
             $("#name")
               .parent()
               .append(
-                "<br><span id='notification'>Dieser Artikel extistiert schon an diesem Ort. Sie können ihn nun anpassen</span>"
+                "<br id='notificationBreak'><span id='notification'>Dieser Artikel extistiert schon an diesem Ort. Sie können ihn nun anpassen</span>"
               );
           }
           $(".ui-autocomplete").css("z-index", "0");
@@ -81,23 +82,23 @@ $(function () {
 
           console.log("id: " + id);
         } else {
+          console.log("else");
           $("#notification").remove();
+          $("#notificationBreak").remove();
           $(".ui-autocomplete").css("z-index", "100");
           $("#CreateSubmit").html("Create");
+          $("#createForm").attr("action", "/create");
+
+          $("#number").val("");
+          $("#minimum_number").val("");
+          $("#category").val($("#category option:first").val());
+          $("#keywords").val("");
+
         }
       });
     }
   });
 
-  // function createPopUp() {
-  //   let el = $(`
-  //     <form action="test" method="GET">
-  //       <input type="submit" />
-  //     </form>
-  //   `);
-
-  //   return el;
-  // }
 
   $("#New").click(function () {
     //var NewPopUp = createPopUp();
@@ -111,20 +112,20 @@ $(function () {
     $("#cover").fadeIn();
 
     $("#table tbody tr").each(function () {
-      if ($(this).css("background-color") === grey) {
+      if ($(this).hasClass("selected")) {
         //get marked line
         var id = $(this).children().html(); //get id from line
         id = id.replace(/ /g, ""); //cut spaces
         id = id.replace(/\r?\n|\r/g, "");
 
         $.get(`/entry/${id}`, function (data, status) {
-          console.log(data);
-          console.log(data.name);
           $("#name_update").val(data.name);
           $("#location_update").val(data.location);
           $("#number_update").val(data.number);
           $("#minimum_number_update").val(data.minimum_number);
           $("#category_update").val(data.category);
+          console.log("Edit Data: " + data.category);
+          console.log($("#category_update"));
           $("#keywords_update").val(data.keywords);
         });
       }

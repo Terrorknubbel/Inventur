@@ -110,5 +110,15 @@ $(document).ready(function () {
     }
   });
 
+  $(".numberButton").click(function (e) {
+    e.preventDefault();
+    var number = $("#number_update").val();
+    var sum = parseInt(number) + parseInt($(this).html());
+    if (sum >= 0) {
+      $("#number_update").val(sum);
+    } else {
+      $("#number_update").val(0);
+    }
 
+  });
 });

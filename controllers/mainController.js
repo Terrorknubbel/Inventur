@@ -23,15 +23,10 @@ module.exports = function (app) {
   app.get("/", async (req, res) => {
     if (req.session.loggedin) {
       const result = await functions.getAll(); // get db data
-      var stammKategorie = await functions.getStammdaten("kategorie");
-      var stammKeywords = await functions.getStammdaten("keywords");
+      //console.log(JSON.stringify(result));
+      var stammdaten = await functions.getStammdaten();
 
-      var stammdaten = {
-        "kategorie": stammKategorie,
-        "keywords": stammKeywords
-      }
-
-      console.log(req.session.title);
+      //console.log(stammdaten);
       res.render("index", { dbres: result, stammdaten: stammdaten, session: req.session }); //load index with db data
     } else {
       res.render("login", { err: req.query.err }); //redirect to login page if not logged in
@@ -44,11 +39,17 @@ module.exports = function (app) {
     res.send("Logged Out");
   });
 
+  // if (req.session.loggedin) {
+  // } else {
+  //   res.render("login", { err: req.query.err }); //redirect to login page if not logged in
+  // }
+
   app.get("/entry", function (req, res) {
     //get entries from db
 
-    //console.log(req.query);
-    var sql = `SELECT
+    if (req.session.loggedin) {
+      //console.log(req.query);
+      var sql = `SELECT
             artikel.name,
             artikel.category,
             artikel.keywords,
@@ -57,37 +58,41 @@ module.exports = function (app) {
         LEFT JOIN artikel ON artikel.id = artikelliste.artikelid
         WHERE `;
 
-    Object.keys(req.query).forEach(function (key) {
-      //build WHERE clause with get params
-      key = key.replace(/['"`]+/g, "");
-      req.query[key] = req.query[key].replace(/['"`]+/g, "");
+      Object.keys(req.query).forEach(function (key) {
+        //build WHERE clause with get params
+        key = key.replace(/['"`]+/g, "");
+        req.query[key] = req.query[key].replace(/['"`]+/g, "");
 
-      if (key == "id") {
-        newKey = "artikelliste." + key;
-        sql += `${newKey} = ${req.query[key]} AND `;
-      } else {
-        sql += key + " = '" + req.query[key] + "' AND ";
-      }
-    });
-
-    if (Object.keys(req.query).length === 0) {
-      sql = sql.substring(0, sql.length - 7); //cut 'WHERE'
-    } else {
-      sql = sql.substring(0, sql.length - 5); //cut last 'AND'
-    }
-
-    try {
-      con.query(sql, function (err, result) {
-        //send results
-        if (err) {
-          res.status(500).send("Internal Server Error");
-
-        };
-        res.send(result);
+        if (key == "id") {
+          newKey = "artikelliste." + key;
+          sql += `${newKey} = ${req.query[key]} AND `;
+        } else {
+          sql += key + " = '" + req.query[key] + "' AND ";
+        }
       });
-    } catch (e) {
-      console.error(e);
+
+      if (Object.keys(req.query).length === 0) {
+        sql = sql.substring(0, sql.length - 7); //cut 'WHERE'
+      } else {
+        sql = sql.substring(0, sql.length - 5); //cut last 'AND'
+      }
+
+      try {
+        con.query(sql, function (err, result) {
+          //send results
+          if (err) {
+            res.status(500).send("Internal Server Error");
+
+          };
+          res.send(result);
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      res.render("login", { err: req.query.err }); //redirect to login page if not logged in
     }
+
   });
 
   app.get("/entry/:id", async (req, res) => {
@@ -142,7 +147,7 @@ module.exports = function (app) {
     if (req.session.loggedin) {
       try {
         var results = await functions.getStammdaten();
-        console.log(results);
+        //console.log(results);
         res.render("stammdaten", { result: results, session: req.session });
       } catch (e) {
         res.status(404).send("404 Not Found");
@@ -217,12 +222,23 @@ module.exports = function (app) {
     });
   });
 
+  app.get("/logs", async (req, res) => {
+    var logs = await functions.getLog();
+    res.render("logs", { result: logs, session: req.session });
+  });
+
+  app.get("/logs/:artikelnummer", async (req, res) => {
+    var logs = await functions.getLogByArtikelnummer(req.params.artikelnummer);
+    res.render("logs", { result: logs, session: req.session });
+  });
+
   app.delete("/entry/:id", async (req, res) => {
     //delete item
     console.log("delete request");
     if (req.session.loggedin) {
       try {
-        const result = await functions.markEntryAsDeleteById(req.params.id);
+        const result = await functions.markEntryAsDeleteById(req.params.id, req.session.username);
+        var log = await functions.log(req.params.id, "delete");
 
         res.send(result);
       } catch (err) {
@@ -246,33 +262,40 @@ module.exports = function (app) {
       "', '" +
       req.body.keywords +
       "')";
-    con.query(sql, function (err, result) {
+    con.query(sql, async (err, result) => {
       //create item in 'artikel' list
       if (err) {
         res.status(500).send("Internal Server Error");
-      };
-      console.log("1 article inserted");
+      } else {
+        console.log("1 article inserted");
+
+        var fulldate = functions.getDate(); //get time/date
+        var time = functions.getTime();
+
+        try {
+          const item = await functions.getItemByName(req.body.name);
+          const create = await functions.createEntry(
+            item.id,
+            req.body.number,
+            req.body.minimum_number,
+            req.body.location,
+            username,
+            username,
+            fulldate,
+            time
+          );
+
+          var x = await functions.getLatestEntry();
+          var log = await functions.log(x.id, "create");
+          res.send("Entry Created");
+        } catch (err) {
+          console.log(err);
+          console.log("entry error");
+          res.status(500).send("Internal Server Error");
+        }
+      }
     });
 
-    var fulldate = functions.getDate(); //get time/date
-    var time = functions.getTime();
-
-    try {
-      const item = await functions.getItemByName(req.body.name);
-      const create = await functions.createEntry(
-        item.id,
-        req.body.number,
-        req.body.minimum_number,
-        req.body.location,
-        username,
-        username,
-        fulldate,
-        time
-      );
-      res.send("Entry Created");
-    } catch (err) {
-      res.status(500).send("Internal Server Error");
-    }
   });
 
   app.patch("/entry", async (req, res) => {
@@ -319,11 +342,13 @@ module.exports = function (app) {
         " WHERE id = '" +
         req.body.id +
         "'";
-      con.query(sqlArtikelliste, function (err, result) {
+      con.query(sqlArtikelliste, async (err, result) => {
         if (err) {
           res.status(500).send("Internal Server Error");
         }
         console.log("1 entry updated");
+        var log = await functions.log(req.body.id, "change");
+
       });
       res.send("updated");
     } catch (e) {

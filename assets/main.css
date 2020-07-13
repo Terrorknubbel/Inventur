@@ -103,6 +103,14 @@ h2{
   word-break: break-all;
 }
 
+#logsTable > tbody > tr > td {
+  word-break: break-all;
+}
+
+.dt-table{
+  padding: 20px;
+}
+
 .StammInput{
   width: 100%;
   line-height: 25px;
@@ -110,9 +118,13 @@ h2{
 }
 
 .StammSave{
-  background-color: #e0f7ff;
+  background-color: #39b1ff;
   padding: 5px;
   border-radius: 5px;
+}
+
+.StammSave:hover{
+  cursor: pointer;
 }
 
 .AddRow{
@@ -122,7 +134,15 @@ h2{
 .numberUsed{
   cursor: not-allowed;
   user-select: none;
+}
 
+#number_update{
+  margin-top: 25px;
+}
+.numberButton{
+  margin-top: 3px;
+  margin-left: 3px;
+  margin-right: 5px;
 }
 
 .fa-trash:hover{
@@ -157,9 +177,18 @@ h2{
   background-color: rgba(255, 255, 255, 0.8);
 }
 
-.log {
+.log, .warn, .error {
   width: 24px;
   height: auto;
+}
+
+.warn, .error{
+  margin-bottom: -7px;
+}
+
+select{
+  width: 100%;
+  height: 30px;
 }
 
 .log:hover {
@@ -195,7 +224,7 @@ button:hover:disabled {
   background-color: rgb(184, 199, 214);
 }
 
-#tableDiv {
+#tableDiv, #logsDiv {
   padding: 20px;
 }
 
@@ -232,16 +261,61 @@ thead input {
   padding: 0 !important;
 }
 
+.notEnough_left{
+  /* background-color: #f2951ca1 !important; */
+  border-top: 1px solid orange !important;
+  border-bottom: 1px solid orange !important;
+  border-left: 1px solid orange !important;
+  box-sizing: border-box;
+
+}
+.notEnough_right{
+  /* background-color: #f2951ca1 !important; */
+  border-top: 1px solid orange !important;
+  border-bottom: 1px solid orange !important;
+  border-right: 1px solid orange !important;
+  box-sizing: border-box;
+
+}
+
+.notEnough2_left{
+  /* background-color: #f2951ca1 !important; */
+  border-top: 1px solid red !important;
+  border-bottom: 1px solid red !important;
+  border-left: 1px solid red !important;
+  box-sizing: border-box;
+}
+.notEnough2_right{
+  box-sizing: border-box;
+
+  /* background-color: #f2951ca1 !important; */
+  border-top: 1px solid red !important;
+  border-bottom: 1px solid red !important;
+  border-right: 1px solid red !important;
+}
+
+
 #cover {
   transition: 1s;
   width: 100%;
   height: 100%;
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   z-index: 1;
   background-color: rgba(0, 0, 0, 0.356);
   display: none;
+}
+
+.cover {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  
+  background-color: rgba(0, 0, 0, 0.356);
 }
 
 #PopUp,
@@ -260,18 +334,87 @@ thead input {
   color: black;
 }
 
-.PopUp_middle input {
-  border: none;
-  background-color: transparent;
-  border-bottom: 1px solid rgb(0, 60, 121);
-  padding-left: 5px;
-  color: black;
-  height: 25px;
+.popup{
+  position: fixed;
+  padding: 0 !important;
+  border-radius: 10px;
+  width: auto;
+  height: 200px;
+  margin-left: calc(50% - 250px);
+  margin-top: 10%;
+  background-color: white;
+  z-index: 2;
+  text-align: center;
+  font-size: 20px;
 }
 
-.PopUp_middle input:focus {
-  outline-width: 0;
-  background-color: rgb(236, 228, 228);
+.popup > form{
+  width: 100%;
+  height: 100%;
+}
+
+.popup_top{
+height: 17.5%;
+border-top-left-radius: 10px;
+border-top-right-radius: 10px;
+background-color: #0096c7;
+padding-top: 7.5px;
+color: white;
+}
+
+.popup_top span {
+  float: right;
+  background-color: black;
+  border: 2px solid white;
+  box-sizing: border-box;
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 2.5px 10px 5px 10px;
+  margin-top: -20px;
+  margin-right: -10px;
+}
+
+.popup_top > span:hover{
+  cursor: pointer;
+}
+
+.popup_mid{
+  height: 67.5%;
+  padding-top: 7.5%;
+  word-break: keep-all;
+  white-space: nowrap;
+
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.popup_foot{
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  background-color: #0096c7;
+  height: 15%;
+}
+
+.popup_mid > input{
+  background-color: rgb(216, 216, 216);
+  font-size: 18px;
+  border: none;
+  padding: 5px;
+  border-radius: 5px;
+  margin-top: 5%;
+  margin-left: 1.25%;
+  margin-right: 1.25%;
+}
+
+.popup_mid > input:hover{
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+.popup_mid > input:first-of-type{
+  background-color: #e63947d2;
+  color: white;
 }
 
 .ui-autocomplete {
@@ -376,6 +519,24 @@ thead input {
   cursor: pointer;
 }
 
+.PopUp_middle input {
+  border: none;
+  background-color: transparent;
+  border-bottom: 1px solid rgb(0, 60, 121);
+  padding-left: 5px;
+  color: black;
+  height: 25px;
+}
+
+.PopUp_middle{
+  height: 80%;
+}
+
+.PopUp_middle input:focus {
+  outline-width: 0;
+  background-color: rgb(236, 228, 228);
+}
+
 .PopUp_middle td {
   text-align: left;
 }
@@ -398,8 +559,8 @@ thead input {
 
 .PopUp_footer {
   width: 100%;
+  height: 10%;
   background-color: #0096c7;
-  bottom: 0;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   text-align: right;
@@ -410,8 +571,8 @@ thead input {
   box-shadow: none;
   border: rgb(162, 214, 247);
   background-color: white;
-  height: 1.5vw;
-  width: 5vw;
+  height: 25px;
+  width: 100px;
   border-radius: 10px;
   font-weight: bold;
 }

@@ -20,6 +20,19 @@ function getAll() {
     });
 }
 
+function getAllById(id) {
+    return new Promise((resolve, reject) => {
+        con.query(
+            `SELECT artikel.name, artikel.category, artikel.keywords, artikelliste.* FROM artikelliste LEFT JOIN artikel ON artikel.id = artikelliste.artikelid WHERE artikelliste.id = ${id}`,
+            function (err, result) {
+                //send results
+                if (err) reject(err);
+                resolve(result);
+            }
+        );
+    });
+}
+
 function getEntryById(id) {
     return new Promise((resolve, reject) => {
         con.query(
@@ -65,13 +78,18 @@ function getItemByName(Name) {
     });
 }
 
-function markEntryAsDeleteById(id) {
+function markEntryAsDeleteById(id, username) {
     return new Promise((resolve, reject) => {
+        var date = getDate();
+        var time = getTime();
         con.query(
-            "UPDATE artikelliste SET deleted = true WHERE id = ?",
-            [id],
+            "UPDATE artikelliste SET date = ?, time = ?, change_by = ?, deleted = true WHERE id = ?",
+            [date, time, username, id],
             function (err, result) {
-                if (err) reject(err);
+                if (err) {
+                    reject(err);
+                    console.log(err);
+                }
                 resolve(result[0]);
             }
         );
@@ -114,6 +132,22 @@ function createEntry(artikelid, number, minimum_number, location, creator, chang
     });
 }
 
+function getLatestEntry() {
+    return new Promise((resolve, reject) => {
+        con.query(
+            "SELECT * FROM `artikelliste` ORDER BY id DESC LIMIT 1",
+            function (err, result) {
+                if (err) {
+                    reject(err)
+                    console.log(err);
+                    console.log("getLatestEntry error");
+                };
+                resolve(result[0]);
+            }
+        );
+    });
+}
+
 function createItem() {
     console.log("create Entry function");
     return new Promise((resolve, reject) => {
@@ -138,6 +172,7 @@ function createItem() {
         );
     });
 }
+
 function getDate() {
     var d = new Date();
     var date = d.getUTCDate();
@@ -175,7 +210,6 @@ function getTime() {
     return time;
 }
 
-
 async function getStammdaten() {
     var ort = await getOrt();
     var kategorie = await getKategorie();
@@ -185,6 +219,7 @@ async function getStammdaten() {
         "kategorie": kategorie,
         "keywords": keywords
     };
+    //console.log("res: " + JSON.stringify(res));
     return res;
 
 }
@@ -198,7 +233,7 @@ function saveStammdaten(table, value) {
                 if (err) {
                     //reject(err)
                     console.log("---------");
-                    console.log("error");
+                    console.log("Cant save Stammdaten");
                     console.log(err);
                     console.log("---------");
                 } else {
@@ -220,7 +255,7 @@ function deleteStammdaten(table, value) {
                 if (err) {
                     //reject(err)
                     console.log("---------");
-                    console.log("error");
+                    console.log("Cant delete Stammdaten");
                     console.log(err);
                     console.log("---------");
                 } else {
@@ -240,10 +275,9 @@ function getOrt() {
             `SELECT * FROM ort`,
             function (err, result) {
                 if (err) {
-                    //reject(err)
-                    res.ort = result;
+                    reject(err);
+                    console.log("Cant get Ort");
                 } else {
-                    console.log("error");
                     resolve(result);
                 }
 
@@ -259,10 +293,9 @@ function getKategorie() {
             `SELECT * FROM kategorie`,
             function (err, result) {
                 if (err) {
-                    //reject(err)
-                    res.Kategorie = result;
+                    reject(err)
+                    console.log("Cant get Kategorie");
                 } else {
-                    console.log("error");
                     resolve(result);
                 }
 
@@ -278,10 +311,9 @@ function getKeywords() {
             `SELECT * FROM keywords`,
             function (err, result) {
                 if (err) {
-                    //reject(err)
-                    res.Keywords = result;
+                    reject(err)
+                    console.log("Cant get keywords");
                 } else {
-                    console.log("error");
                     resolve(result);
                 }
 
@@ -289,31 +321,6 @@ function getKeywords() {
         );
     });
 }
-
-// function getStammdaten(name) {
-//     return new Promise((resolve, reject) => {
-//         con.query(
-//             `SELECT
-//               ${name}
-//           FROM ${name}`,
-//             function (err, result) {
-//                 if (err) {
-//                     reject(err)
-//                 } else {
-//                     var array = [];
-//                     for (var i = 0; i < result.length; i++) {
-//                         for (const [key, value] of Object.entries(result[i])) {
-//                             array.push(result[i][`${key}`]);
-//                         }
-//                     }
-
-//                     resolve(array);
-//                 }
-
-//             }
-//         );
-//     });
-// }
 
 function UserSearch(client, base, search_options) {
     return new Promise(function (resolve, reject) {
@@ -333,6 +340,61 @@ function UserSearch(client, base, search_options) {
     })
 }
 
+async function log(id, event) {
+    var data = await getAllById(id);
+
+    return new Promise((resolve, reject) => {
+        console.log("----");
+        console.log(data);
+        console.log("----");
+
+        con.query(
+            "INSERT INTO `log`(`event`, `artikelnummer`, `name`, `category`, `keywords`, `location`, `date`, `time`, `creator`, `change_by`, `number`, `minimum_number`, `deleted`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            [event, data[0].id, data[0].name, data[0].category, data[0].keywords, data[0].location, data[0].date, data[0].time, data[0].creator, data[0].change_by, data[0].number, data[0].minimum_number, data[0].deleted],
+            function (err, result) {
+                //send results
+                if (err) {
+                    reject(err);
+                    console.log(err);
+                };
+                resolve(result);
+            }
+        );
+    });
+}
+
+function getLog() {
+    return new Promise((resolve, reject) => {
+        con.query(
+            "SELECT * FROM `log`",
+            function (err, result) {
+                //send results
+                if (err) {
+                    reject(err);
+                    console.log("getLog error");
+                }
+                resolve(result);
+            }
+        );
+    });
+}
+
+function getLogByArtikelnummer(artikelnummer) {
+    return new Promise((resolve, reject) => {
+        con.query(
+            "SELECT * FROM `log` WHERE artikelnummer = ?", [artikelnummer],
+            function (err, result) {
+                //send results
+                if (err) {
+                    reject(err);
+                    console.log("getLog error");
+                }
+                resolve(result);
+            }
+        );
+    });
+}
+
 module.exports = {
     getAll,
     getEntryById,
@@ -346,5 +408,10 @@ module.exports = {
     UserSearch,
     getStammdaten,
     saveStammdaten,
-    deleteStammdaten
+    deleteStammdaten,
+    log,
+    getAllById,
+    getLog,
+    getLatestEntry,
+    getLogByArtikelnummer
 }

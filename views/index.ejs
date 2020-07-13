@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="assets/dataTables.semanticui.min.css">
     <link rel="stylesheet" href="assets/main.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&family=Open+Sans+Condensed:wght@300&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link rel="shortcut icon" href="assets/favicon.jpg" />
@@ -19,6 +21,7 @@
     <%- include('navbar'); %>
 
     <div id="tableDiv">
+
         <table id="table" class="ui celled table display" style="width:100%">
             <thead>
                 <tr>
@@ -90,7 +93,7 @@
                     <th><input type="text" placeholder="Suche Änderungsdatum"></th>
                     <th><input type="text" placeholder="Suche Änderungsuhrzeit"></th>
                     <th><input type="text" placeholder="Suche Stichwörter"></th>
-
+                    <th></th>
                 </tr>
             </tfoot>
             </tbody>
@@ -111,7 +114,16 @@
                         <td><input autocomplete="off" type="text" id="name" name="name" maxlength="20" required></td>
                         <td></td>
                         <td>Ort:</td>
-                        <td><input type="text" id="location" name="location" maxlength="20" required></td>
+                        <td>
+                            <!-- <input type="text" id="location" name="location" maxlength="20" required> -->
+                            <select name="location" id="location">
+                                <% for(var i=0; i < stammdaten.ort.length; i++){ %>
+                                <option name="<%= stammdaten.ort[i].ort; %>" value="<%= stammdaten.ort[i].ort; %>">
+                                    <%= stammdaten.ort[i].ort; %>
+                                </option>
+                                <% } %>
+                            </select>
+                        </td>
                     </tr>
                     <tr>
                         <td>Anzahl:</td>
@@ -126,8 +138,9 @@
                             <!-- <input type="text" id="category" name="category" maxlength="20" required> -->
                             <select name="category" id="category">
                                 <% for(var i=0; i < stammdaten.kategorie.length; i++){ %>
-                                <option value="">
-                                    <%= stammdaten.kategorie[i]; %>
+                                <option name="<%= stammdaten.kategorie[i].kategorie; %>"
+                                    value="<%= stammdaten.kategorie[i].kategorie; %>">
+                                    <%= stammdaten.kategorie[i].kategorie; %>
                                 </option>
                                 <% } %>
                             </select>
@@ -161,11 +174,26 @@
                         </td>
                         <td></td>
                         <td>Ort:</td>
-                        <td><input type="text" id="location_update" maxlength="20" name="location" required></td>
+                        <td>
+                            <!-- <input type="text" id="location_update" maxlength="20" name="location" required> -->
+                            <select name="location_update" id="location_update">
+                                <% for(var i=0; i < stammdaten.ort.length; i++){ %>
+                                <option name="<%= stammdaten.ort[i].ort; %>" value="<%= stammdaten.ort[i].ort; %>">
+                                    <%= stammdaten.ort[i].ort; %>
+                                </option>
+                                <% } %>
+                            </select>
+                        </td>
                     </tr>
                     <tr>
                         <td>Anzahl:</td>
-                        <td><input type="text" id="number_update" maxlength="10" name="number" required></td>
+                        <td>
+                            <input type="text" id="number_update" maxlength="10" name="number" required><br>
+                            <button class="numberButton">-10</button>
+                            <button class="numberButton">-1</button>
+                            <button class="numberButton">+1</button>
+                            <button class="numberButton">+10</button>
+                        </td>
                         <td></td>
                         <td>Mindestanzahl:</td>
                         <td><input type="text" id="minimum_number_update" maxlength="10" name="minimum_number" required>
@@ -173,9 +201,19 @@
                     </tr>
                     <tr>
                         <td>Kategorie:</td>
-                        <td><input type="text" id="category_update" name="category" maxlength="20" required></td>
+                        <td>
+                            <!-- <input type="text" id="category_update" name="category" maxlength="20" required> -->
+                            <select name="category_update" id="category_update">
+                                <% for(var i=0; i < stammdaten.kategorie.length; i++){ %>
+                                <option name=<%= stammdaten.kategorie[i].kategorie; %>
+                                    value=<%= stammdaten.kategorie[i].kategorie; %>>
+                                    <%= stammdaten.kategorie[i].kategorie; %>
+                                </option>
+                                <% } %>
+                            </select>
+                        </td>
                         <td></td>
-                        <td>Stickwort:</td>
+                        <td>Stichwörter:</td>
                         <td><textarea style="resize: none;" name="keywords" maxlength="100" required
                                 id="keywords_update" cols="23" rows="4"
                                 placeholder="Stichwort1, Stichwort2, ..."></textarea></td>
