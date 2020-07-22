@@ -149,6 +149,10 @@ h2{
   cursor: pointer;
 }
 
+.input input::placeholder{
+  color: black !important;
+}
+
 .ui-autocomplete-multiselect.ui-state-default {
   display: block;
   background: #fff;
@@ -587,11 +591,13 @@ color: white;
 }
 
 #keyDiv{
-  margin-top: 35px;
-  width: 200px;
-  height: 75px;
+  /* margin-top: 35px; */
+  float: left;
+  width: 180px;
+  max-height: 75px;
   overflow-x: scroll;
   word-wrap: break-word; 
+  background-color: white;
 }
 
 #keywords{
@@ -613,7 +619,7 @@ color: white;
 
 .Tags:hover{
   cursor: pointer;
-  background-color: rgba(255, 52, 52, 0.411);
+  background-color: #ff2d2d69;
 }
 
 .PopUp_middle input {

@@ -57,7 +57,7 @@ $(function () {
 
   $("#keywords")
     // don't navigate away from the field on tab when selecting an item
-    .on("keydown", function (event) {
+    .on("keydown keyup change", function (event) {
       if (event.keyCode === $.ui.keyCode.TAB &&
         $(this).autocomplete("instance").menu.active) {
         event.preventDefault();
@@ -82,7 +82,8 @@ $(function () {
 
         console.log(ui.item.value);
         $.get(`/stammdaten/keywords/${ui.item.value}`, function (res) {
-          $("#keyDiv").append(`<span class="Tags" onclick="close()">${ui.item.value} (${res[0].number})</span>`);
+          $("#keyDiv").prepend(`<span class="Tags" onclick="close()">${ui.item.value} (${res[0].number})</span>`);
+          $('#keyDiv').scrollTop($('#keyDiv')[0].scrollHeight);
           $("#keywords").prop("required", false);
         });
 
@@ -105,6 +106,8 @@ $(function () {
   })
   //~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  //check if new Item already exists
+  //Need to be updated!
   $("#name, #location").on("change", function () {
     var artikel = $("#name").val();
     var ort = $("#location").val();

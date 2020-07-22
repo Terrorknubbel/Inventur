@@ -2,13 +2,13 @@ $('tr > td:first-child').each(function (i) {
     console.log($(this).html());
     switch ($(this).html().trim()) {
         case "delete":
-            $(this).css("background-color", "red");
+            $(this).css("border", "1px solid red");
             break;
         case "change":
-            $(this).css("background-color", "orange");
+            $(this).css("border", "1px solid orange");
             break;
         case "create":
-            $(this).css("background-color", "green");
+            $(this).css("border", "1px solid #0096c7");
             break;
         default:
 

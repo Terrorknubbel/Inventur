@@ -318,18 +318,18 @@ module.exports = function (app) {
     var time = functions.getTime();
 
     try {
-      // const createItem = await functions.createItem(req.body.name, req.body.category, req.body.keywords);
-      // const item = await functions.getItemByName(req.body.name);
-      // const create = await functions.createEntry(
-      //   item.id,
-      //   req.body.number,
-      //   req.body.minimum_number,
-      //   req.body.location,
-      //   username,
-      //   username,
-      //   fulldate,
-      //   time
-      // );
+      const createItem = await functions.createItem(req.body.name, req.body.category, req.body.keywords);
+      const item = await functions.getItemByName(req.body.name);
+      const create = await functions.createEntry(
+        item.id,
+        req.body.number,
+        req.body.minimum_number,
+        req.body.location,
+        username,
+        username,
+        fulldate,
+        time
+      );
 
       var x = await functions.getLatestEntry();
       var keywordnum = await functions.incrementKeywordNumber(req.body.keywords);

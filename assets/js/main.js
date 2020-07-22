@@ -33,10 +33,8 @@ $(document).ready(function () {
     var keywords = "";
 
     $(".Tags").each(function (index) {
-
       //get Tag without the parenthesized number
       var tagName = $(this).html().substring(0, $(this).html().length - 4);
-
       //create keywordstring
       keywords += tagName + ", ";
     });
@@ -46,8 +44,9 @@ $(document).ready(function () {
 
     var isnum = /^\d+$/.test($("#number").val()); //check if the inputs are valid
     var isminnum = /^\d+$/.test($("#minimum_number").val());
+    var tagLength = $(".Tags").length;
 
-    if (isnum && isminnum) {
+    if (isnum && isminnum && tagLength > 0) {
       $.post(post_url, form_data, function (response) {
         //post data to server after submit
         location.reload(); //reload page when everything is finished
