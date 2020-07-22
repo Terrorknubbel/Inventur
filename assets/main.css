@@ -149,6 +149,64 @@ h2{
   cursor: pointer;
 }
 
+.ui-autocomplete-multiselect.ui-state-default {
+  display: block;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 3px 3px;
+  padding-bottom: 0px;
+  overflow: hidden;
+  width: 100% !important;
+  height: 70px !important;
+  cursor: text;
+  margin: 0px auto;
+}
+
+.ui-autocomplete-multiselect .ui-autocomplete-multiselect-item .ui-icon {
+  float: right;
+  cursor: pointer;
+}
+
+.ui-autocomplete-multiselect .ui-autocomplete-multiselect-item {
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 1px 3px;
+  margin-right: 2px;
+  margin-bottom: 3px;
+  color: #333;
+  background-color: #f6f6f6;
+}
+
+.ui-autocomplete-multiselect input {
+  display: inline-block;
+  border: none;
+  outline: none;
+  height: auto;
+  margin: 2px;
+  overflow: visible;
+  margin-bottom: 5px;
+  text-align: left;
+  width: 100% !important;
+}
+
+.ui-autocomplete-multiselect.ui-state-active {
+  outline: none;
+  border: 1px solid #7ea4c7;
+  -moz-box-shadow: 0 0 5px rgba(50,150,255,0.5);
+  -webkit-box-shadow: 0 0 5px rgba(50,150,255,0.5);
+  -khtml-box-shadow: 0 0 5px rgba(50,150,255,0.5);
+  box-shadow: 0 0 5px rgba(50,150,255,0.5);
+}
+
+.ui-autocomplete {
+  border-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  position: absolute;
+  top: 0;
+  cursor: default;
+}
 #loggedAs {
   float: right !important;
   margin-top: 16px;
@@ -182,12 +240,18 @@ h2{
   height: auto;
 }
 
+.linkStammdaten{
+  width: 26px;
+  height: auto;
+  margin-bottom: -5px;
+}
+
 .warn, .error{
   margin-bottom: -7px;
 }
 
 select{
-  width: 100%;
+  width: 82%;
   height: 30px;
 }
 
@@ -425,10 +489,13 @@ color: white;
   width: 3vw;
 }
 
+.ui-menu{
+  margin-left: 25px;
+}
+
 .ui-menu-item .ui-menu-item-wrapper.ui-state-active {
-  background: #0096c7 !important;
+  background: #c5c5c5 !important;
   font-weight: bold !important;
-  color: #ffffff !important;
 } 
 
 .ui-menu-item div{
@@ -517,6 +584,36 @@ color: white;
 
 .PopUp_topBar span:hover {
   cursor: pointer;
+}
+
+#keyDiv{
+  margin-top: 35px;
+  width: 200px;
+  height: 75px;
+  overflow-x: scroll;
+  word-wrap: break-word; 
+}
+
+#keywords{
+  border-bottom: 1px solid rgb(0, 60, 121) !important;
+  border-radius: 0 !important;
+  margin-bottom: 5px;
+}
+
+.Tags{
+  position: relative !important;
+  margin: 4px !important;
+  padding: 6px !important;
+  color: black !important;
+  line-height: 30px;
+  border-radius: 5px;
+  background-color: rgba(11, 158, 255, 0.87);
+  white-space: nowrap
+}
+
+.Tags:hover{
+  cursor: pointer;
+  background-color: rgba(255, 52, 52, 0.411);
 }
 
 .PopUp_middle input {

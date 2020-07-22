@@ -1,21 +1,37 @@
-var mysql = require("mysql");
+var mysql = require("mysql2");
 var ldap = require("ldapjs");
 var functions = require("./functions.js");
+var config = require('config');
+var fs = require('fs');
 
-var con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "inventur",
-});
+var con = mysql.createConnection(config.get('dbConfig'));
 
-var client = ldap.createClient({
-  url: "ldap://bbw-azubi.local", //domain
-});
+var client = ldap.createClient({ url: config.get('ldap.url') });
+
 client.on("error", function (err) {
   console.warn(
     "LDAP connection failed, but fear not, it will reconnect OK",
     err
+  );
+});
+
+fs.readFile('./config/schema.sql', 'utf8', function (err, data) {
+  data = data.replace(/\r|\n/g, ' ');
+  data2 = "CREATE DATABASE IF NOT EXISTS `inventur` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;USE `inventur`;";
+
+  console.log(data);
+  console.log(typeof data);
+  console.log("--------");
+  console.log(data2);
+  console.log(typeof data2);
+  con.query(data, function (err, result) {
+    //send results
+    if (err) {
+      console.log(err);
+    }
+    console.log(result);
+    var con = mysql.createConnection(config.get('dbConfig'));
+  }
   );
 });
 
@@ -159,10 +175,49 @@ module.exports = function (app) {
     }
   });
 
-  app.get("/stammdaten/:value", async (req, res) => {
+  app.get("/stammdaten/:table", async (req, res) => {
     try {
-      var results = await functions.getStammdaten(req.params.value);
-      res.render("stammdaten", { result: results, session: req.session });
+      switch (req.params.table) {
+        case "ort":
+          var results = await functions.getOrt();
+          break;
+        case "kategorie":
+          var results = await functions.getKategorie();
+          break;
+        case "keywords":
+          var results = await functions.getKeywords();
+          break;
+        default:
+          var results = "Nothing found ¯\\_(ツ)_/¯";
+          break;
+
+      }
+      res.send(results);
+    } catch (e) {
+      res.status(404).send("404 Not Found");
+      console.log(e);
+    }
+
+  });
+
+  app.get("/stammdaten/:table/:name", async (req, res) => {
+    try {
+      switch (req.params.table) {
+        case "ort":
+          var results = await functions.getOrt();
+          break;
+        case "kategorie":
+
+          break;
+        case "keywords":
+          var results = await functions.getKeywordsByName(req.params.name);
+          break;
+        default:
+          var results = "Nothing found ¯\\_(ツ)_/¯";
+          break;
+
+      }
+      res.send(results);
     } catch (e) {
       res.status(404).send("404 Not Found");
       console.log(e);
@@ -181,10 +236,10 @@ module.exports = function (app) {
     res.send("Entry Created");
   });
 
-  app.delete("/stammdaten/:table/:id", async (req, res) => {
+  app.delete("/stammdaten/:table/:name", async (req, res) => {
     console.log(req.params.table);
-    console.log(req.params.id);
-    var results = await functions.deleteStammdaten(req.params.table, req.params.id);
+    console.log(req.params.name);
+    var results = await functions.deleteStammdaten(req.params.table, req.params.name);
     res.send(results);
   });
 
@@ -200,7 +255,7 @@ module.exports = function (app) {
       table = "artikelliste";
     }
 
-    var sql = `SELECT DISTINCT ${title} FROM ${table}`; //get all locations from artikelliste
+    var sql = `SELECT DISTINCT ${title} FROM ${table}`;
 
     con.query(sql, function (err, result) {
       if (err) {
@@ -223,8 +278,13 @@ module.exports = function (app) {
   });
 
   app.get("/logs", async (req, res) => {
-    var logs = await functions.getLog();
-    res.render("logs", { result: logs, session: req.session });
+    if (req.session.loggedin) {
+      var logs = await functions.getLog();
+      res.render("logs", { result: logs, session: req.session });
+    } else {
+      res.redirect("/"); //redirect to home
+    }
+
   });
 
   app.get("/logs/:artikelnummer", async (req, res) => {
@@ -254,49 +314,35 @@ module.exports = function (app) {
     //create entry in db
 
     var username = req.session.username;
-    var sql =
-      "INSERT INTO artikel (name, category, keywords) VALUES ('" +
-      req.body.name +
-      "', '" +
-      req.body.category +
-      "', '" +
-      req.body.keywords +
-      "')";
-    con.query(sql, async (err, result) => {
-      //create item in 'artikel' list
-      if (err) {
-        res.status(500).send("Internal Server Error");
-      } else {
-        console.log("1 article inserted");
+    var fulldate = functions.getDate(); //get time/date
+    var time = functions.getTime();
 
-        var fulldate = functions.getDate(); //get time/date
-        var time = functions.getTime();
+    try {
+      // const createItem = await functions.createItem(req.body.name, req.body.category, req.body.keywords);
+      // const item = await functions.getItemByName(req.body.name);
+      // const create = await functions.createEntry(
+      //   item.id,
+      //   req.body.number,
+      //   req.body.minimum_number,
+      //   req.body.location,
+      //   username,
+      //   username,
+      //   fulldate,
+      //   time
+      // );
 
-        try {
-          const item = await functions.getItemByName(req.body.name);
-          const create = await functions.createEntry(
-            item.id,
-            req.body.number,
-            req.body.minimum_number,
-            req.body.location,
-            username,
-            username,
-            fulldate,
-            time
-          );
-
-          var x = await functions.getLatestEntry();
-          var log = await functions.log(x.id, "create");
-          res.send("Entry Created");
-        } catch (err) {
-          console.log(err);
-          console.log("entry error");
-          res.status(500).send("Internal Server Error");
-        }
-      }
-    });
+      var x = await functions.getLatestEntry();
+      var keywordnum = await functions.incrementKeywordNumber(req.body.keywords);
+      //var log = await functions.log(x.id, "create");
+      res.send("Entry Created");
+    } catch (err) {
+      console.log(err);
+      console.log("entry error");
+      res.status(500).send("Internal Server Error");
+    }
 
   });
+
 
   app.patch("/entry", async (req, res) => {
     console.log("patch");
@@ -307,49 +353,12 @@ module.exports = function (app) {
       var fulldate = functions.getDate(); //get time/date
       var time = functions.getTime();
 
-      //update item in 'artikel'
-      var sqlArtikel =
-        "UPDATE artikel SET name = '" +
-        req.body.name +
-        "', category = '" +
-        req.body.category +
-        "', keywords = '" +
-        req.body.keywords +
-        "' WHERE id= '" +
-        entry.artikelid +
-        "'";
+      const updateItem = await functions.updateItem(req.body.name, req.body.category_update, req.body.keywords, entry.artikelid);
 
-      con.query(sqlArtikel, function (err, result) {
-        if (err) {
-          res.status(500).send("Internal Server Error");
-        }
-        console.log("1 artikel updated");
-      });
-
+      const updateEntry = await functions.updateEntry(req.body.number, req.body.minimum_number, req.body.location_update, req.session.username, req.body.id);
       //update item in 'artikelliste'
-      var sqlArtikelliste =
-        "UPDATE artikelliste SET number = '" +
-        req.body.number +
-        "', minimum_number = '" +
-        req.body.minimum_number +
-        "', change_by = '" +
-        req.session.username +
-        "', date = '" +
-        fulldate +
-        "', time = '" +
-        time +
-        "', deleted = '0'" +
-        " WHERE id = '" +
-        req.body.id +
-        "'";
-      con.query(sqlArtikelliste, async (err, result) => {
-        if (err) {
-          res.status(500).send("Internal Server Error");
-        }
-        console.log("1 entry updated");
-        var log = await functions.log(req.body.id, "change");
+      var log = await functions.log(req.body.id, "change");
 
-      });
       res.send("updated");
     } catch (e) {
       res.status(404).send(e);

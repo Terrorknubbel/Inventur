@@ -148,20 +148,15 @@ function getLatestEntry() {
     });
 }
 
-function createItem() {
+function createItem(name, category, keywords) {
     console.log("create Entry function");
     return new Promise((resolve, reject) => {
         con.query(
-            "INSERT INTO artikelliste (artikelid, number, minimum_number, location, creator, change_by, date, time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO artikel (name, category, keywords) VALUES (?, ?, ?)",
             [
-                artikelid,
-                number,
-                minimum_number,
-                location,
-                creator,
-                change_by,
-                date,
-                time,
+                name,
+                category,
+                keywords,
             ],
             function (err, result) {
                 if (err) reject(err);
@@ -224,6 +219,24 @@ async function getStammdaten() {
 
 }
 
+function getKeywordsByName(name) {
+    return new Promise((resolve, reject) => {
+        con.query(
+            `SELECT * FROM keywords WHERE keywords = ?`,
+            [name],
+            function (err, result) {
+                if (err) {
+                    reject(err)
+                    console.log("Cant get keywords");
+                } else {
+                    resolve(result);
+                }
+
+            }
+        );
+    });
+}
+
 function saveStammdaten(table, value) {
     return new Promise((resolve, reject) => {
         console.log(table, value);
@@ -246,14 +259,36 @@ function saveStammdaten(table, value) {
     });
 }
 
+function incrementKeywordNumber(name) {
+    return new Promise((resolve, reject) => {
+        name = name.split(",");
+        for (var i = 0; i < name.length; i++) {
+            con.query("UPDATE keywords SET number = number + 1 WHERE keywords = ?",
+                [name[i].replace(/\s/g, '')],
+                function (err, result) {
+                    if (err) {
+                        reject(err);
+                        console.log(err);
+                        console.log("increment keywordnumber error");
+                    }
+
+                });
+        }
+        resolve("");
+
+
+    });
+}
+
 function deleteStammdaten(table, value) {
     return new Promise((resolve, reject) => {
         console.log(table, value);
         con.query(
-            `DELETE FROM ${table} WHERE id = ${value}`,
+            `DELETE FROM ${table} WHERE keywords = ?`,
+            [value],
             function (err, result) {
                 if (err) {
-                    //reject(err)
+                    reject(err)
                     console.log("---------");
                     console.log("Cant delete Stammdaten");
                     console.log(err);
@@ -395,6 +430,40 @@ function getLogByArtikelnummer(artikelnummer) {
     });
 }
 
+function updateItem(name, category, keywords, artikelId) {
+    return new Promise((resolve, reject) => {
+
+        con.query(`UPDATE artikel SET name = ?, category = ?, keywords = ? WHERE id = ?`,
+            [name, category, keywords, artikelId],
+            function (err, result) {
+                if (err) {
+                    reject(err);
+                    console.log(err);
+                    console.log("update item error");
+                }
+                resolve(result);
+                console.log("1 artikel updated");
+            });
+    });
+}
+
+function updateEntry(number, minimum_number, location_update, username, id) {
+    return new Promise((resolve, reject) => {
+        con.query("UPDATE artikelliste SET number = ?, minimum_number = ?, location = ?, change_by = ?, date = ?, time = ?, deleted = 0 WHERE id = ?",
+            [number, minimum_number, location_update, username, getDate(), getTime(), id],
+            function (err, result) {
+                if (err) {
+                    reject(err);
+                    console.log(err);
+                    console.log("entry update error");
+                }
+                resolve(result);
+                console.log("1 entry updated");
+
+            });
+    });
+}
+
 module.exports = {
     getAll,
     getEntryById,
@@ -413,5 +482,12 @@ module.exports = {
     getAllById,
     getLog,
     getLatestEntry,
-    getLogByArtikelnummer
+    getLogByArtikelnummer,
+    getKategorie,
+    getOrt,
+    getKeywords,
+    updateItem,
+    updateEntry,
+    incrementKeywordNumber,
+    getKeywordsByName
 }

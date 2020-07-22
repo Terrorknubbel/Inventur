@@ -137,10 +137,12 @@ $(document).ready(function () {
 
   $("#table tbody").on("click", "tr", function (e) {
     var that = $(this);
-    select(that, e);
+    selectRows(that, e);
   });
 
-  function select(that, e) {
+
+  //selects row(s)
+  function selectRows(that, e) {
     var thisClass = that.hasClass("selected");
 
     if (e.ctrlKey) {
@@ -154,6 +156,11 @@ $(document).ready(function () {
         that.toggleClass("selected");
       }
     }
+
+    selectHandler();
+  }
+
+  function selectHandler() {
     var rowsSelected = table.rows(".selected").data().length;
     //console.log(rowsSelected);
 
@@ -180,7 +187,6 @@ $(document).ready(function () {
     }
   }
 
-
   $("#table").on("click", ".log", function (e) {
     // console.log("------------------");
     // console.log($(this));
@@ -203,10 +209,15 @@ $(document).ready(function () {
 
   $("#Delete").click(function () {
     var counter = table.rows(".selected").data().length;
+    console.log(counter);
     var artikel = table.rows(".selected").data()[0][1];
     $("#PopUpDelete").show();
     $("#cover").show();
-    $(".PopUpDelete_middle").html(`<span>Sind Sie sicher, dass Sie "${artikel}" löschen möchten?<span>`);
+    if (counter > 1) {
+      $(".PopUpDelete_middle").html(`<span>Sind Sie sicher, dass Sie ${counter} Einträge löschen möchten?<span>`);
+    } else {
+      $(".PopUpDelete_middle").html(`<span>Sind Sie sicher, dass Sie "${artikel}" löschen möchten?<span>`);
+    }
   });
 
   $("#deleteForm").submit(function (event) {

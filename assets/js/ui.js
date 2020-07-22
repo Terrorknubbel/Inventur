@@ -4,6 +4,7 @@ $(function () {
 
   //~~~~Autocomplete~~~~
 
+  //Name autocomplete
   $("#name").autocomplete({
     source: function (request, response) {
       var data = $("#name").val();
@@ -21,25 +22,87 @@ $(function () {
       });
     },
   });
+  //--------
 
-  $("#location").autocomplete({
-    source: function (request, response) {
-      var data = $("#location").val();
-      $.get(`/checkValue/location/${data}`, function (res) {
-        response(res);
-      });
-    },
-    autoFocus: true,
-    delay: 0,
-    focus: function (event, ui) {
-      $(this).on("keyup", function (e) {
-        if (e.which == 9) {
-          $(this).val(ui.item.value);
+  //keywors autocomplete
+  function split(val) {
+    return val.split(/,\s*/);
+  }
+  function extractLast(term) {
+    return split(term).pop();
+  }
+
+  function filterArray(json) {
+    var arr = [];
+    var banned = [];
+    var tags = $(".Tags");
+
+    for (var i = 0; i < json.length; i++) {
+      for (var j = 0; j < tags.length; j++) {
+        var tag = tags[j].innerHTML;
+        if (json[i].keywords == tag.substring(0, tag.length - 4)) {
+          banned.push(json[i].keywords);
         }
-      });
-    },
-  });
+      }
+      arr.push(json[i].keywords);
 
+    }
+
+    for (var i = 0; i < banned.length; i++) {
+      arr = arr.filter(e => e !== banned[i]);
+    }
+
+    return arr;
+  }
+
+  $("#keywords")
+    // don't navigate away from the field on tab when selecting an item
+    .on("keydown", function (event) {
+      if (event.keyCode === $.ui.keyCode.TAB &&
+        $(this).autocomplete("instance").menu.active) {
+        event.preventDefault();
+      }
+    }).autocomplete({
+      minLength: 0,
+      autoFocus: true,
+      source: function (request, response) {
+        // delegate back to autocomplete, but extract the last term
+
+        $.get(`/stammdaten/keywords`, function (res) {
+          response($.ui.autocomplete.filter(
+            filterArray(res), extractLast(request.term)));
+        });
+
+      },
+      focus: function () {
+        // prevent value inserted on focus
+        return false;
+      },
+      select: function (event, ui) {
+
+        console.log(ui.item.value);
+        $.get(`/stammdaten/keywords/${ui.item.value}`, function (res) {
+          $("#keyDiv").append(`<span class="Tags" onclick="close()">${ui.item.value} (${res[0].number})</span>`);
+          $("#keywords").prop("required", false);
+        });
+
+        this.value = "";
+
+        return false;
+      }
+    }).click(function (e) {
+      e.stopPropagation();
+      $(this).autocomplete("search");
+    });
+
+  $("body").on("click", ".Tags", function () {
+    console.log($(this));
+    $(this).remove();
+    if ($(".Tags").length === 0) {
+      $("#keywords").prop("required", true);
+
+    }
+  })
   //~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   $("#name, #location").on("change", function () {
@@ -132,7 +195,6 @@ $(function () {
     });
   });
 
-
   $("#cover, .PopUp_topBar span").click(function () {
     //when grey background or x button is clicked
     $("#PopUp").fadeOut();
@@ -145,6 +207,12 @@ $(function () {
       $(this).val("");
     });
 
-    $("#keywords").val("");
+    $("#number, #minimum_number").parent().find("span").remove();
+    $("#number , #minimum_number").parent().find("br").remove();
+
+    $("#number , #minimum_number").css("border", "none");
+    $("#number , #minimum_number").css("border-bottom", "1px solid rgb(0,60,121");
+
+    $("#keywords , #minimum_number").val("");
   });
 });

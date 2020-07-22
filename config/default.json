@@ -1,0 +1,11 @@
+{
+    "dbConfig": {
+        "host": "localhost",
+        "user": "root",
+        "password": "",
+        "multipleStatements": true
+    },
+    "ldap": {
+        "url": "ldap://bbw-azubi.local"
+    }
+}

@@ -11,7 +11,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&family=Open+Sans+Condensed:wght@300&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
     <link rel="shortcut icon" href="assets/favicon.jpg" />
 
     <title>Document</title>
@@ -76,7 +75,7 @@
                         <%= dbres[i].keywords %>
                     </td>
                     <td>
-                        <img class="log" src="assets/iconfinder_link.svg" alt="">
+                        <img class="log" src="assets/iconfinder_link.svg" alt="" title="Zu den Logs..">
                     </td>
                 </tr>
                 <% } %>
@@ -116,13 +115,18 @@
                         <td>Ort:</td>
                         <td>
                             <!-- <input type="text" id="location" name="location" maxlength="20" required> -->
-                            <select name="location" id="location">
+                            <select name="location" id="location" required
+                                oninvalid="this.setCustomValidity('Wählen Sie bitte einen Ort aus.\n Sie müssen diese vorher in den Stammdaten eintragen')">
                                 <% for(var i=0; i < stammdaten.ort.length; i++){ %>
                                 <option name="<%= stammdaten.ort[i].ort; %>" value="<%= stammdaten.ort[i].ort; %>">
                                     <%= stammdaten.ort[i].ort; %>
                                 </option>
                                 <% } %>
                             </select>
+                            <a href="/stammdaten">
+                                <img class="linkStammdaten" src="assets/iconfinder_link.svg" alt=""
+                                    title="Zu den Stammdaten.." onclick="">
+                            </a>
                         </td>
                     </tr>
                     <tr>
@@ -136,7 +140,7 @@
                         <td>Kategorie:</td>
                         <td>
                             <!-- <input type="text" id="category" name="category" maxlength="20" required> -->
-                            <select name="category" id="category">
+                            <select name="category" id="category" required>
                                 <% for(var i=0; i < stammdaten.kategorie.length; i++){ %>
                                 <option name="<%= stammdaten.kategorie[i].kategorie; %>"
                                     value="<%= stammdaten.kategorie[i].kategorie; %>">
@@ -144,11 +148,21 @@
                                 </option>
                                 <% } %>
                             </select>
+                            <a href="/stammdaten">
+                                <img class="linkStammdaten" src="assets/iconfinder_link.svg" alt=""
+                                    title="Zu den Stammdaten..">
+                            </a>
                         </td>
                         <td></td>
                         <td>Stichwörter:</td>
-                        <td><textarea style="resize: none;" name="keywords" maxlength="100" required id="keywords"
-                                cols="23" rows="4" placeholder="Stichwort1, Stichwort2, ..."></textarea></td>
+                        <td>
+                            <!-- <textarea style="resize: none;" name="keywords" maxlength="100" required id="keywords"
+                                cols="23" rows="4" placeholder="Stichwort1, Stichwort2, ..."></textarea> -->
+                            <div id="keyDiv">
+                                <input type="text" name="" placeholder="" required id="keywords">
+                            </div>
+
+                        </td>
                     </tr>
 
                 </table>
@@ -176,13 +190,17 @@
                         <td>Ort:</td>
                         <td>
                             <!-- <input type="text" id="location_update" maxlength="20" name="location" required> -->
-                            <select name="location_update" id="location_update">
+                            <select name="location_update" id="location_update" required>
                                 <% for(var i=0; i < stammdaten.ort.length; i++){ %>
                                 <option name="<%= stammdaten.ort[i].ort; %>" value="<%= stammdaten.ort[i].ort; %>">
                                     <%= stammdaten.ort[i].ort; %>
                                 </option>
                                 <% } %>
                             </select>
+                            <a href="/stammdaten">
+                                <img class="linkStammdaten" src="assets/iconfinder_link.svg" alt=""
+                                    title="Zu den Stammdaten..">
+                            </a>
                         </td>
                     </tr>
                     <tr>
@@ -203,14 +221,18 @@
                         <td>Kategorie:</td>
                         <td>
                             <!-- <input type="text" id="category_update" name="category" maxlength="20" required> -->
-                            <select name="category_update" id="category_update">
+                            <select name="category_update" id="category_update" required>
                                 <% for(var i=0; i < stammdaten.kategorie.length; i++){ %>
-                                <option name=<%= stammdaten.kategorie[i].kategorie; %>
-                                    value=<%= stammdaten.kategorie[i].kategorie; %>>
+                                <option name="<%= stammdaten.kategorie[i].kategorie; %>"
+                                    value="<%= stammdaten.kategorie[i].kategorie; %>">
                                     <%= stammdaten.kategorie[i].kategorie; %>
                                 </option>
                                 <% } %>
                             </select>
+                            <a href="/stammdaten">
+                                <img class="linkStammdaten" src="assets/iconfinder_link.svg" alt=""
+                                    title="Zu den Stammdaten..">
+                            </a>
                         </td>
                         <td></td>
                         <td>Stichwörter:</td>

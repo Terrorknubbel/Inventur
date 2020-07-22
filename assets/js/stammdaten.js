@@ -1,7 +1,7 @@
 $(".AddRow").click(function () {
     $(this).find("i").toggleClass("fa-chevron-down fa-chevron-up");
     var th = $(this).parent().parent().parent().find("th:eq(1)").html();
-
+    console.log($(this).parent().siblings());
     if ($(this).parent().siblings().length == 0) {
         //console.log($(this));
         $(this).parent().after(`
@@ -47,8 +47,9 @@ function addStamm(x) {
 $(".fa-trash").click(function () {
     let table = $(this).attr('class').split(' ').pop();
     let val = $(this).parent().parent().children().eq(1).html().trim();
-    var id = $(this).parent().siblings().first().html().trim();
-
+    // var id = $(this).parent().siblings().first().html().trim();
+    console.log(table);
+    console.log(val);
     let popUp = `
         <div class="popup">
             <form>
@@ -81,10 +82,9 @@ $(".fa-trash").click(function () {
     })
 
     $(".popup_mid > input:first-of-type").click(function () {
-        //var table = $(this).attr('class').split(' ').pop();
-        //console.log(val);
+        console.log(val);
         $.ajax({
-            url: `/stammdaten/${table}/${id}`,
+            url: `/stammdaten/${table}/${val}`,
             type: "DELETE",
             success: function (result) {
                 location.reload();
