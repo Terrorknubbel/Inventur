@@ -265,6 +265,7 @@ module.exports = function (app) {
         for (var i = 0; i < result.length; i++) {
           var sqlRes = result[i][title].toUpperCase();
           var val = value.toUpperCase();
+
           if (sqlRes.startsWith(val)) {
             //if a location starts with the user input
             autoFillResults.push(result[i][title]); //add location to autoFillResults
@@ -333,7 +334,7 @@ module.exports = function (app) {
 
       var x = await functions.getLatestEntry();
       var keywordnum = await functions.incrementKeywordNumber(req.body.keywords);
-      //var log = await functions.log(x.id, "create");
+      var log = await functions.log(x.id, "create");
       res.send("Entry Created");
     } catch (err) {
       console.log(err);

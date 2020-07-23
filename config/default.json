@@ -6,6 +6,7 @@
         "multipleStatements": true
     },
     "ldap": {
-        "url": "ldap://bbw-azubi.local"
+        "url": "ldap://bbw-azubi.local",
+        "reconnect": true
     }
 }

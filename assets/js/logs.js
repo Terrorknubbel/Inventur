@@ -1,5 +1,4 @@
 $('tr > td:first-child').each(function (i) {
-    console.log($(this).html());
     switch ($(this).html().trim()) {
         case "delete":
             $(this).css("border", "1px solid red");

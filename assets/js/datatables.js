@@ -127,7 +127,10 @@ $(document).ready(function () {
 
   $('#table tbody').on('dblclick', 'tr', function (e) {
     var that = $(this);
-    select(that, e);
+    if (!$(this).hasClass("selected")) {
+      selectRows(that, e);
+    }
+
     if (!e.ctrlKey) {
       $("#Edit").trigger("click");
 

@@ -58,6 +58,8 @@ $(function () {
   $("#keywords")
     // don't navigate away from the field on tab when selecting an item
     .on("keydown keyup change", function (event) {
+      console.log($(this).parent());
+      console.log("trigger");
       if (event.keyCode === $.ui.keyCode.TAB &&
         $(this).autocomplete("instance").menu.active) {
         event.preventDefault();
@@ -84,6 +86,7 @@ $(function () {
         $.get(`/stammdaten/keywords/${ui.item.value}`, function (res) {
           $("#keyDiv").prepend(`<span class="Tags" onclick="close()">${ui.item.value} (${res[0].number})</span>`);
           $('#keyDiv').scrollTop($('#keyDiv')[0].scrollHeight);
+          $("#keywords").css("margin-top", "0");
           $("#keywords").prop("required", false);
         });
 
@@ -92,6 +95,52 @@ $(function () {
         return false;
       }
     }).click(function (e) {
+      console.log("clicked");
+      e.stopPropagation();
+      $(this).autocomplete("search");
+    });
+
+  $("#keywords_update")
+    // don't navigate away from the field on tab when selecting an item
+    .on("keydown keyup change", function (event) {
+      console.log($(this).parent());
+      console.log("trigger");
+      if (event.keyCode === $.ui.keyCode.TAB &&
+        $(this).autocomplete("instance").menu.active) {
+        event.preventDefault();
+      }
+    }).autocomplete({
+      minLength: 0,
+      autoFocus: true,
+      source: function (request, response) {
+        // delegate back to autocomplete, but extract the last term
+
+        $.get(`/stammdaten/keywords`, function (res) {
+          response($.ui.autocomplete.filter(
+            filterArray(res), extractLast(request.term)));
+        });
+
+      },
+      focus: function () {
+        // prevent value inserted on focus
+        return false;
+      },
+      select: function (event, ui) {
+
+        console.log(ui.item.value);
+        $.get(`/stammdaten/keywords/${ui.item.value}`, function (res) {
+          $("#keyDiv_update").prepend(`<span class="Tags" onclick="close()">${ui.item.value} (${res[0].number})</span>`);
+          $('#keyDiv_update').scrollTop($('#keyDiv_update')[0].scrollHeight);
+          $("#keywords_update").css("margin-top", "0");
+          $("#keywords_update").prop("required", false);
+        });
+
+        this.value = "";
+
+        return false;
+      }
+    }).click(function (e) {
+      console.log("clicked");
       e.stopPropagation();
       $(this).autocomplete("search");
     });
@@ -100,7 +149,8 @@ $(function () {
     console.log($(this));
     $(this).remove();
     if ($(".Tags").length === 0) {
-      $("#keywords").prop("required", true);
+      $("#keywords,#keywords_update").prop("required", true);
+      $("#keywords,#keywords_update").css("margin-top", "0px");
 
     }
   })
@@ -128,10 +178,11 @@ $(function () {
           $("#number").val(data[0].number);
           $("#minimum_number").val(data[0].minimum_number);
           $("#category").val(data[0].category);
-          $("#keywords").val(data[0].keywords);
+
+          addKeywordBubbles($("#keyDiv"), $("#keywords"), data[0].keywords);
 
           $("#CreateSubmit").html("Update");
-          $("#createForm").attr("action", "/update");
+          $("#createForm").attr("action", "/entry");
 
           var id = data[0].id;
 
@@ -190,13 +241,29 @@ $(function () {
           $("#number_update").val(data.number);
           $("#minimum_number_update").val(data.minimum_number);
           $("#category_update").val(data.category);
-          console.log("Edit Data: " + data.category);
-          console.log($("#category_update"));
-          $("#keywords_update").val(data.keywords);
+
+          addKeywordBubbles($("#keyDiv_update"), $("#keywords_update"), data.keywords);
+
         });
+
       }
     });
   });
+
+  function addKeywordBubbles(keyDiv, keywordEle, keywords) {
+    keywords = keywords.split(',');
+    for (var i = 0; i < keywords.length; i++) {
+      keywords[i] = keywords[i].trim();
+      console.log(keywords[i]);
+      $.get(`/stammdaten/keywords/${keywords[i]}`, function (res) {
+        console.log(res);
+        $(keyDiv).prepend(`<span class="Tags" onclick="close()">${res[0].keywords} (${res[0].number})</span>`);
+        $(keyDiv).scrollTop($('#keyDiv_update')[0].scrollHeight);
+        $(keywordEle).css("margin-top", "0");
+        $(keywordEle).prop("required", false);
+      });
+    }
+  }
 
   $("#cover, .PopUp_topBar span").click(function () {
     //when grey background or x button is clicked
@@ -205,6 +272,8 @@ $(function () {
     $("#PopUpDelete").fadeOut();
     $("#cover").fadeOut();
     $("#notification").fadeOut();
+
+    $(".Tags").remove();
 
     $("#PopUp input").each(function (i) {
       $(this).val("");
