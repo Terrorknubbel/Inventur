@@ -2,6 +2,7 @@ $(document).ready(function () {
 
   // DataTable
   var table = $("#table").DataTable({
+    "processing": true,
     "rowCallback": function (row, data, index) {
       if (parseInt(data[2]) < parseInt(data[3])) {
         if (parseInt(data[2]) > 0) {
@@ -116,14 +117,51 @@ $(document).ready(function () {
       Löschen
     </button>
     
-    <label for="alert">
-      <span>Nur Reihen mit Warnungen anzeigen</span>
-      <input id="alert" type="checkbox">
+    <label for="OnlyWarnRows">
+    <span>Nur Reihen mit Warnungen anzeigen</span>
+    </label>
+
+    <label for="OnlyWarnRows" class="switch">
+      <input id="OnlyWarnRows" type="checkbox">
+      <span class="slider round"></span>
     </label>
     `
   ).insertBefore("#table");
 
-  //console.log($(".dt-table"));
+  //save all rows with errors in array warnArr
+  var warnArr = [];
+  table.rows().eq(0).each(function (index) {  //loop every row
+    var number = $($('table.dataTable').DataTable().row(index).node()).children().eq(2).text().trim();
+    var minNum = $($('table.dataTable').DataTable().row(index).node()).children().eq(3).text().trim();
+
+    if (parseInt(number) < parseInt(minNum)) {
+      warnArr.push($($('table.dataTable').DataTable().row(index).node()));
+    }
+
+  });
+
+  //search for warn rows
+  $.fn.dataTable.ext.search.push(
+    function (settings, data, dataIndex) {
+      if ($('#OnlyWarnRows').prop('checked')) {
+        console.log(warnArr);
+        for (var i = 0; i < warnArr.length; i++) {
+          if (warnArr[i][0] == $($('table.dataTable').DataTable().row(dataIndex).node())[0]) {
+            return true;
+          }
+        }
+        return false;
+      }
+      return true;
+    }
+  );
+
+  //triggers if user wants to show only rows with errors
+  //refreshes table with search above
+  $('#OnlyWarnRows').on('change', function () {
+    table.draw();
+  });
+
 
   $('#table tbody').on('dblclick', 'tr', function (e) {
     var that = $(this);
