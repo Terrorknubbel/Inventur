@@ -14,4 +14,4 @@ app.get("/entry", entryController.getEntry)
 ```
 :convenience_store:
 ## Todos
-:heart_eyes: :gun:
+:eyes:
