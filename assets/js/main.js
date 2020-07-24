@@ -54,6 +54,7 @@ $(document).ready(function () {
           location.reload(); //reload page when everything is finished
         });
       } else if (post_url === "/entry") {
+        console.log(form_data);
         $.ajax({
           type: 'PATCH',
           url: post_url,

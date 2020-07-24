@@ -193,7 +193,7 @@
                         <td>Ort:</td>
                         <td>
                             <!-- <input type="text" id="location_update" maxlength="20" name="location" required> -->
-                            <select name="location_update" id="location_update" required>
+                            <select name="location" id="location_update" required>
                                 <% for(var i=0; i < stammdaten.ort.length; i++){ %>
                                 <option name="<%= stammdaten.ort[i].ort; %>" value="<%= stammdaten.ort[i].ort; %>">
                                     <%= stammdaten.ort[i].ort; %>
@@ -224,7 +224,7 @@
                         <td>Kategorie:</td>
                         <td>
                             <!-- <input type="text" id="category_update" name="category" maxlength="20" required> -->
-                            <select name="category_update" id="category_update" required>
+                            <select name="category" id="category_update" required>
                                 <% for(var i=0; i < stammdaten.kategorie.length; i++){ %>
                                 <option name="<%= stammdaten.kategorie[i].kategorie; %>"
                                     value="<%= stammdaten.kategorie[i].kategorie; %>">

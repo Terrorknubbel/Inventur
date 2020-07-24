@@ -354,9 +354,9 @@ module.exports = function (app) {
       var fulldate = functions.getDate(); //get time/date
       var time = functions.getTime();
 
-      const updateItem = await functions.updateItem(req.body.name, req.body.category_update, req.body.keywords, entry.artikelid);
+      const updateItem = await functions.updateItem(req.body.name, req.body.category, req.body.keywords, entry.artikelid);
 
-      const updateEntry = await functions.updateEntry(req.body.number, req.body.minimum_number, req.body.location_update, req.session.username, req.body.id);
+      const updateEntry = await functions.updateEntry(req.body.number, req.body.minimum_number, req.body.location, req.session.username, req.body.id);
       //update item in 'artikelliste'
       var log = await functions.log(req.body.id, "change");
 
