@@ -83,7 +83,8 @@ $(document).ready(function () {
 
     $(".Tags").each(function (index) {
       //get Tag without the parenthesized number
-      var tagName = $(this).html().substring(0, $(this).html().length - 4);
+      //var tagName = $(this).html().substring(0, $(this).html().length - 4);
+      var tagName = $(this).data("keyword");
       //create keywordstring
       keywords += tagName + ", ";
     });
