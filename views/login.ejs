@@ -5,6 +5,12 @@
 	<meta charset="utf-8">
 	<title>Inventur Login</title>
 	<style>
+		body{
+			-webkit-user-select: none; /* Safari */
+			-ms-user-select: none; /* IE 10+ and Edge */
+			user-select: none; /* Standard syntax */
+		}
+
 		.login-form {
 			width: 300px;
 			margin: 0 auto;
@@ -37,23 +43,69 @@
 			font-weight: bold;
 			color: #ffffff;
 		}
+
+		label:hover, input[type="checkbox"]{
+			cursor: pointer;
+		}
 	</style>
 </head>
 
 <body>
 	<div class="login-form">
 		<h1>Inventur Login</h1>
-		<form action="auth" method="POST">
-			<input type="text" name="username" placeholder="Username" required>
-			<input type="password" name="password" placeholder="Password" required>
-			<input type="submit">
+		<form action="/auth" method="POST">
+				<label for="RememberMe">Remember Me?</label>
+				<input type="checkbox" id="RememberMe">
+			<input type="text" name="username" id="username" placeholder="Username" required>
+			<input type="password" name="password" id="password" placeholder="Password" required>
+
+		
+			<input type="submit" value="Einloggen">
 			<% if(err == 'FalseCred'){
 				%>
 			<span style="color: red;">Username und/oder Passwort sind nicht korrekt</span>
 			<%
 			}%>
+
+
 		</form>
 	</div>
+
+	<script src="../assets/js/jquery-3.2.1.js"></script>
+	<script>
+		$("#username").val(getCookie("username"));
+		if($("#username").val() != ""){
+			$("#password").focus();
+			$("#RememberMe").prop("checked", true);
+		}else{
+			$("#username").focus();
+		}
+
+		$("form").submit(function (event) {
+			if($('#RememberMe').prop('checked')){
+				document.cookie = `username=${$("#username").val()}`;
+			}else{
+				document.cookie = "username=";
+			}
+			//event.preventDefault(); //prevent default action
+		});
+
+		function getCookie(cname) {
+			var name = cname + "=";
+			var decodedCookie = decodeURIComponent(document.cookie);
+			var ca = decodedCookie.split(';');
+			for(var i = 0; i <ca.length; i++) {
+				var c = ca[i];
+				while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+				}
+				if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+				}
+			}
+			return "";
+		}
+	</script>
 </body>
 
 </html>

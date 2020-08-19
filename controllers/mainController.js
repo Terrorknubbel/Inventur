@@ -1,35 +1,20 @@
 var mysql = require("mysql2");
-var ldap = require("ldapjs");
 var functions = require("./functions.js");
-var config = require('config');
 var fs = require('fs');
+var config = require('config');
 
 var con = mysql.createConnection(config.get('dbConfig'));
 
-var client = ldap.createClient({ url: config.get('ldap.url') });
 
-client.on("error", function (err) {
-  console.warn(
-    "LDAP connection failed, but fear not, it will reconnect OK",
-    err
-  );
-});
-
+//check if required Database exists and creates if not exist
 fs.readFile('./config/schema.sql', 'utf8', function (err, data) {
   data = data.replace(/\r|\n/g, ' ');
   data2 = "CREATE DATABASE IF NOT EXISTS `inventur` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;USE `inventur`;";
 
-  console.log(data);
-  console.log(typeof data);
-  console.log("--------");
-  console.log(data2);
-  console.log(typeof data2);
   con.query(data, function (err, result) {
-    //send results
     if (err) {
       console.log(err);
     }
-    console.log(result);
     var con = mysql.createConnection(config.get('dbConfig'));
   }
   );
@@ -45,7 +30,7 @@ module.exports = function (app) {
       //console.log(stammdaten);
       res.render("index", { dbres: result, stammdaten: stammdaten, session: req.session }); //load index with db data
     } else {
-      res.render("login", { err: req.query.err }); //redirect to login page if not logged in
+      res.render("login", { err: req.query.err}); //redirect to login page if not logged in
     }
   });
 
@@ -62,7 +47,6 @@ module.exports = function (app) {
 
   app.get("/entry", function (req, res) {
     //get entries from db
-
     if (req.session.loggedin) {
       //console.log(req.query);
       var sql = `SELECT
@@ -71,27 +55,7 @@ module.exports = function (app) {
             artikel.keywords,
             artikelliste.*
         FROM artikelliste
-        LEFT JOIN artikel ON artikel.id = artikelliste.artikelid
-        WHERE `;
-
-      Object.keys(req.query).forEach(function (key) {
-        //build WHERE clause with get params
-        key = key.replace(/['"`]+/g, "");
-        req.query[key] = req.query[key].replace(/['"`]+/g, "");
-
-        if (key == "id") {
-          newKey = "artikelliste." + key;
-          sql += `${newKey} = ${req.query[key]} AND `;
-        } else {
-          sql += key + " = '" + req.query[key] + "' AND ";
-        }
-      });
-
-      if (Object.keys(req.query).length === 0) {
-        sql = sql.substring(0, sql.length - 7); //cut 'WHERE'
-      } else {
-        sql = sql.substring(0, sql.length - 5); //cut last 'AND'
-      }
+        LEFT JOIN artikel ON artikel.id = artikelliste.artikelid`;
 
       try {
         con.query(sql, function (err, result) {
@@ -108,21 +72,91 @@ module.exports = function (app) {
     } else {
       res.render("login", { err: req.query.err }); //redirect to login page if not logged in
     }
-
   });
 
-  app.get("/entry/:id", async (req, res) => {
-    try {
-      const result = await functions.getEntryById(req.params.id);
+  app.get("/entry/:value", async (req, res) => {
+    //if (req.session.loggedin) {
+      // try {
+        var value = req.params.value;
+        var num = /\d/.test(value);
+        console.log("num: " + num);
+        if(num){
+          const result = await functions.getEntryById(value);
 
-      res.send(result);
-    } catch (err) {
-      res.status(404).send("Internal Server Error");
+          res.send(result);
+        }else{
+            var sql = `SELECT
+                  artikel.name,
+                  artikel.category,
+                  artikel.keywords,
+                  artikelliste.*
+              FROM artikelliste
+              LEFT JOIN artikel ON artikel.id = artikelliste.artikelid WHERE`;
+            
+             console.log(value.split("&"));
+             var valueArr = value.split("&");
+             for(var i = 0; i++; valueArr.length){
+
+             }
+        }
+          //   Object.keys(req.params.value).forEach(function (key) {
+          //   //build WHERE clause with get params
+          //   key = key.replace(/['"`]+/g, "");
+          //   req.query[key] = req.query[key].replace(/['"`]+/g, "");
+
+          //   if (key == "id") {
+          //     newKey = "artikelliste." + key;
+          //     sql += `${newKey} = ${req.query[key]} AND `;
+          //   } else {
+          //     sql += key + " = '" + req.query[key] + "' AND ";
+          //   }
+          // });
+
+          // if (Object.keys(req.query).length === 0) {
+          //   sql = sql.substring(0, sql.length - 7); //cut 'WHERE'
+          // } else {
+          //   sql = sql.substring(0, sql.length - 5); //cut last 'AND'
+          // }
+        //}
+      // } catch (err) {
+      //   res.status(404).send("Internal Server Error");
+      // }
+    // }else{
+    //   res.render("login", { err: req.query.err }); //redirect to login page if not logged in
+
+    // }
+  });
+
+  app.get("/entry/name/:name", async (req, res) => {
+    if(req.session.loggedin){
+      try {
+        const result = await functions.getEntryByName(req.params.name);
+        res.send(result);
+      } catch (err) {
+        res.status(404).send("Internal Server Error");
+      }
+    }else{
+      res.render("login", { err: req.query.err }); //redirect to login page if not logged in
+
     }
+      // console.log(req.query);
+
   });
 
   app.post("/auth", async (req, res) => {
     //authentication
+    var ldap = require("ldapjs");
+
+    var client = ldap.createClient({ url: config.get('ldap.url') });
+
+
+    client.on("error", function (err) {
+      console.warn(
+        "LDAP connection failed, but fear not, it will reconnect OK",
+        err,
+      );
+    });
+
     var username = req.body.username; //get params
     var password = req.body.password;
 
@@ -225,25 +259,22 @@ module.exports = function (app) {
 
   });
 
+  //create stammdaten entry
   app.post("/stammdaten/:table", async (req, res) => {
-    console.log(req.params.table);
-    console.log(req.body.value);
     if (req.params.table == "Stichwörter") {
-      console.log("changeeeeeeeeeeeeeeeee");
       req.params.table = "keywords";
     }
     var results = await functions.saveStammdaten(req.params.table.toLowerCase(), req.body.value);
     res.send("Entry Created");
   });
 
+  //delete stammdaten entry
   app.delete("/stammdaten/:table/:name", async (req, res) => {
-    console.log(req.params.table);
-    console.log(req.params.name);
     var results = await functions.deleteStammdaten(req.params.table, req.params.name);
     res.send(results);
   });
 
-  app.get("/checkValue/:title/:value", function (req, res) {
+  app.get("/checkValue/:title/:value", async (req, res) => {
 
     var title = req.params.title;
     var value = req.params.value;
@@ -251,31 +282,11 @@ module.exports = function (app) {
 
     if (title == "name") {
       table = "artikel";
-    } else if (title == "location") {
-      table = "artikelliste";
     }
 
-    var sql = `SELECT DISTINCT ${title} FROM ${table}`;
+    var autoFillResults = await functions.autoFill(title, table, value);
 
-    con.query(sql, function (err, result) {
-      if (err) {
-        res.status(404).send("404 Not Found");
-      } else {
-        var autoFillResults = [];
-        for (var i = 0; i < result.length; i++) {
-          var sqlRes = result[i][title].toUpperCase();
-          var val = value.toUpperCase();
-
-          if (sqlRes.startsWith(val)) {
-            //if a location starts with the user input
-            autoFillResults.push(result[i][title]); //add location to autoFillResults
-          }
-        }
-
-        res.send(autoFillResults);
-      }
-
-    });
+    res.send(autoFillResults);
   });
 
   app.get("/logs", async (req, res) => {
@@ -333,7 +344,11 @@ module.exports = function (app) {
       );
 
       var x = await functions.getLatestEntry();
-      var keywordnum = await functions.incrementKeywordNumber(req.body.keywords);
+
+      var locationnum = await functions.incrementStammdatenNumber("ort", req.body.location); 
+      var kategorienum = await functions.incrementStammdatenNumber("kategorie", req.body.category);
+      var keywordnum = await functions.incrementStammdatenNumber("keywords", req.body.keywords);
+
       var log = await functions.log(x.id, "create");
       res.send("Entry Created");
     } catch (err) {
@@ -348,16 +363,28 @@ module.exports = function (app) {
   app.patch("/entry", async (req, res) => {
     console.log("patch");
     console.log(req.body);
+
+
     try {
       const entry = await functions.getEntryById(req.body.id);
-
       var fulldate = functions.getDate(); //get time/date
       var time = functions.getTime();
 
       const updateItem = await functions.updateItem(req.body.name, req.body.category, req.body.keywords, entry.artikelid);
 
       const updateEntry = await functions.updateEntry(req.body.number, req.body.minimum_number, req.body.location, req.session.username, req.body.id);
-      //update item in 'artikelliste'
+
+      //update Stammdaten Number
+      var keyworddenum = await functions.decrementStammdatenNumber("keywords", entry.keywords);
+      var keywordnum = await functions.incrementStammdatenNumber("keywords", req.body.keywords);
+
+      var locationdenum = await functions.decrementStammdatenNumber("ort", entry.location);
+      var locationnum = await functions.incrementStammdatenNumber("ort", req.body.location);
+
+      var categorydenum = await functions.decrementStammdatenNumber("kategorie", entry.category);
+      var categorynum = await functions.incrementStammdatenNumber("kategorie", req.body.category);
+
+      //add change log
       var log = await functions.log(req.body.id, "change");
 
       res.send("updated");

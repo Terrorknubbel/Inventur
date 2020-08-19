@@ -38,7 +38,7 @@ function addStamm(x) {
     console.log("Placeholder: " + placeholder);
     console.log("text: " + text);
     if (text != "") {
-        $.post(`/Stammdaten/${placeholder}`, { value: text }, function (data) {
+        $.post(`/stammdaten/${placeholder}`, { value: text }, function (data) {
             location.reload();
         });
     }
@@ -47,9 +47,31 @@ function addStamm(x) {
 $(".fa-trash").click(function () {
     let table = $(this).attr('class').split(' ').pop();
     let val = $(this).parent().parent().children().eq(1).html().trim();
+    let number = $(this).parent().parent().children().eq(2).html().trim();
+    console.log(number);
     // var id = $(this).parent().siblings().first().html().trim();
     console.log(table);
     console.log(val);
+
+    let popUpMid = ``;
+
+    if(number == 0){
+        popUpMid = `
+        <span>Sicher, dass Sie "${val}" <b><u>unwiderruflich</u></b></span>
+        <br>
+        <span>von den Stammdaten löschen wollen?</span>
+        <br>
+        <input type="button" value="Löschen" />
+        <input type="button" value="Abbrechen" />
+        `;
+    }else{
+        popUpMid = `
+        "${val}" Wird aktuell von ${number} Artikeln genutzt <br> und kann daher nicht gelöscht werden.
+        <br>
+        <input type="button" value="Abbrechen" />
+        `;
+    }
+
     let popUp = `
         <div class="popup">
             <form>
@@ -58,15 +80,9 @@ $(".fa-trash").click(function () {
                 <span>x</span>
             </div>
             <div class="popup_mid">
-                Sicher, dass Sie "${val}" <b><u>unwiderruflich</u></b> löschen wollen?
-                <br>
-                <input type="button" value="Löschen" />
-                <input type="button" value="Abbrechen" />
+            `+popUpMid+`
             </div>
-            <div class="popup_foot">
-            
-                
-            </div>
+            <div class="popup_foot"></div>
             </form>
         </div>
     `;
@@ -76,12 +92,12 @@ $(".fa-trash").click(function () {
     console.log($(popUp));
     $(".container").prepend($(cover + popUp).hide().fadeIn());
 
-    $(".cover, .popup_top > span, .popup_mid > input:nth-of-type(2").click(function () {
+    $(".cover, .popup_top > span, .popup_mid > input[value='Abbrechen']").click(function () {
         $(".cover").remove();
         $(".popup").remove();
     })
 
-    $(".popup_mid > input:first-of-type").click(function () {
+    $(".popup_mid > input[value='Löschen']").click(function () {
         console.log(val);
         $.ajax({
             url: `/stammdaten/${table}/${val}`,

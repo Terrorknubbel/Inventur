@@ -49,7 +49,7 @@ $(document).ready(function () {
     stateSave: true,
     language: {
       "url": "/assets/js/German.json",
-      "searchPlaceholder": "Search..."
+      "searchPlaceholder": "Suchen..."
     },
     "oLanguage": { "sSearch": "" }
 
@@ -66,7 +66,8 @@ $(document).ready(function () {
   var logsTable = $('#logsTable').DataTable({
     "ordering": false,
     language: {
-      "url": "/assets/js/German.json"
+      "url": "/assets/js/German.json",
+      "searchPlaceholder": "Suchen..."
     },
   });
 
@@ -78,7 +79,8 @@ $(document).ready(function () {
       { "width": "1%", "targets": 3, "orderable": false }
     ],
     language: {
-      "url": "/assets/js/German.json"
+      "url": "/assets/js/German.json",
+      "searchPlaceholder": "Suchen..."
     },
   });
 
@@ -90,7 +92,8 @@ $(document).ready(function () {
       { "width": "1%", "targets": 3, "orderable": false }
     ],
     language: {
-      "url": "/assets/js/German.json"
+      "url": "/assets/js/German.json",
+      "searchPlaceholder": "Suchen..."
     },
   });
   var keywordsTable = $('#keywordsTable').DataTable({
@@ -101,7 +104,8 @@ $(document).ready(function () {
       { "width": "1%", "targets": 3, "orderable": false }
     ],
     language: {
-      "url": "/assets/js/German.json"
+      "url": "/assets/js/German.json",
+      "searchPlaceholder": "Suchen..."
     },
   });
 
@@ -260,6 +264,15 @@ $(document).ready(function () {
     } else {
       $(".PopUpDelete_middle").html(`<span>Sind Sie sicher, dass Sie "${artikel}" löschen möchten?<span>`);
     }
+    
+    $(document).keypress(function(event){
+
+      var keycode = (event.keyCode ? event.keyCode : event.which);
+      if(keycode == '13'){
+        $("#deleteForm").submit();
+      }
+    
+    });
   });
 
   $("#deleteForm").submit(function (event) {

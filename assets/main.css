@@ -103,6 +103,14 @@ h2{
   word-break: break-all;
 }
 
+table{
+  border: 1px solid #0000004f !important;
+}
+
+input[type="search"]{
+  border: 1px solid #0000004f !important;
+}
+
 #logsTable > tbody > tr > td {
   word-break: break-all;
 }
@@ -300,16 +308,16 @@ button:hover:disabled {
   padding: 5px;
 }
 
-#dataTbody tr:nth-child(even) {
-  background-color: rgba(240, 239, 239, 0.4);
+.dataTbody tr:nth-child(even) {
+  background-color: #bfbfbf4f;
 }
 
-#dataTbody tr:hover {
-  background-color: rgba(211, 211, 211, 0.5);
+.dataTbody tr:hover {
+  background-color: rgba(0, 149, 199, 0.363);
 }
 
-#dataTbody tr.selected {
-  background-color: rgb(211, 211, 211);
+.dataTbody tr.selected {
+  background-color: rgba(0, 149, 199, 0.452);
 }
 
 thead input {
@@ -371,7 +379,7 @@ thead input {
   left: 0;
   top: 0;
   z-index: 1;
-  background-color: rgba(0, 0, 0, 0.356);
+  background-color: rgba(0, 0, 0, 0.5);
   display: none;
 }
 
@@ -392,8 +400,9 @@ thead input {
   width: 40%;
   min-width: 650px;
   position: absolute;
-  margin-left: 30%;
-  bottom: 40%;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
   border-radius: 10px;
   text-align: center;
   z-index: 2;
@@ -403,13 +412,15 @@ thead input {
 }
 
 .popup{
-  position: fixed;
+  position: absolute;
   padding: 0 !important;
   border-radius: 10px;
-  width: auto;
+  width: 35%;
+  min-width: 600px;
   height: 200px;
-  margin-left: calc(50% - 250px);
-  margin-top: 10%;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
   background-color: white;
   z-index: 2;
   text-align: center;
@@ -433,13 +444,13 @@ color: white;
 .popup_top span {
   float: right;
   background-color: black;
-  border: 2px solid white;
+  border: 1px solid white;
   box-sizing: border-box;
   color: white;
   font-weight: bold;
   border-radius: 50%;
-  padding: 2.5px 10px 5px 10px;
-  margin-top: -20px;
+  padding: 2.5px 9px 5px 10px;
+  margin-top: -15px;
   margin-right: -10px;
 }
 
@@ -448,11 +459,8 @@ color: white;
 }
 
 .popup_mid{
-  height: 67.5%;
-  padding-top: 7.5%;
-  word-break: keep-all;
-  white-space: nowrap;
-
+  height: 70%;
+  padding-top: 5%;
   padding-left: 20px;
   padding-right: 20px;
 }
@@ -470,7 +478,7 @@ color: white;
   border: none;
   padding: 5px;
   border-radius: 5px;
-  margin-top: 5%;
+  margin-top: 3%;
   margin-left: 1.25%;
   margin-right: 1.25%;
 }
@@ -532,6 +540,10 @@ color: white;
   transition: .4s;
 }
 
+/* .Stamm_div{
+  background-color: #dadada;
+} */
+
 label:hover{
   cursor: pointer;
 }
@@ -578,6 +590,27 @@ input:checked + .slider:before {
 
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 8px !important;
+  cursor: pointer !important;
+
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent !important; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(72, 136, 255) !important; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(102, 168, 255) !important; 
+}
 
 .ui-helper-hidden-accessible {
   display: none;
@@ -588,8 +621,9 @@ input:checked + .slider:before {
   width: 40%;
   min-width: 500px;
   position: absolute;
-  margin-left: 30%;
-  bottom: 50%;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
   border-radius: 10px;
   z-index: 2;
   background-color: white;
@@ -647,7 +681,7 @@ input:checked + .slider:before {
   color: white;
   font-weight: bold;
   border-radius: 50%;
-  padding: 2.5px 10px 5px 10px;
+  padding: 2.5px 9px 5px 10px;
   margin-top: -20px;
   margin-right: -10px;
 }
@@ -659,17 +693,18 @@ input:checked + .slider:before {
 #keyDiv, #keyDiv_update{
   /* margin-top: 35px; */
   float: left;
-  width: 180px;
+  width: 178px;
   max-height: 75px;
-  overflow-x: scroll;
+  overflow-x: hidden;
+  overflow-y: scroll;
   word-wrap: break-word; 
-  background-color: white;
 }
 
 #keywords, #keywords_update{
   border-bottom: 1px solid rgb(0, 60, 121) !important;
   border-radius: 0 !important;
   margin-bottom: 5px;
+  padding: 5px;
 }
 
 .Tags{
@@ -699,6 +734,11 @@ input:checked + .slider:before {
 
 .PopUp_middle{
   height: 80%;
+  padding-bottom: 5px;
+}
+
+.PopUp_middle table{
+  border: none !important;
 }
 
 .PopUp_middle input:focus {
@@ -708,14 +748,6 @@ input:checked + .slider:before {
 
 .PopUp_middle td {
   text-align: left;
-}
-
-#keywords, #keywords_update {
-  padding: 5px;
-  border-radius: 5px;
-  border: none;
-  background-color: #e9e6e6;
-  color: black;
 }
 
 #keywords::placeholder, #keywords_update::placeholder {

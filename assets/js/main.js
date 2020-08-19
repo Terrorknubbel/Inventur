@@ -5,25 +5,6 @@ $(document).ready(function () {
     });
   });
 
-  //Number input fields in Create PopUp
-  $("#number, #minimum_number").on("keyup", function () {
-
-    //Remove Error Messages
-    $(this).parent().find("span").remove();
-    $(this).parent().find("br").remove();
-
-    //Remove Error Border
-    $(this).css("border", "none");
-    $(this).css("border-bottom", "1px solid rgb(0,60,121");
-
-    //If the input is not a number
-    if (!/^\d+$/.test($(this).val())) {
-      $(this).parent().append("<br><span>Bitte geben Sie hier nur Zahlen ein.</span>"); //Error message
-      $(this).css("border", "1px solid red"); //Error Border
-    }
-
-  })
-
   $("#createForm").submit(function (event) {
     event.preventDefault(); //prevent default action
 
@@ -35,7 +16,9 @@ $(document).ready(function () {
 
     $(".Tags").each(function (index) {
       //get Tag without the parenthesized number
-      var tagName = $(this).html().substring(0, $(this).html().length - 4);
+      //var tagName = $(this).html().substring(0, $(this).html().length - 4);
+      var tagName = $(this).data("keyword");
+      console.log("tagName: " + tagName);
       //create keywordstring
       keywords += tagName + ", ";
     });
@@ -48,27 +31,43 @@ $(document).ready(function () {
     var tagLength = $(".Tags").length;
 
     if (isnum && isminnum && tagLength > 0) {
+      
       if (post_url === "/create") {
         $.post(post_url, form_data, function (response) {
           //post data to server after submit
           location.reload(); //reload page when everything is finished
         });
-      } else if (post_url === "/entry") {
-        console.log(form_data);
-        $.ajax({
-          type: 'PATCH',
-          url: post_url,
-          data: form_data,
-          processData: false,
-          contentType: 'application/x-www-form-urlencoded',
-          success: function () {
-            location.reload();
-          }
-        });
+      // } else if (post_url === "/entry") {
+      //   console.log(form_data);
+      //   $.ajax({
+      //     type: 'PATCH',
+      //     url: post_url,
+      //     data: form_data,
+      //     processData: false,
+      //     contentType: 'application/x-www-form-urlencoded',
+      //     success: function () {
+      //       location.reload();
+      //     }
+      //   });
 
-      }
+       }
     };
+
+    if(tagLength == 0){
+      console.log("tag length 0");
+      document.getElementById("keywords").setCustomValidity('Bitte wählen Sie mindestens 1 Stichwort aus den Stammdaten aus.');
+      document.getElementById("createForm").reportValidity();
+      $("#keywords").attr("required", "true");
+    }
   });
+
+  $("#keywords").on("change", function(event){
+    $(this)[0].setCustomValidity('');
+  })
+
+  $("#keywords_update").on("change", function(event){
+    $(this)[0].setCustomValidity('');
+  })
 
   $("#updateForm").submit(function (event) {
     event.preventDefault(); //prevent default action
@@ -88,13 +87,20 @@ $(document).ready(function () {
       //create keywordstring
       keywords += tagName + ", ";
     });
+    console.log("keywords: " + keywords);
+    if(keywords.length == 0){
+      console.log("tag length 0");
+      document.getElementById("keywords_update").setCustomValidity('Bitte wählen Sie mindestens 1 Stichwort aus den Stammdaten aus.');
+      document.getElementById("updateForm").reportValidity();
+      $("#keywords_update").attr("required", "true");
+    }
 
     //add keywordstring to formdata (without the last comma)
     form_data += "&keywords=" + keywords.substring(0, keywords.length - 2);
 
     var isnum = /^\d+$/.test($("#number_update").val()); //check if the inputs are valid
     var isminnum = /^\d+$/.test($("#minimum_number_update").val());
-    if (isnum && isminnum) {
+    if (isnum && isminnum && keywords.length != 0) {
 
       $.ajax({
         type: 'PATCH',
@@ -107,35 +113,7 @@ $(document).ready(function () {
         }
         /* success and error handling omitted for brevity */
       });
-    } else if (!isnum) {
-      $("#NumberError").remove();
-      $("#number_update").parent().find("br").remove();
-
-      $("#number_update")
-        .parent()
-        .append(
-          "<br><span id='NumberError'>Bitte geben Sie hier nur Zahlen ein.</span>"
-        ); //Error message if ther are invalid inputs
-      $("#number_update").css("border", "1px solid red");
-
-      $("#minimum_number_update").css("border", "none");
-      $("#minimum_number_update").css("border-bottom", "1px solid rgb(0, 60, 121)");
-
-    } else if (!isminnum) {
-      $("#NumberError").remove();
-      $("#minimum_number_update").parent().find("br").remove();
-
-      $("#minimum_number_update")
-        .parent()
-        .append(
-          "<br><span id='NumberError'>Bitte geben Sie hier nur Zahlen ein.</span>"
-        ); //Error message if ther are invalid inputs
-      $("#minimum_number_update").css("border", "1px solid red");
-
-      $("#number_update").css("border", "none");
-      $("#number_update").css("border-bottom", "1px solid rgb(0, 60, 121)");
-
-    }
+    } 
   });
 
   $(".numberButton").click(function (e) {

@@ -22,8 +22,8 @@
     <h1><u>Stammdaten</u></h1>
 
     <div class="container">
-        <div>
-            <from>
+        <div class="Stamm_div">
+            <form>
                 <table id="ortTable" class="ui celled table display" style="width:100%">
                     <h2>Ort</h2>
                     <thead>
@@ -34,7 +34,7 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody id="dataTbody">
+                    <tbody class="dataTbody">
                         <% for(var i=0; i < result.ort.length; i++){ %>
                         <tr>
                             <td style="display:none">
@@ -61,9 +61,9 @@
                     </tfoot>
 
                 </table>
-            </from>
+            </form>
         </div>
-        <div>
+        <div class="Stamm_div">
             <form>
                 <table id="kategorieTable" class="ui celled table display" style="width:100%">
                     <h2>Kategorie</h2>
@@ -75,7 +75,7 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody id="dataTbody">
+                    <tbody class="dataTbody">
                         <% for(var i=0; i < result.kategorie.length; i++){ %>
                         <tr>
                             <td style="display:none">
@@ -103,7 +103,7 @@
                 </table>
             </form>
         </div>
-        <div>
+        <div class="Stamm_div">
             <form>
                 <table id="keywordsTable" class="ui celled table display" style="width:100%">
                     <h2>Stichwort</h2>
@@ -115,7 +115,7 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody id="dataTbody">
+                    <tbody class="dataTbody">
                         <% for(var i=0; i < result.keywords.length; i++){ %>
                         <tr>
                             <td style="display:none">

@@ -3,7 +3,6 @@ var app = express();
 var bodyParser = require('body-parser');
 var session = require('express-session');
 
-
 var controller = require('./controllers/mainController');
 
 app.set('view engine', 'ejs');

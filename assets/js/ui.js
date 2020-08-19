@@ -84,7 +84,7 @@ $(function () {
 
         console.log(ui.item.value);
         $.get(`/stammdaten/keywords/${ui.item.value}`, function (res) {
-          $("#keyDiv").prepend(`<span class="Tags" onclick="close()">${ui.item.value} (${res[0].number})</span>`);
+          $("#keyDiv").prepend(`<span class="Tags" data-keyword="${ui.item.value}" onclick="close()">${ui.item.value} (${res[0].number})</span>`);
           $('#keyDiv').scrollTop($('#keyDiv')[0].scrollHeight);
           $("#keywords").css("margin-top", "0");
           $("#keywords").prop("required", false);
@@ -129,7 +129,7 @@ $(function () {
 
         console.log(ui.item.value);
         $.get(`/stammdaten/keywords/${ui.item.value}`, function (res) {
-          $("#keyDiv_update").prepend(`<span class="Tags" onclick="close()">${ui.item.value} (${res[0].number})</span>`);
+          $("#keyDiv_update").prepend(`<span class="Tags" data-keyword="${ui.item.value}" onclick="close()">${ui.item.value} (${res[0].number})</span>`);
           $('#keyDiv_update').scrollTop($('#keyDiv_update')[0].scrollHeight);
           $("#keywords_update").css("margin-top", "0");
           $("#keywords_update").prop("required", false);
@@ -158,69 +158,93 @@ $(function () {
 
   //check if new Item already exists
   //Need to be updated!
-  $("#name, #location").on("change", function () {
+  $("#name").on("change, keyup", function () {
     var artikel = $("#name").val();
-    var ort = $("#location").val();
-    console.log(artikel, ort);
-    if (artikel !== "" && ort !== "") {
-      $.get("entry", { name: artikel, location: ort }, function (data) {
-        console.log(data[0]);
-        if (data[0]) {
+    console.log(artikel);
+    if (artikel !== "") {
+      $.get(`entry/name/${artikel}`, function (data) {
+        console.log(data);
+        if (data) {
           if (!$("#notification").length) {
             $("#name")
               .parent()
               .append(
-                "<br id='notificationBreak'><span id='notification'>Dieser Artikel extistiert schon an diesem Ort. Sie können ihn nun anpassen</span>"
+                "<br id='notificationBreak'><span id='notification'>Dieser Artikel extistiert bereits</span>"
               );
           }
           $(".ui-autocomplete").css("z-index", "0");
-
-          $("#number").val(data[0].number);
-          $("#minimum_number").val(data[0].minimum_number);
-          $("#category").val(data[0].category);
-
-          addKeywordBubbles($("#keyDiv"), $("#keywords"), data[0].keywords);
-
-          $("#CreateSubmit").html("Update");
-          $("#createForm").attr("action", "/entry");
-
-          var id = data[0].id;
-
-          $(
-            '<input type="text" style="display:none" class="id" name="id" value="' +
-            id +
-            '"/>'
-          ).insertAfter("#number");
-          if ($(".id").length > 1) {
-            for (let i = 1; i < $(".id").length; i++) {
-              $(".id")[i].remove();
-            }
-          }
-
-          console.log("id: " + id);
-        } else {
-          console.log("else");
-          $("#notification").remove();
+          $("#CreateSubmit").prop( "disabled", true );
+        }else{
           $("#notificationBreak").remove();
-          $(".ui-autocomplete").css("z-index", "100");
-          $("#CreateSubmit").html("Create");
-          $("#createForm").attr("action", "/create");
-
-          $("#number").val("");
-          $("#minimum_number").val("");
-          $("#category").val($("#category option:first").val());
-          $("#keywords").val("");
+          $("#notification").remove();
+          $("#CreateSubmit").prop( "disabled", false );
 
         }
+        //   $("#number").val(data[0].number);
+        //   $("#minimum_number").val(data[0].minimum_number);
+        //   $("#category").val(data[0].category);
+
+        //   addKeywordBubbles($("#keyDiv"), $("#keywords"), data[0].keywords);
+
+        //   $("#CreateSubmit").html("Update");
+        //   $("#createForm").attr("action", "/entry");
+
+        //   var id = data[0].id;
+
+        //   $(
+        //     '<input type="text" style="display:none" class="id" name="id" value="' +
+        //     id +
+        //     '"/>'
+        //   ).insertAfter("#number");
+        //   if ($(".id").length > 1) {
+        //     for (let i = 1; i < $(".id").length; i++) {
+        //       $(".id")[i].remove();
+        //     }
+        //   }
+
+        //   console.log("id: " + id);
+        // } else {
+        //   console.log("else");
+        //   $("#notification").remove();
+        //   $("#notificationBreak").remove();
+        //   $(".ui-autocomplete").css("z-index", "100");
+        //   $("#CreateSubmit").html("Create");
+        //   $("#createForm").attr("action", "/create");
+
+        //   $("#number").val("");
+        //   $("#minimum_number").val("");
+        //   $("#category").val($("#category option:first").val());
+        //   $("#keywords").val("");
+
+        // }
       });
     }
   });
 
+  //Number input fields in Create PopUp
+  $("#number, #number_update, #minimum_number, #minimum_number_update").on("keyup", function () {
+    console.log($(this).val().length);
+    //Remove Error Messages
+    $(this).parent().find(".ErrBr").remove();
+    $(this).parent().find(".ErrMsg").remove();
+  
 
+    //Remove Error Border
+    $(this).css("border", "none");
+    $(this).css("border-bottom", "1px solid rgb(0,60,121");
+
+    //If the input is not a number
+    if (!/^\d+$/.test($(this).val()) && $(this).val().length != 0) {
+      $(this).parent().append("<br class='ErrBr'><span class='ErrMsg'>Bitte geben Sie hier nur Zahlen ein.</span>"); //Error message
+      $(this).css("border", "1px solid red"); //Error Border
+    }
+
+  })
   $("#New").click(function () {
     //var NewPopUp = createPopUp();
     //$('body').append(NewPopUp);
     $("#PopUp").fadeIn();
+    $("#name").focus();
     $("#cover").fadeIn();
   });
 
@@ -257,10 +281,14 @@ $(function () {
       console.log(keywords[i]);
       $.get(`/stammdaten/keywords/${keywords[i]}`, function (res) {
         console.log(res);
-        $(keyDiv).prepend(`<span class="Tags" onclick="close()">${res[0].keywords} (${res[0].number})</span>`);
+        $(keyDiv).prepend(`<span class="Tags" data-keyword="test" onclick="close()">${res[0].keywords} (${res[0].number})</span>`);
         $(keyDiv).scrollTop($('#keyDiv_update')[0].scrollHeight);
         $(keywordEle).css("margin-top", "0");
         $(keywordEle).prop("required", false);
+        $("#keywords").prop("oninvalid", false);
+        document.getElementById("keywords").setCustomValidity('');
+
+
       });
     }
   }
@@ -270,6 +298,7 @@ $(function () {
     $("#PopUp").fadeOut();
     $("#PopUpUpdate").fadeOut();
     $("#PopUpDelete").fadeOut();
+    $(document).unbind("keypress");
     $("#cover").fadeOut();
     $("#notification").fadeOut();
 

@@ -38,7 +38,7 @@
                     <th>Logs</th>
                 </tr>
             </thead>
-            <tbody id="dataTbody">
+            <tbody class="dataTbody">
                 <% for(var i=0; i < dbres.length; i++){ %>
                 <tr>
                     <td style="display:none">
@@ -159,7 +159,7 @@
                             <!-- <textarea style="resize: none;" name="keywords" maxlength="100" required id="keywords"
                                 cols="23" rows="4" placeholder="Stichwort1, Stichwort2, ..."></textarea> -->
                             <div id="keyDiv">
-                                <input type="text" name="" placeholder="" required id="keywords">
+                                <input type="text" name="" placeholder="" required id="keywords" oninvalid="this.setCustomValidity('Bitte wählen Sie mindestens 1 Stichwort aus den Stammdaten aus.')">
                             </div>
                             <a href="/stammdaten" style="float: right">
                                 <img class="linkStammdaten" src="assets/iconfinder_link.svg" alt=""

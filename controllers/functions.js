@@ -65,6 +65,23 @@ function getItemById(id) {
     });
 }
 
+function getEntryByName(Name){
+    return new Promise((resolve, reject) => {
+        con.query(
+            `SELECT
+            artikel.name
+        FROM artikelliste
+        LEFT JOIN artikel ON artikel.id = artikelliste.artikelid WHERE artikelliste.deleted = 0 AND artikel.name = ?  LIMIT 1`,
+            [Name],
+            function (err, result) {
+                console.log(err);
+                if (err) reject(err);
+                resolve(result[0]);
+            }
+        );
+    });
+}
+
 function getItemByName(Name) {
     return new Promise((resolve, reject) => {
         con.query(
@@ -219,6 +236,33 @@ async function getStammdaten() {
 
 }
 
+function autoFill(title, table, value){
+    return new Promise((resolve, reject) => {
+        con.query(
+            `SELECT DISTINCT ${title} FROM ${table}`,
+            function (err, result) {
+                if (err) {
+                    reject(err);
+                    console.log(err);
+                } else {
+                    var autoFillResults = [];
+                    for (var i = 0; i < result.length; i++) {
+                      var sqlRes = result[i][title].toUpperCase();
+                      var val = value.toUpperCase();
+            
+                      if (sqlRes.startsWith(val)) {
+                        //if a location starts with the user input
+                        autoFillResults.push(result[i][title]); //add location to autoFillResults
+                      }
+                    }
+                    resolve(autoFillResults);
+                    console.log(autoFillResults);
+                }
+            }
+        );
+    });
+}
+
 function getKeywordsByName(name) {
     return new Promise((resolve, reject) => {
         con.query(
@@ -259,22 +303,46 @@ function saveStammdaten(table, value) {
     });
 }
 
-function incrementKeywordNumber(name) {
+function incrementStammdatenNumber(table, name) {
     return new Promise((resolve, reject) => {
         name = name.split(",");
         for (var i = 0; i < name.length; i++) {
-            con.query("UPDATE keywords SET number = number + 1 WHERE keywords = ?",
-                [name[i].replace(/\s/g, '')],
+            let sql = `UPDATE ${table} SET number = number + 1 WHERE ${table} = "${name[i]}"`;
+            console.log(sql);
+            con.query(`UPDATE ${table} SET number = number + 1 WHERE ${table} = ?`,
+                [name[i]],
                 function (err, result) {
                     if (err) {
                         reject(err);
                         console.log(err);
-                        console.log("increment keywordnumber error");
+                        console.log("increment Stammdaten error");
                     }
+                    console.log(result);
+                });
+        }
+        resolve("incremented");
+
+
+    });
+}
+
+function decrementStammdatenNumber(table, name) {
+    return new Promise((resolve, reject) => {
+        name = name.split(",");
+        for (var i = 0; i < name.length; i++) {
+            con.query(`UPDATE ${table} SET number = number - 1 WHERE ${table} = ?`,
+                [name[i]],
+                function (err, result) {
+                    if (err) {
+                        reject(err);
+                        console.log(err);
+                        console.log("decrement Stammdaten error");
+                    }
+                    console.log(result);
 
                 });
         }
-        resolve("");
+        resolve("decremented");
 
 
     });
@@ -488,6 +556,9 @@ module.exports = {
     getKeywords,
     updateItem,
     updateEntry,
-    incrementKeywordNumber,
-    getKeywordsByName
+    incrementStammdatenNumber,
+    decrementStammdatenNumber,
+    getKeywordsByName,
+    autoFill,
+    getEntryByName
 }

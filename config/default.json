@@ -7,6 +7,10 @@
     },
     "ldap": {
         "url": "ldap://bbw-azubi.local",
-        "reconnect": true
+        "reconnect": {
+            "initialDelay": 100,
+            "maxDelay": 1000,
+            "failAfter": 10
+        }
     }
 }
