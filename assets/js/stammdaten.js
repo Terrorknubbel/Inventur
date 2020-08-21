@@ -1,6 +1,6 @@
 $(".AddRow").click(function () {
-    $(this).find("i").toggleClass("fa-chevron-down fa-chevron-up");
-    var th = $(this).parent().parent().parent().find("th:eq(1)").html();
+    $(this).parent().children().eq(1).find("i").toggleClass("fa-chevron-down fa-chevron-up");
+    var th = $(this).parent().parent().parent().find("th:eq(0)").html();
     console.log($(this).parent().siblings());
     if ($(this).parent().siblings().length == 0) {
         //console.log($(this));
@@ -22,7 +22,11 @@ $(".AddRow").click(function () {
         $(this).parent().siblings().first().remove();
     }
 
-})
+});
+
+$(function(){
+    $(".AddRow").prop("colspan", 2);
+});
 
 $(".AddRow").hover(function () {
     $(this).css("cursor", "pointer");
@@ -38,16 +42,17 @@ function addStamm(x) {
     console.log("Placeholder: " + placeholder);
     console.log("text: " + text);
     if (text != "") {
+        $(x).prop("disabled", true);
         $.post(`/stammdaten/${placeholder}`, { value: text }, function (data) {
             location.reload();
         });
     }
 }
 
-$(".fa-trash").click(function () {
+$("#ortTable").on("click", ".fa-trash", function () {
     let table = $(this).attr('class').split(' ').pop();
-    let val = $(this).parent().parent().children().eq(1).html().trim();
-    let number = $(this).parent().parent().children().eq(2).html().trim();
+    let val = $(this).parent().parent().children().eq(0).html().trim();
+    let number = $(this).parent().parent().children().eq(1).html().trim();
     console.log(number);
     // var id = $(this).parent().siblings().first().html().trim();
     console.log(table);

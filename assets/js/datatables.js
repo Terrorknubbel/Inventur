@@ -3,6 +3,25 @@ $(document).ready(function () {
   // DataTable
   var table = $("#table").DataTable({
     "processing": true,
+    "ajax": {
+      // "url": "/assets/js/data.json",
+      "url": "/data",
+      "type": "GET"
+    },
+    "columns": [
+      { data: "id" }, 
+      { data: "name" }, 
+      { data: "number" },
+      { data: "minimum_number" }, 
+      { data: "location" }, 
+      { data: "category" }, 
+      { data: "creator" }, 
+      { data: "change_by" }, 
+      { data: "date" }, 
+      { data: "time" }, 
+      { data: "keywords" }, 
+      { data: "deleted" }
+    ],
     "rowCallback": function (row, data, index) {
       if (parseInt(data[2]) < parseInt(data[3])) {
         if (parseInt(data[2]) > 0) {
@@ -72,11 +91,22 @@ $(document).ready(function () {
   });
 
   var ortTable = $('#ortTable').DataTable({
+    "processing": true,
+    "ajax": {
+      // "url": "/assets/js/data.json",
+      "url": "/stammdaten/ort",
+      "type": "GET"
+    },
+    "columns": [
+      { data: "ort"}, 
+      { data: "number" ,
+      render : function(data, type, row) {
+        return ''+data+'<i class="fas fa-trash"></i>'
+    }  },
+    ],
     "columnDefs": [
-      { "width": "20%", "targets": 0 },
-      { "width": "20%", "targets": 1 },
-      { "width": "20%", "targets": 2 },
-      { "width": "1%", "targets": 3, "orderable": false }
+      { "width": "50%", "targets": 0 },
+      { "width": "50%", "targets": 1 },
     ],
     language: {
       "url": "/assets/js/German.json",
@@ -166,6 +196,7 @@ $(document).ready(function () {
     table.draw();
   });
 
+  
 
   $('#table tbody').on('dblclick', 'tr', function (e) {
     var that = $(this);

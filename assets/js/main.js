@@ -33,6 +33,8 @@ $(document).ready(function () {
     if (isnum && isminnum && tagLength > 0) {
       
       if (post_url === "/create") {
+        $("#CreateSubmit").prop("disabled", true);
+        
         $.post(post_url, form_data, function (response) {
           //post data to server after submit
           location.reload(); //reload page when everything is finished

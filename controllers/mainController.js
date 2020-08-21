@@ -9,7 +9,6 @@ var con = mysql.createConnection(config.get('dbConfig'));
 //check if required Database exists and creates if not exist
 fs.readFile('./config/schema.sql', 'utf8', function (err, data) {
   data = data.replace(/\r|\n/g, ' ');
-  data2 = "CREATE DATABASE IF NOT EXISTS `inventur` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;USE `inventur`;";
 
   con.query(data, function (err, result) {
     if (err) {
@@ -27,11 +26,20 @@ module.exports = function (app) {
       //console.log(JSON.stringify(result));
       var stammdaten = await functions.getStammdaten();
 
-      //console.log(stammdaten);
       res.render("index", { dbres: result, stammdaten: stammdaten, session: req.session }); //load index with db data
     } else {
       res.render("login", { err: req.query.err}); //redirect to login page if not logged in
     }
+  });
+
+  app.get("/data", async (req, res) => {
+    // if (req.session.loggedin) {
+      const result = await functions.getAll(); // get db data
+
+      res.send(result);
+      // } else {
+    //   res.render("login", { err: req.query.err}); //redirect to login page if not logged in
+    // }
   });
 
   app.get("/logout", function (req, res) {
@@ -47,7 +55,7 @@ module.exports = function (app) {
 
   app.get("/entry", function (req, res) {
     //get entries from db
-    if (req.session.loggedin) {
+    // if (req.session.loggedin) {
       //console.log(req.query);
       var sql = `SELECT
             artikel.name,
@@ -69,9 +77,9 @@ module.exports = function (app) {
       } catch (e) {
         console.error(e);
       }
-    } else {
-      res.render("login", { err: req.query.err }); //redirect to login page if not logged in
-    }
+    // } else {
+    //   res.render("login", { err: req.query.err }); //redirect to login page if not logged in
+    // }
   });
 
   app.get("/entry/:value", async (req, res) => {
@@ -128,17 +136,17 @@ module.exports = function (app) {
   });
 
   app.get("/entry/name/:name", async (req, res) => {
-    if(req.session.loggedin){
+    // if(req.session.loggedin){
       try {
         const result = await functions.getEntryByName(req.params.name);
         res.send(result);
       } catch (err) {
         res.status(404).send("Internal Server Error");
       }
-    }else{
-      res.render("login", { err: req.query.err }); //redirect to login page if not logged in
+    // }else{
+    //   res.render("login", { err: req.query.err }); //redirect to login page if not logged in
 
-    }
+    // }
       // console.log(req.query);
 
   });
@@ -167,7 +175,7 @@ module.exports = function (app) {
         if (err == null) {
           //if no error occurs
 
-          var base = "dc=bbw-azubi, dc=local";
+          var base = config.get('ldap.domain');
           var search_options = {
             scope: 'sub',
             filter: '(&(objectClass=user)(sAMAccountName=' + username + '))',
@@ -194,7 +202,7 @@ module.exports = function (app) {
   });
 
   app.get("/stammdaten", async (req, res) => {
-    if (req.session.loggedin) {
+    // if (req.session.loggedin) {
       try {
         var results = await functions.getStammdaten();
         //console.log(results);
@@ -203,10 +211,10 @@ module.exports = function (app) {
         res.status(404).send("404 Not Found");
         console.log(e);
       }
-    } else {
-      res.redirect("/"); //redirect to home
+    // } else {
+    //   res.redirect("/"); //redirect to home
 
-    }
+    // }
   });
 
   app.get("/stammdaten/:table", async (req, res) => {
@@ -264,8 +272,13 @@ module.exports = function (app) {
     if (req.params.table == "Stichwörter") {
       req.params.table = "keywords";
     }
-    var results = await functions.saveStammdaten(req.params.table.toLowerCase(), req.body.value);
-    res.send("Entry Created");
+    console.log(req.body.value);
+    var exist = await functions.getStammdatenByName(req.params.table, req.body.value);
+    if(!exist){
+      var results = await functions.saveStammdaten(req.params.table.toLowerCase(), req.body.value);
+      res.send("Entry Created");
+    }
+    res.send("Entry already exist");
   });
 
   //delete stammdaten entry
@@ -330,27 +343,35 @@ module.exports = function (app) {
     var time = functions.getTime();
 
     try {
-      const createItem = await functions.createItem(req.body.name, req.body.category, req.body.keywords);
-      const item = await functions.getItemByName(req.body.name);
-      const create = await functions.createEntry(
-        item.id,
-        req.body.number,
-        req.body.minimum_number,
-        req.body.location,
-        username,
-        username,
-        fulldate,
-        time
-      );
+      const ItemName = await functions.getItemByName(req.body.name);
+      console.log("ItemName: " + ItemName);
+      if(!ItemName){
+        const createItem = await functions.createItem(req.body.name, req.body.category, req.body.keywords);
 
-      var x = await functions.getLatestEntry();
+        const item = await functions.getItemByName(req.body.name);
+        const create = await functions.createEntry(
+          item.id,
+          req.body.number,
+          req.body.minimum_number,
+          req.body.location,
+          username,
+          username,
+          fulldate,
+          time
+        );
 
-      var locationnum = await functions.incrementStammdatenNumber("ort", req.body.location); 
-      var kategorienum = await functions.incrementStammdatenNumber("kategorie", req.body.category);
-      var keywordnum = await functions.incrementStammdatenNumber("keywords", req.body.keywords);
+        var x = await functions.getLatestEntry();
 
-      var log = await functions.log(x.id, "create");
-      res.send("Entry Created");
+        var locationnum = await functions.incrementStammdatenNumber("ort", req.body.location); 
+        var kategorienum = await functions.incrementStammdatenNumber("kategorie", req.body.category);
+        var keywordnum = await functions.incrementStammdatenNumber("keywords", req.body.keywords);
+
+        var log = await functions.log(x.id, "create");
+        res.send("Entry Created");
+      }else{
+        console.log("Artikel existiert bereits.");
+      }
+
     } catch (err) {
       console.log(err);
       console.log("entry error");
@@ -362,8 +383,6 @@ module.exports = function (app) {
 
   app.patch("/entry", async (req, res) => {
     console.log("patch");
-    console.log(req.body);
-
 
     try {
       const entry = await functions.getEntryById(req.body.id);

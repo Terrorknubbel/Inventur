@@ -9,12 +9,14 @@ var con = mysql.createConnection({
 
 function getAll() {
     return new Promise((resolve, reject) => {
+        var res = {"data":[]};
         con.query(
             "SELECT artikel.name, artikel.category, artikel.keywords, artikelliste.* FROM artikelliste LEFT JOIN artikel ON artikel.id = artikelliste.artikelid WHERE deleted = false",
             function (err, result) {
                 //send results
                 if (err) reject(err);
-                resolve(result);
+                res.data = result;
+                resolve(res);
             }
         );
     });
@@ -236,6 +238,19 @@ async function getStammdaten() {
 
 }
 
+function getStammdatenByName(table, name){
+    return new Promise((resolve, reject) => {
+        con.query(
+            `SELECT * FROM ${table} WHERE ${table} = ? LIMIT 1`,
+            [name],
+            function (err, result) {
+                if (err) reject(err);
+                resolve(result[0]);
+            }
+        );
+    }); 
+}
+
 function autoFill(title, table, value){
     return new Promise((resolve, reject) => {
         con.query(
@@ -373,7 +388,7 @@ function deleteStammdaten(table, value) {
 
 function getOrt() {
     return new Promise((resolve, reject) => {
-        var res = {};
+        var res = {"data":[]};
         con.query(
             `SELECT * FROM ort`,
             function (err, result) {
@@ -381,7 +396,9 @@ function getOrt() {
                     reject(err);
                     console.log("Cant get Ort");
                 } else {
-                    resolve(result);
+                    res.data = result;
+                    console.log(res);
+                    resolve(res);
                 }
 
             }
@@ -560,5 +577,6 @@ module.exports = {
     decrementStammdatenNumber,
     getKeywordsByName,
     autoFill,
-    getEntryByName
+    getEntryByName,
+    getStammdatenByName
 }

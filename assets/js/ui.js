@@ -5,23 +5,23 @@ $(function () {
   //~~~~Autocomplete~~~~
 
   //Name autocomplete
-  $("#name").autocomplete({
-    source: function (request, response) {
-      var data = $("#name").val();
-      $.get(`/checkValue/name/${data}`, function (res) {
-        response(res);
-      });
-    },
-    autoFocus: true,
-    delay: 0,
-    focus: function (event, ui) {
-      $(this).on("keyup", function (e) {
-        if (e.which == 9) {
-          $(this).val(ui.item.value);
-        }
-      });
-    },
-  });
+  // $("#name").autocomplete({
+  //   source: function (request, response) {
+  //     var data = $("#name").val();
+  //     $.get(`/checkValue/name/${data}`, function (res) {
+  //       response(res);
+  //     });
+  //   },
+  //   autoFocus: true,
+  //   delay: 0,
+  //   focus: function (event, ui) {
+  //     $(this).on("keyup", function (e) {
+  //       if (e.which == 9) {
+  //         $(this).val(ui.item.value);
+  //       }
+  //     });
+  //   },
+  // });
   //--------
 
   //keywors autocomplete

@@ -28,36 +28,18 @@
                     <h2>Ort</h2>
                     <thead>
                         <tr>
-                            <th style="display:none"></th>
                             <th>Ort</th>
                             <th>Aktuell von Artikeln genutzt</th>
-                            <th></th>
                         </tr>
                     </thead>
-                    <tbody class="dataTbody">
-                        <% for(var i=0; i < result.ort.length; i++){ %>
-                        <tr>
-                            <td style="display:none">
-                                <%= result.ort[i].id %>
-                            </td>
-                            <td>
-                                <%= result.ort[i].ort %>
-                            </td>
-                            <td class="numberUsed">
-                                <%= result.ort[i].number %>
-                            </td>
-                            <td>
-                                <i class="fas fa-trash ort"></i>
-                            </td>
-                        </tr>
-                        <% } %>
-                    </tbody>
                     <tfoot>
                         <tr>
-                            <th class="AddRow" colspan="3" style="text-align:center">
-                                Neuer Eintrag <i class="fas fa-chevron-down"></i>
-                            </th>
-                        </tr>
+                            <td class="AddRow" style="text-align:right;">
+                                Neuer
+                            </td>
+                            <td class="AddRow">
+                             Eintrag <i class="fas fa-chevron-down"></i>
+                            </td>
                     </tfoot>
 
                 </table>

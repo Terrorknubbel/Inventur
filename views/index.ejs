@@ -24,7 +24,7 @@
         <table id="table" class="ui celled table display" style="width:100%">
             <thead>
                 <tr>
-                    <th style="display:none"></th>
+                    <th>Artikelnummer</th>
                     <th>Artikel</th>
                     <th>Anzahl</th>
                     <th>Mindestanzahl</th>
@@ -38,7 +38,7 @@
                     <th>Logs</th>
                 </tr>
             </thead>
-            <tbody class="dataTbody">
+            <!-- <tbody class="dataTbody">
                 <% for(var i=0; i < dbres.length; i++){ %>
                 <tr>
                     <td style="display:none">
@@ -78,10 +78,10 @@
                         <img class="log" src="assets/iconfinder_link.svg" alt="" title="Zu den Logs..">
                     </td>
                 </tr>
-                <% } %>
+                <% } %> -->
             <tfoot>
                 <tr id='inputTr'>
-                    <th style="display:none">Id</th>
+                    <th><input type="text" placeholder="Suche Artikelnummer"></th>
                     <th><input type="text" placeholder="Suche Artikel"></th>
                     <th><input type="text" placeholder="Suche Anzahl"></th>
                     <th><input type="text" placeholder="Suche Mindestanzahl"></th>
@@ -117,9 +117,9 @@
                             <!-- <input type="text" id="location" name="location" maxlength="20" required> -->
                             <select name="location" id="location" required
                                 oninvalid="this.setCustomValidity('Wählen Sie bitte einen Ort aus.\n Sie müssen diese vorher in den Stammdaten eintragen')">
-                                <% for(var i=0; i < stammdaten.ort.length; i++){ %>
-                                <option name="<%= stammdaten.ort[i].ort; %>" value="<%= stammdaten.ort[i].ort; %>">
-                                    <%= stammdaten.ort[i].ort; %>
+                                <% for(var i=0; i < stammdaten.ort.data.length; i++){ %>
+                                <option name="<%= stammdaten.ort.data[i].ort; %>" value="<%= stammdaten.ort.data[i].ort; %>">
+                                    <%= stammdaten.ort.data[i].ort; %>
                                 </option>
                                 <% } %>
                             </select>

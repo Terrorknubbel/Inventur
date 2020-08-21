@@ -137,6 +137,23 @@ input[type="search"]{
 
 .AddRow{
   user-select: none;
+  padding-left: 5px !important;
+  padding-right: 0 !important;
+}
+
+/* #ortTable>tbody>tr>td:nth-child(2):after{
+  font-family: "Font Awesome 5 Free";
+  content: "\f1f8";
+  display: inline-block;
+  padding-right: 3px;
+  vertical-align: middle;
+  font-weight: 900;
+  text-align: right !important;
+  float: right !important;
+} */
+
+#ortTable>tbody>tr>td:nth-child(2):hover:after{
+  cursor: pointer !important; 
 }
 
 .numberUsed{
@@ -151,6 +168,11 @@ input[type="search"]{
   margin-top: 3px;
   margin-left: 3px;
   margin-right: 5px;
+}
+
+.fa-trash{
+  text-align: right;
+  float: right;
 }
 
 .fa-trash:hover{
