@@ -22,11 +22,9 @@ fs.readFile('./config/schema.sql', 'utf8', function (err, data) {
 module.exports = function (app) {
   app.get("/", async (req, res) => {
     if (req.session.loggedin) {
-      const result = await functions.getAll(); // get db data
-      //console.log(JSON.stringify(result));
-      var stammdaten = await functions.getStammdaten();
-
-      res.render("index", { dbres: result, stammdaten: stammdaten, session: req.session }); //load index with db data
+      let stammdaten = await functions.getFullStammdaten();
+      console.log(stammdaten);
+      res.render("index", { stammdaten: stammdaten, session: req.session }); //load index
     } else {
       res.render("login", { err: req.query.err}); //redirect to login page if not logged in
     }
@@ -204,9 +202,7 @@ module.exports = function (app) {
   app.get("/stammdaten", async (req, res) => {
     // if (req.session.loggedin) {
       try {
-        var results = await functions.getStammdaten();
-        //console.log(results);
-        res.render("stammdaten", { result: results, session: req.session });
+        res.render("stammdaten", { session: req.session });
       } catch (e) {
         res.status(404).send("404 Not Found");
         console.log(e);
@@ -219,21 +215,22 @@ module.exports = function (app) {
 
   app.get("/stammdaten/:table", async (req, res) => {
     try {
-      switch (req.params.table) {
-        case "ort":
-          var results = await functions.getOrt();
-          break;
-        case "kategorie":
-          var results = await functions.getKategorie();
-          break;
-        case "keywords":
-          var results = await functions.getKeywords();
-          break;
-        default:
-          var results = "Nothing found ¯\\_(ツ)_/¯";
-          break;
+      // switch (req.params.table) {
+      //   case "ort":
+      //     var results = await functions.getOrt();
+      //     break;
+      //   case "kategorie":
+      //     var results = await functions.getKategorie();
+      //     break;
+      //   case "keywords":
+      //     var results = await functions.getKeywords();
+      //     break;
+      //   default:
+      //     var results = "Nothing found ¯\\_(ツ)_/¯";
+      //     break;
 
-      }
+      // }
+      var results = await functions.getStammdaten(req.params.table);
       res.send(results);
     } catch (e) {
       res.status(404).send("404 Not Found");
@@ -269,43 +266,71 @@ module.exports = function (app) {
 
   //create stammdaten entry
   app.post("/stammdaten/:table", async (req, res) => {
-    if (req.params.table == "Stichwörter") {
-      req.params.table = "keywords";
+    try {
+      if (req.params.table == "Stichwörter") {
+        req.params.table = "keywords";
+      }
+      console.log(req.body.value);
+      var exist = await functions.getStammdatenByName(req.params.table, req.body.value);
+      if(!exist){
+        var results = await functions.saveStammdaten(req.params.table.toLowerCase(), req.body.value);
+        res.send("Entry Created");
+      }
+      res.send("Entry already exist");
+    } catch (error) {
+      res.status("500").send("Internal Server Error");
+      console.log(error);
     }
-    console.log(req.body.value);
-    var exist = await functions.getStammdatenByName(req.params.table, req.body.value);
-    if(!exist){
-      var results = await functions.saveStammdaten(req.params.table.toLowerCase(), req.body.value);
-      res.send("Entry Created");
-    }
-    res.send("Entry already exist");
+
   });
 
   //delete stammdaten entry
   app.delete("/stammdaten/:table/:name", async (req, res) => {
-    var results = await functions.deleteStammdaten(req.params.table, req.params.name);
-    res.send(results);
+    try {
+      var table = req.params.table;
+      if(table == "Stichwörter"){
+        table = "keywords";
+      }
+  
+      var results = await functions.deleteStammdaten(table, req.params.name);
+      res.send(results);
+    } catch (error) {
+      res.status("500").send("Internal Server Error");
+      console.log(error);
+    }
+
   });
 
   app.get("/checkValue/:title/:value", async (req, res) => {
-
-    var title = req.params.title;
-    var value = req.params.value;
-    var table;
-
-    if (title == "name") {
-      table = "artikel";
+    try {
+      var title = req.params.title;
+      var value = req.params.value;
+      var table;
+  
+      if (title == "name") {
+        table = "artikel";
+      }
+  
+      var autoFillResults = await functions.autoFill(title, table, value);
+  
+      res.send(autoFillResults);
+    } catch (error) {
+      res.status("500").send("Internal Server Error");
+      console.log(error);
     }
 
-    var autoFillResults = await functions.autoFill(title, table, value);
-
-    res.send(autoFillResults);
   });
 
   app.get("/logs", async (req, res) => {
     if (req.session.loggedin) {
-      var logs = await functions.getLog();
-      res.render("logs", { result: logs, session: req.session });
+      try {
+        var logs = await functions.getLog();
+        res.render("logs", { result: logs, session: req.session });
+      } catch (error) {
+        res.status("500").send("Internal Server Error");
+        console.log(error);
+      }
+
     } else {
       res.redirect("/"); //redirect to home
     }
@@ -313,8 +338,14 @@ module.exports = function (app) {
   });
 
   app.get("/logs/:artikelnummer", async (req, res) => {
-    var logs = await functions.getLogByArtikelnummer(req.params.artikelnummer);
-    res.render("logs", { result: logs, session: req.session });
+    try {
+      var logs = await functions.getLogByArtikelnummer(req.params.artikelnummer);
+      res.render("logs", { result: logs, session: req.session });
+    } catch (error) {
+      res.status("500").send("Internal Server Error");
+      console.log(error);
+    }
+
   });
 
   app.delete("/entry/:id", async (req, res) => {

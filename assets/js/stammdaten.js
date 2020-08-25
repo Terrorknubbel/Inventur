@@ -49,14 +49,19 @@ function addStamm(x) {
     }
 }
 
-$("#ortTable").on("click", ".fa-trash", function () {
-    let table = $(this).attr('class').split(' ').pop();
-    let val = $(this).parent().parent().children().eq(0).html().trim();
-    let number = $(this).parent().parent().children().eq(1).html().trim();
-    console.log(number);
-    // var id = $(this).parent().siblings().first().html().trim();
+$("table").on("click", ".fa-trash", function () {
+
+    let table = $(this).closest("table").find("th").first().text();
+    let val = $(this).parent().prev().text();
+    let number = $(this).parent().text();
+
+    console.log("~~~~~~");
     console.log(table);
     console.log(val);
+    console.log(number);
+    console.log("~~~~~~");
+    
+    // var id = $(this).parent().siblings().first().html().trim();
 
     let popUpMid = ``;
 

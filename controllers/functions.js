@@ -224,18 +224,36 @@ function getTime() {
     return time;
 }
 
-async function getStammdaten() {
-    var ort = await getOrt();
-    var kategorie = await getKategorie();
-    var keywords = await getKeywords();
+async function getFullStammdaten(){
+    var ort = await getStammdaten("ort");
+    var kategorie = await getStammdaten("kategorie");
+    var keywords = await getStammdaten("keywords");
     var res = {
         "ort": ort,
         "kategorie": kategorie,
         "keywords": keywords
     };
-    //console.log("res: " + JSON.stringify(res));
     return res;
+}
 
+function getStammdaten(table) {
+    return new Promise((resolve, reject) => {
+        var res = {"data":[]};
+        con.query(
+            `SELECT * FROM ${table}`,
+            function (err, result) {
+                if (err) {
+                    reject(err);
+                    console.log(`Cant get ${table}`);
+                } else {
+                    res.data = result;
+                    console.log(res);
+                    resolve(res);
+                }
+
+            }
+        );
+    });
 }
 
 function getStammdatenByName(table, name){
@@ -367,7 +385,7 @@ function deleteStammdaten(table, value) {
     return new Promise((resolve, reject) => {
         console.log(table, value);
         con.query(
-            `DELETE FROM ${table} WHERE keywords = ?`,
+            `DELETE FROM ${table} WHERE ${table} = ?`,
             [value],
             function (err, result) {
                 if (err) {
@@ -386,61 +404,6 @@ function deleteStammdaten(table, value) {
     });
 }
 
-function getOrt() {
-    return new Promise((resolve, reject) => {
-        var res = {"data":[]};
-        con.query(
-            `SELECT * FROM ort`,
-            function (err, result) {
-                if (err) {
-                    reject(err);
-                    console.log("Cant get Ort");
-                } else {
-                    res.data = result;
-                    console.log(res);
-                    resolve(res);
-                }
-
-            }
-        );
-    });
-}
-
-function getKategorie() {
-    return new Promise((resolve, reject) => {
-        var res = {};
-        con.query(
-            `SELECT * FROM kategorie`,
-            function (err, result) {
-                if (err) {
-                    reject(err)
-                    console.log("Cant get Kategorie");
-                } else {
-                    resolve(result);
-                }
-
-            }
-        );
-    });
-}
-
-function getKeywords() {
-    return new Promise((resolve, reject) => {
-        var res = {};
-        con.query(
-            `SELECT * FROM keywords`,
-            function (err, result) {
-                if (err) {
-                    reject(err)
-                    console.log("Cant get keywords");
-                } else {
-                    resolve(result);
-                }
-
-            }
-        );
-    });
-}
 
 function UserSearch(client, base, search_options) {
     return new Promise(function (resolve, reject) {
@@ -568,9 +531,6 @@ module.exports = {
     getLog,
     getLatestEntry,
     getLogByArtikelnummer,
-    getKategorie,
-    getOrt,
-    getKeywords,
     updateItem,
     updateEntry,
     incrementStammdatenNumber,
@@ -578,5 +538,6 @@ module.exports = {
     getKeywordsByName,
     autoFill,
     getEntryByName,
-    getStammdatenByName
+    getStammdatenByName,
+    getFullStammdaten
 }

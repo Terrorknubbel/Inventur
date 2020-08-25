@@ -111,32 +111,52 @@ $(document).ready(function () {
     language: {
       "url": "/assets/js/German.json",
       "searchPlaceholder": "Suchen..."
-    },
+    }
   });
 
   var kategorieTable = $('#kategorieTable').DataTable({
+    "processing": true,
+    "ajax":{
+      "url": "/stammdaten/kategorie",
+      "type": "GET"
+    },
+    "columns":  [
+      { data: "kategorie"}, 
+      { data: "number" ,
+      render : function(data, type, row) {
+        return ''+data+'<i class="fas fa-trash"></i>'
+    }  },
+    ],
     "columnDefs": [
-      { "width": "20%", "targets": 0 },
-      { "width": "20%", "targets": 1 },
-      { "width": "20%", "targets": 2 },
-      { "width": "1%", "targets": 3, "orderable": false }
+      { "width": "50%", "targets": 0 },
+      { "width": "50%", "targets": 1 },
     ],
     language: {
       "url": "/assets/js/German.json",
       "searchPlaceholder": "Suchen..."
-    },
+    }
   });
   var keywordsTable = $('#keywordsTable').DataTable({
+    "processing": true,
+    "ajax":{
+      "url": "/stammdaten/keywords",
+      "type": "GET"
+    },
+    "columns":  [
+      { data: "keywords"}, 
+      { data: "number" ,
+      render : function(data, type, row) {
+        return ''+data+'<i class="fas fa-trash"></i>'
+    }  },
+    ],
     "columnDefs": [
-      { "width": "20%", "targets": 0 },
-      { "width": "20%", "targets": 1 },
-      { "width": "20%", "targets": 2 },
-      { "width": "1%", "targets": 3, "orderable": false }
+      { "width": "50%", "targets": 0 },
+      { "width": "50%", "targets": 1 },
     ],
     language: {
       "url": "/assets/js/German.json",
       "searchPlaceholder": "Suchen..."
-    },
+    }
   });
 
   $(

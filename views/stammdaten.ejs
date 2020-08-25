@@ -51,35 +51,18 @@
                     <h2>Kategorie</h2>
                     <thead>
                         <tr>
-                            <th style="display:none"></th>
                             <th>Kategorie</th>
                             <th>Aktuell von Artikeln genutzt</th>
-                            <th></th>
                         </tr>
                     </thead>
-                    <tbody class="dataTbody">
-                        <% for(var i=0; i < result.kategorie.length; i++){ %>
-                        <tr>
-                            <td style="display:none">
-                                <%= result.kategorie[i].id %>
-                            </td>
-                            <td>
-                                <%= result.kategorie[i].kategorie %>
-                            </td>
-                            <td class="numberUsed">
-                                <%= result.kategorie[i].number %>
-                            </td>
-                            <td>
-                                <i class="fas fa-trash kategorie"></i>
-                            </td>
-                        </tr>
-                        <% } %>
-                    </tbody>
                     <tfoot>
                         <tr>
-                            <th class="AddRow" colspan="3" style="text-align:center">
-                                Neuer Eintrag <i class="fas fa-chevron-down"></i>
-                            </th>
+                            <td class="AddRow" style="text-align:right;">
+                                Neuer
+                            </td>
+                            <td class="AddRow">
+                             Eintrag <i class="fas fa-chevron-down"></i>
+                            </td>
                         </tr>
                     </tfoot>
                 </table>
@@ -91,35 +74,18 @@
                     <h2>Stichwort</h2>
                     <thead>
                         <tr>
-                            <th style="display:none"></th>
                             <th>Stichwörter</th>
                             <th>Aktuell von Artikeln genutzt</th>
-                            <th></th>
                         </tr>
                     </thead>
-                    <tbody class="dataTbody">
-                        <% for(var i=0; i < result.keywords.length; i++){ %>
-                        <tr>
-                            <td style="display:none">
-                                <%= result.keywords[i].id %>
-                            </td>
-                            <td>
-                                <%= result.keywords[i].keywords %>
-                            </td>
-                            <td class="numberUsed">
-                                <%= result.keywords[i].number %>
-                            </td>
-                            <td>
-                                <i class="fas fa-trash keywords"></i>
-                            </td>
-                        </tr>
-                        <% } %>
-                    </tbody>
                     <tfoot>
                         <tr>
-                            <th class="AddRow" colspan="3" style="text-align:center">
-                                Neuer Eintrag <i class="fas fa-chevron-down"></i>
-                            </th>
+                            <td class="AddRow" style="text-align:right;">
+                                Neuer
+                            </td>
+                            <td class="AddRow">
+                             Eintrag <i class="fas fa-chevron-down"></i>
+                            </td>
                         </tr>
                     </tfoot>
                 </table>

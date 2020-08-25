@@ -285,7 +285,7 @@ input[type="search"]{
 }
 
 select{
-  width: 82%;
+  width: 80%;
   height: 30px;
 }
 
@@ -669,15 +669,7 @@ input:checked + .slider:before {
   padding: 10px;
 }
 
-#PopUp table tr td span,
-#PopUpUpdate table tr td span {
-  /*Notification*/
-  position: absolute;
-  margin-left: -88px;
-  font-size: 13px;
-  font-weight: 400;
-  color: rgb(250, 82, 82);
-}
+
 
 .PopUp_topBar {
   width: 100%;
