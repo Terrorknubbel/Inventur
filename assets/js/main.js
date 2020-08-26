@@ -1,4 +1,75 @@
 $(document).ready(function () {
+
+  
+
+  // console.log(test);
+
+  // console.log(test.find('#location'));
+
+  var popup = `
+    <div id="PopUp">
+    <form id="createForm" action="/create" method="post">
+
+        <div class="PopUp_topBar">
+            Neuen Artikel anlegen
+            <span>x</span>
+        </div>
+        <div class="PopUp_middle">
+            <table>
+                <tr>
+                    <td>Artikel:</td>
+                    <td><input autocomplete="off" type="text" id="name" name="name" maxlength="20" required></td>
+                    <td></td>
+                    <td>Ort:</td>
+                    <td>
+                        <!-- <input type="text" id="location" name="location" maxlength="20" required> -->
+                        <select name="location" id="location" required
+                            oninvalid="this.setCustomValidity('Wählen Sie bitte einen Ort aus.\n Sie müssen diese vorher in den Stammdaten eintragen')">
+                        </select>
+                        <a href="/stammdaten">
+                            <img class="linkStammdaten" src="assets/iconfinder_link.svg" alt=""
+                                title="Zu den Stammdaten.." onclick="">
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Anzahl:</td>
+                    <td><input type="text" id="number" name="number" maxlength="10" required></td>
+                    <td></td>
+                    <td>Mindestanzahl:</td>
+                    <td><input type="text" id="minimum_number" name="minimum_number" maxlength="10" required></td>
+                </tr>
+                <tr>
+                    <td>Kategorie:</td>
+                    <td>
+                        <!-- <input type="text" id="category" name="category" maxlength="20" required> -->
+                        <select name="category" id="category" required>
+                        </select>
+                        <a href="/stammdaten">
+                            <img class="linkStammdaten" src="assets/iconfinder_link.svg" alt=""
+                                title="Zu den Stammdaten..">
+                        </a>
+                    </td>
+                    <td></td>
+                    <td>Stichwörter:</td>
+                    <td>
+                        <div class="select-wrapper">
+                            <span class="autocomplete-select"></span>
+                          </div>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+        <div class="PopUp_footer">
+            <button type="submit" id="CreateSubmit">Speichern</button>
+        </div>
+    </form>
+  </div>
+  `;
+
+  //console.log(popup);
+
   $("#Logout").click(function () {
     $.get("/logout", function (data) {
       window.location.href = "/";
@@ -73,7 +144,6 @@ $(document).ready(function () {
 
   $("#updateForm").submit(function (event) {
     event.preventDefault(); //prevent default action
-
     var post_url = $(this).attr("action"); //get form action url
 
     var id = $(".selected").find("td")[0].innerHTML;

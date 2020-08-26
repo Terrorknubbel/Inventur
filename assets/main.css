@@ -285,7 +285,7 @@ input[type="search"]{
 }
 
 select{
-  width: 80%;
+  width: 68%;
   height: 30px;
 }
 
@@ -702,16 +702,6 @@ input:checked + .slider:before {
 
 .PopUp_topBar span:hover {
   cursor: pointer;
-}
-
-#keyDiv, #keyDiv_update{
-  /* margin-top: 35px; */
-  float: left;
-  width: 178px;
-  max-height: 75px;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  word-wrap: break-word; 
 }
 
 #keywords, #keywords_update{
