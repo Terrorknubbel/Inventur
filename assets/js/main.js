@@ -1,84 +1,15 @@
 $(document).ready(function () {
 
-  
-
-  // console.log(test);
-
-  // console.log(test.find('#location'));
-
-  var popup = `
-    <div id="PopUp">
-    <form id="createForm" action="/create" method="post">
-
-        <div class="PopUp_topBar">
-            Neuen Artikel anlegen
-            <span>x</span>
-        </div>
-        <div class="PopUp_middle">
-            <table>
-                <tr>
-                    <td>Artikel:</td>
-                    <td><input autocomplete="off" type="text" id="name" name="name" maxlength="20" required></td>
-                    <td></td>
-                    <td>Ort:</td>
-                    <td>
-                        <!-- <input type="text" id="location" name="location" maxlength="20" required> -->
-                        <select name="location" id="location" required
-                            oninvalid="this.setCustomValidity('Wählen Sie bitte einen Ort aus.\n Sie müssen diese vorher in den Stammdaten eintragen')">
-                        </select>
-                        <a href="/stammdaten">
-                            <img class="linkStammdaten" src="assets/iconfinder_link.svg" alt=""
-                                title="Zu den Stammdaten.." onclick="">
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Anzahl:</td>
-                    <td><input type="text" id="number" name="number" maxlength="10" required></td>
-                    <td></td>
-                    <td>Mindestanzahl:</td>
-                    <td><input type="text" id="minimum_number" name="minimum_number" maxlength="10" required></td>
-                </tr>
-                <tr>
-                    <td>Kategorie:</td>
-                    <td>
-                        <!-- <input type="text" id="category" name="category" maxlength="20" required> -->
-                        <select name="category" id="category" required>
-                        </select>
-                        <a href="/stammdaten">
-                            <img class="linkStammdaten" src="assets/iconfinder_link.svg" alt=""
-                                title="Zu den Stammdaten..">
-                        </a>
-                    </td>
-                    <td></td>
-                    <td>Stichwörter:</td>
-                    <td>
-                        <div class="select-wrapper">
-                            <span class="autocomplete-select"></span>
-                          </div>
-                    </td>
-                </tr>
-
-            </table>
-        </div>
-        <div class="PopUp_footer">
-            <button type="submit" id="CreateSubmit">Speichern</button>
-        </div>
-    </form>
-  </div>
-  `;
-
-  //console.log(popup);
-
   $("#Logout").click(function () {
     $.get("/logout", function (data) {
       window.location.href = "/";
     });
   });
 
-  $("#createForm").submit(function (event) {
+  $("body").on("submit", "#createForm", function (event) {
     event.preventDefault(); //prevent default action
 
+    console.log($('.select-pure__selected-label'));
     var post_url = $(this).attr("action"); //get form action url
 
     var form_data = $(this).serialize(); //Encode form elements for submission
@@ -106,10 +37,10 @@ $(document).ready(function () {
       if (post_url === "/create") {
         $("#CreateSubmit").prop("disabled", true);
         
-        $.post(post_url, form_data, function (response) {
-          //post data to server after submit
-          location.reload(); //reload page when everything is finished
-        });
+        // $.post(post_url, form_data, function (response) {
+        //   //post data to server after submit
+        //   location.reload(); //reload page when everything is finished
+        // });
       // } else if (post_url === "/entry") {
       //   console.log(form_data);
       //   $.ajax({

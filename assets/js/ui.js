@@ -39,9 +39,12 @@ $(function () {
     return {"ort": ort.data, "kategorie": kategorie.data, "keywords": keywords.data};
 }();
 
+
+   
+
   console.log(stammdaten);
 
-  var test = $('<div/>', {'id':'PopUp'}).append(
+  var popup = $('<div/>', {'id':'PopUp'}).append(
     $('<form/>', {'id': 'createForm', 'action': '/create', 'method': 'post'}).append(
       $('<div/>', {'class': 'PopUp_topBar', 'text': 'Neuen Artikel anlegen'}).append(
         $('<span/>', {'text': 'x'})
@@ -116,11 +119,11 @@ $(function () {
   );
 
   $.each(stammdaten.ort, function(i, p) {
-    test.find('#location').append($('<option></option>').val(p.ort).html(p.ort));
+    popup.find('#location').append($('<option></option>').val(p.ort).html(p.ort));
   });
 
   $.each(stammdaten.kategorie, function(i, p) {
-    test.find('#category').append($('<option></option>').val(p.kategorie).html(p.kategorie));
+    popup.find('#category').append($('<option></option>').val(p.kategorie).html(p.kategorie));
   });
 
 
@@ -280,43 +283,7 @@ $(function () {
           $("#CreateSubmit").prop( "disabled", false );
 
         }
-        //   $("#number").val(data[0].number);
-        //   $("#minimum_number").val(data[0].minimum_number);
-        //   $("#category").val(data[0].category);
 
-        //   addKeywordBubbles($("#keyDiv"), $("#keywords"), data[0].keywords);
-
-        //   $("#CreateSubmit").html("Update");
-        //   $("#createForm").attr("action", "/entry");
-
-        //   var id = data[0].id;
-
-        //   $(
-        //     '<input type="text" style="display:none" class="id" name="id" value="' +
-        //     id +
-        //     '"/>'
-        //   ).insertAfter("#number");
-        //   if ($(".id").length > 1) {
-        //     for (let i = 1; i < $(".id").length; i++) {
-        //       $(".id")[i].remove();
-        //     }
-        //   }
-
-        //   console.log("id: " + id);
-        // } else {
-        //   console.log("else");
-        //   $("#notification").remove();
-        //   $("#notificationBreak").remove();
-        //   $(".ui-autocomplete").css("z-index", "100");
-        //   $("#CreateSubmit").html("Create");
-        //   $("#createForm").attr("action", "/create");
-
-        //   $("#number").val("");
-        //   $("#minimum_number").val("");
-        //   $("#category").val($("#category option:first").val());
-        //   $("#keywords").val("");
-
-        // }
       });
     }
   });
@@ -340,14 +307,15 @@ $(function () {
     }
 
   })
+  var KeywordsAutocomplete;
+
   $("#New").click(function () {
     //var NewPopUp = createPopUp();
     //$('body').append(NewPopUp);
-    $('#tableDiv').after(test);
-    test.fadeIn();
+    $('#tableDiv').after(popup);
+    popup.fadeIn();
 
-    var KeywordsAutocomplete;
-    var KeywordsUpdateAutocomplete;
+    $('.select-pure__select').remove();
     $.ajax({
       url: 'stammdaten/keywords',
       success: function(data) {
@@ -366,7 +334,6 @@ $(function () {
                   //element.scrollTop = element.scrollHeight;
                   var element = $(".select-pure__label");
                   $(element[0]).scrollTop(element[0].scrollHeight);
-  
               },
             classNames: {
               select: "select-pure__select",
@@ -388,56 +355,99 @@ $(function () {
           };
         }
     });
-    
+
     //$("#PopUp").fadeIn();
     $("#name").focus();
     $("#cover").fadeIn();
   });
 
   $("#Edit").click(function () {
-    console.log(KeywordsAutocomplete.value);
-    $("#PopUpUpdate").fadeIn();
-    $("#cover").fadeIn();
-
+    
+    var id;
     $("#table tbody tr").each(function () {
       if ($(this).hasClass("selected")) {
         //get marked line
-        var id = $(this).children().html(); //get id from line
+        id = $(this).children().html(); //get id from line
         id = id.replace(/ /g, ""); //cut spaces
         id = id.replace(/\r?\n|\r/g, "");
-
-        $.get(`/entry/${id}`, function (data, status) {
-          $("#name_update").val(data.name);
-          $("#location_update").val(data.location);
-          $("#number_update").val(data.number);
-          $("#minimum_number_update").val(data.minimum_number);
-          $("#category_update").val(data.category);
-
-          addKeywordBubbles($("#keyDiv_update"), $("#keywords_update"), data.keywords);
-
-        });
-
-      }
+      };
     });
+    var result;
+    $.ajax({
+      "async": false,
+      "type": "GET",
+      "global": false,
+      "url": `/entry/${id}`,
+      "success": function(data){
+        result = {
+          "name": data.name,
+          "location": data.location,
+          "number": data.number,
+          "minimum_number": data.minimum_number,
+          "category": data.category,
+          "keywords": data.keywords.split(",")
+        };
+      }
+    })
+
+    popup = toUpdatePopup(popup);
+    console.log(result);
+    $('#tableDiv').after(popup);
+    popup.fadeIn();
+
+    $('.select-pure__select').remove();
+    $.ajax({
+      url: 'stammdaten/keywords',
+      success: function(data) {
+          var optionsArr = [];
+          for(var i = 0; i < data.data.length; i ++){
+            optionsArr.push({"label": data.data[i].keywords, "value": data.data[i].keywords});
+          }
+          KeywordsAutocomplete = new SelectPure(".autocomplete-select", {
+            options: optionsArr,
+            value: result.keywords,
+            multiple: true,
+            autocomplete: true,
+            icon: "fa fa-times",
+            onChange: value => {
+                  console.log(value);
+                  //var element = document.getElementsByClassName('.select-pure__label')[0];
+                  //element.scrollTop = element.scrollHeight;
+                  var element = $(".select-pure__label");
+                  $(element[0]).scrollTop(element[0].scrollHeight);
+              },
+            classNames: {
+              select: "select-pure__select",
+              dropdownShown: "select-pure__select--opened",
+              multiselect: "select-pure__select--multiple",
+              label: "select-pure__label",
+              placeholder: "select-pure__placeholder",
+              dropdown: "select-pure__options",
+              option: "select-pure__option",
+              autocompleteInput: "select-pure__autocomplete",
+              selectedLabel: "select-pure__selected-label",
+              selectedOption: "select-pure__option--selected",
+              placeholderHidden: "select-pure__placeholder--hidden",
+              optionHidden: "select-pure__option--hidden",
+            }
+          });
+          var resetAutocomplete = function() {
+            KeywordsAutocomplete.reset();
+          };
+        }
+    });
+
+    $("#cover").fadeIn();
+
   });
 
-  function addKeywordBubbles(keyDiv, keywordEle, keywords) {
-    keywords = keywords.split(',');
-    for (var i = 0; i < keywords.length; i++) {
-      keywords[i] = keywords[i].trim();
-      console.log(keywords[i]);
-      $.get(`/stammdaten/keywords/${keywords[i]}`, function (res) {
-        console.log(res);
-        $(keyDiv).prepend(`<span class="Tags" data-keyword="test" onclick="close()">${res[0].keywords} (${res[0].number})</span>`);
-        $(keyDiv).scrollTop($('#keyDiv_update')[0].scrollHeight);
-        $(keywordEle).css("margin-top", "0");
-        $(keywordEle).prop("required", false);
-        $("#keywords").prop("oninvalid", false);
-        document.getElementById("keywords").setCustomValidity('');
+  function toCreatePopup(popup){
 
+  }
 
-      });
-    }
+  function toUpdatePopup(popup){
+    popup.find(".PopUp_topBar").text("Artikel bearbeiten");
+    return popup;
   }
 
   $("#cover, .PopUp_topBar span").click(function () {
