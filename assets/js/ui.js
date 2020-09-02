@@ -37,13 +37,9 @@ $(function () {
       }
     });
     return {"ort": ort.data, "kategorie": kategorie.data, "keywords": keywords.data};
-}();
+  }();
 
-
-   
-
-  console.log(stammdaten);
-
+  //create Popup
   var popup = $('<div/>', {'id':'PopUp'}).append(
     $('<form/>', {'id': 'createForm', 'action': '/create', 'method': 'post'}).append(
       $('<div/>', {'class': 'PopUp_topBar', 'text': 'Neuen Artikel anlegen'}).append(
@@ -118,6 +114,7 @@ $(function () {
     )
   );
 
+  //append options to dropdowns
   $.each(stammdaten.ort, function(i, p) {
     popup.find('#location').append($('<option></option>').val(p.ort).html(p.ort));
   });
@@ -447,6 +444,7 @@ $(function () {
 
   function toUpdatePopup(popup){
     popup.find(".PopUp_topBar").text("Artikel bearbeiten");
+    popup.find("form").prop("action", "/update");
     return popup;
   }
 
