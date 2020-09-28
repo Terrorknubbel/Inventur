@@ -55,16 +55,10 @@ $(function () {
               $('<input/>', {'type': 'text', 'id': 'name', 'name': 'name', 'maxlength': '20'})
             )
           ).append(
-            $('<td/>')
-          ).append(
             $('<td/>', {'text': 'Ort:'})
           ).append(
             $('<td/>').append(
               $('<select/>', {'name': 'location', 'id': 'location', 'oninvalid': 'this.setCustomValidity(`Wählen Sie bitte einen Ort aus.\n Sie müssen diese vorher in den Stammdaten eintragen`)'})
-            ).append(
-              $('<a/>', {'href': '/stammdaten'}).append(
-                $('<img/>', {'class': 'linkStammdaten', 'src': 'assets/iconfinder_link.svg', 'title': 'Zu den Stammdaten..'})
-              )
             )
           )
         ).append(
@@ -74,8 +68,6 @@ $(function () {
             $('<td/>').append(
               $('<input/>', {'type': 'text', 'id': 'number', 'name': 'number', 'maxlength': '10'})
             )
-          ).append(
-            $('<td/>')
           ).append(
             $('<td/>', {'text': 'Mindestanzahl:'})
           ).append(
@@ -89,15 +81,9 @@ $(function () {
           ).append(
             $('<td/>').append(
               $('<select/>', {'name': 'category', 'id': 'category', 'oninvalid': 'this.setCustomValidity(`Wählen Sie bitte eine Kategorie aus.\n Sie müssen diese vorher in den Stammdaten eintragen`)'})
-            ).append(
-              $('<a/>', {'href': '/stammdaten'}).append(
-                $('<img/>', {'class': 'linkStammdaten', 'src': 'assets/iconfinder_link.svg', 'title': 'Zu den Stammdaten..'})
-              )
             )
           ).append(
-            $('<td/>')
-          ).append(
-            $('<td/>', {'text': 'Stichwärter:'})
+            $('<td/>', {'text': 'Stichwörter:'})
           ).append(
             $('<td/>').append(
               $('<div/>', {'class': 'select-wrapper'}).append(
@@ -114,6 +100,13 @@ $(function () {
     )
   );
 
+  popup.find("#name").prop("required", "true");
+  popup.find("#location").prop("required", "true");
+  popup.find("#number").prop("required", "true");
+  popup.find("#minimum_number").popup("required", "true");
+  popup.find("#category").prop("required", "true");
+
+
   //append options to dropdowns
   $.each(stammdaten.ort, function(i, p) {
     popup.find('#location').append($('<option></option>').val(p.ort).html(p.ort));
@@ -124,144 +117,14 @@ $(function () {
   });
 
 
-  //keywors autocomplete
-  function split(val) {
-    return val.split(/,\s*/);
-  }
-  function extractLast(term) {
-    return split(term).pop();
-  }
-
-  function filterArray(json) {
-    var arr = [];
-    var banned = [];
-    var tags = $(".Tags");
-
-    for (var i = 0; i < json.length; i++) {
-      for (var j = 0; j < tags.length; j++) {
-        var tag = tags[j].innerHTML;
-        if (json[i].keywords == tag.substring(0, tag.length - 4)) {
-          banned.push(json[i].keywords);
-        }
-      }
-      arr.push(json[i].keywords);
-
-    }
-
-    for (var i = 0; i < banned.length; i++) {
-      arr = arr.filter(e => e !== banned[i]);
-    }
-
-    return arr;
-  }
-
-  $("#keywords")
-    // don't navigate away from the field on tab when selecting an item
-    .on("keydown keyup change", function (event) {
-      console.log($(this).parent());
-      console.log("trigger");
-      if (event.keyCode === $.ui.keyCode.TAB &&
-        $(this).autocomplete("instance").menu.active) {
-        event.preventDefault();
-      }
-    }).autocomplete({
-      minLength: 0,
-      autoFocus: true,
-      source: function (request, response) {
-        // delegate back to autocomplete, but extract the last term
-
-        $.get(`/stammdaten/keywords`, function (res) {
-          response($.ui.autocomplete.filter(
-            filterArray(res), extractLast(request.term)));
-        });
-
-      },
-      focus: function () {
-        // prevent value inserted on focus
-        return false;
-      },
-      select: function (event, ui) {
-
-        console.log(ui.item.value);
-        $.get(`/stammdaten/keywords/${ui.item.value}`, function (res) {
-          $("#keyDiv").prepend(`<span class="Tags" data-keyword="${ui.item.value}" onclick="close()">${ui.item.value} (${res[0].number})</span>`);
-          $('#keyDiv').scrollTop($('#keyDiv')[0].scrollHeight);
-          $("#keywords").css("margin-top", "0");
-          $("#keywords").prop("required", false);
-        });
-
-        this.value = "";
-
-        return false;
-      }
-    }).click(function (e) {
-      console.log("clicked");
-      e.stopPropagation();
-      $(this).autocomplete("search");
-    });
-
-  $("#keywords_update")
-    // don't navigate away from the field on tab when selecting an item
-    .on("keydown keyup change", function (event) {
-      console.log($(this).parent());
-      console.log("trigger");
-      if (event.keyCode === $.ui.keyCode.TAB &&
-        $(this).autocomplete("instance").menu.active) {
-        event.preventDefault();
-      }
-    }).autocomplete({
-      minLength: 0,
-      autoFocus: true,
-      source: function (request, response) {
-        // delegate back to autocomplete, but extract the last term
-
-        $.get(`/stammdaten/keywords`, function (res) {
-          response($.ui.autocomplete.filter(
-            filterArray(res), extractLast(request.term)));
-        });
-
-      },
-      focus: function () {
-        // prevent value inserted on focus
-        return false;
-      },
-      select: function (event, ui) {
-
-        console.log(ui.item.value);
-        $.get(`/stammdaten/keywords/${ui.item.value}`, function (res) {
-          $("#keyDiv_update").prepend(`<span class="Tags" data-keyword="${ui.item.value}" onclick="close()">${ui.item.value} (${res[0].number})</span>`);
-          $('#keyDiv_update').scrollTop($('#keyDiv_update')[0].scrollHeight);
-          $("#keywords_update").css("margin-top", "0");
-          $("#keywords_update").prop("required", false);
-        });
-
-        this.value = "";
-
-        return false;
-      }
-    }).click(function (e) {
-      console.log("clicked");
-      e.stopPropagation();
-      $(this).autocomplete("search");
-    });
-
-  $("body").on("click", ".Tags", function () {
-    console.log($(this));
-    $(this).remove();
-    if ($(".Tags").length === 0) {
-      $("#keywords,#keywords_update").prop("required", true);
-      $("#keywords,#keywords_update").css("margin-top", "0px");
-
-    }
-  })
   //~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   //check if new Item already exists
   //Need to be updated!
-  $("#name").on("change, keyup", function () {
+  $("body").on("change, keyup", "#name", function () {
     var artikel = $("#name").val();
-    console.log(artikel);
-    if (artikel !== "") {
+    console.log($("#createForm").attr("action"));
+    if (artikel !== "" && $("#createForm").attr("action") == "/create") {
       $.get(`entry/name/${artikel}`, function (data) {
         console.log(data);
         if (data) {
@@ -273,12 +136,12 @@ $(function () {
               );
           }
           $(".ui-autocomplete").css("z-index", "0");
-          $("#CreateSubmit").prop( "disabled", true );
+          $("#PopUpSubmit").prop("disabled", true);          
         }else{
           $("#notificationBreak").remove();
           $("#notification").remove();
-          $("#CreateSubmit").prop( "disabled", false );
-
+          checkError();
+          
         }
 
       });
@@ -286,12 +149,11 @@ $(function () {
   });
 
   //Number input fields in Create PopUp
-  $("#number, #number_update, #minimum_number, #minimum_number_update").on("keyup", function () {
-    console.log($(this).val().length);
+  $("body").on("keyup", "#number", function(){
+    
     //Remove Error Messages
     $(this).parent().find(".ErrBr").remove();
-    $(this).parent().find(".ErrMsg").remove();
-  
+    $(this).parent().find(".ErrMsg").remove();  
 
     //Remove Error Border
     $(this).css("border", "none");
@@ -299,16 +161,50 @@ $(function () {
 
     //If the input is not a number
     if (!/^\d+$/.test($(this).val()) && $(this).val().length != 0) {
-      $(this).parent().append("<br class='ErrBr'><span style='color: red' class='ErrMsg'>Bitte geben Sie hier nur Zahlen ein.</span>"); //Error message
+      $(this).parent().append("<br class='ErrBr'><span class='ErrMsg'>Bitte geben Sie hier nur Zahlen ein.</span>"); //Error message
       $(this).css("border", "1px solid red"); //Error Border
+      $("#PopUpSubmit").prop("disabled", true);
     }
 
+    checkError();
+
+
   })
+
+  $("body").on("keyup", "#minimum_number", function(){
+    
+    //Remove Error Messages
+    $(this).parent().find(".ErrBr2").remove();
+    $(this).parent().find(".ErrMsg2").remove();  
+
+    //Remove Error Border
+    $(this).css("border", "none");
+    $(this).css("border-bottom", "1px solid rgb(0,60,121");
+
+    //If the input is not a number
+    if (!/^\d+$/.test($(this).val()) && $(this).val().length != 0) {
+      $(this).parent().append("<br class='ErrBr2'><span class='ErrMsg2'>Bitte geben Sie hier nur Zahlen ein.</span>"); //Error message
+      $(this).css("border", "1px solid red"); //Error Border
+      $("#PopUpSubmit").prop("disabled", true);
+    }
+
+    checkError();
+
+  })
+
+  function checkError(){
+    if($(".ErrMsg").length == 0 && $(".ErrMsg2").length == 0 && !$("#notification").length){
+      $("#PopUpSubmit").prop("disabled", false);
+      console.log("false");
+    }
+  }
+
   var KeywordsAutocomplete;
 
   $("#New").click(function () {
     //var NewPopUp = createPopUp();
     //$('body').append(NewPopUp);
+    popup = toCreatePopup(popup);
     $('#tableDiv').after(popup);
     popup.fadeIn();
 
@@ -434,41 +330,60 @@ $(function () {
         }
     });
 
+    $("#name").val(result.name);
+    $("#location").val(result.location);
+    $("#number").val(result.number);
+    $("#minimum_number").val(result.minimum_number);
+    $("#category").val(result.category);
+
+
     $("#cover").fadeIn();
 
   });
 
   function toCreatePopup(popup){
+    popup.find(".PopUp_topBar").text("Neuen Artikel anlegen");
+    popup.find("form").prop("action", "/create");
+    popup.remove(".numberButton");
+    return popup;
 
   }
 
   function toUpdatePopup(popup){
     popup.find(".PopUp_topBar").text("Artikel bearbeiten");
-    popup.find("form").prop("action", "/update");
+    popup.find("form").prop("action", "/entry");
+    popup.find("#number").after('<button class="numberButton">+10</button>');
+    popup.find("#number").after('<button class="numberButton">+1</button>');
+    popup.find("#number").after('<button class="numberButton">-1</button>');
+    popup.find("#number").after('<button class="numberButton">-10</button>');
     return popup;
   }
 
   $("#cover, .PopUp_topBar span").click(function () {
     //when grey background or x button is clicked
-    $("#PopUp").fadeOut();
-    $("#PopUpUpdate").fadeOut();
-    $("#PopUpDelete").fadeOut();
-    $(document).unbind("keypress");
-    $("#cover").fadeOut();
-    $("#notification").fadeOut();
+    if($(".select-pure__select--opened").length == 0){
 
-    $(".Tags").remove();
+      $("#PopUp").fadeOut();
+      $("#PopUpUpdate").fadeOut();
+      $("#PopUpDelete").fadeOut();
+      // $(document).unbind("keypress");
+      $("#cover").fadeOut();
+      $("#notification").fadeOut();
 
-    $("#PopUp input").each(function (i) {
-      $(this).val("");
-    });
+      $(".Tags").remove();
 
-    $("#number, #minimum_number").parent().find("span").remove();
-    $("#number , #minimum_number").parent().find("br").remove();
+      $("#PopUp input").each(function (i) {
+        $(this).val("");
+      });
 
-    $("#number , #minimum_number").css("border", "none");
-    $("#number , #minimum_number").css("border-bottom", "1px solid rgb(0,60,121");
+      $("#number, #minimum_number").parent().find("span").remove();
+      $("#number , #minimum_number").parent().find("br").remove();
 
-    $("#keywords , #minimum_number").val("");
+      $("#number , #minimum_number").css("border", "none");
+      $("#number , #minimum_number").css("border-bottom", "1px solid rgb(0,60,121");
+
+      $("#keywords , #minimum_number").val("");
+  }
+
   });
 });

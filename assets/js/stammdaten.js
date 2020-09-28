@@ -100,7 +100,7 @@ $("table").on("click", ".fa-trash", function () {
     let cover = '<div class="cover"></div>';
 
     console.log($(popUp));
-    $(".container").prepend($(cover + popUp).hide().fadeIn());
+    $(".Stamm_container").prepend($(cover + popUp).hide().fadeIn());
 
     $(".cover, .popup_top > span, .popup_mid > input[value='Abbrechen']").click(function () {
         $(".cover").remove();

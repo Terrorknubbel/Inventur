@@ -354,6 +354,11 @@ module.exports = function (app) {
     if (req.session.loggedin) {
       try {
         const result = await functions.markEntryAsDeleteById(req.params.id, req.session.username);
+        const entry = await functions.getEntryById(req.params.id);
+        var denumCategory = await functions.decrementStammdatenNumber("kategorie", entry.category);
+        var denumLocation = await functions.decrementStammdatenNumber('ort', entry.location);
+        var denumKeyword = await functions.decrementStammdatenNumber('keywords', entry.keywords);
+
         var log = await functions.log(req.params.id, "delete");
 
         res.send(result);
@@ -414,6 +419,7 @@ module.exports = function (app) {
 
   app.patch("/entry", async (req, res) => {
     console.log("patch");
+    console.log(req.body);
 
     try {
       const entry = await functions.getEntryById(req.body.id);

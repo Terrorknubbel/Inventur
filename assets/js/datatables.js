@@ -23,8 +23,10 @@ $(document).ready(function () {
       { data: "deleted" }
     ],
     "rowCallback": function (row, data, index) {
-      if (parseInt(data[2]) < parseInt(data[3])) {
-        if (parseInt(data[2]) > 0) {
+      $(row).find("td").last().html('<img class="log" src="assets/iconfinder_link.svg" alt="" title="Zu den Logs..">');
+
+      if (parseInt(data.number) < parseInt(data.minimum_number)) {
+        if (parseInt(data.number) > 0) {
           $(row).find("td:nth-child(3)").addClass("notEnough_left");
           $(row).find("td:nth-child(4)").addClass("notEnough_right");
           $(row).find("td:nth-child(3) .warn").remove();
@@ -105,8 +107,8 @@ $(document).ready(function () {
     }  },
     ],
     "columnDefs": [
-      { "width": "50%", "targets": 0 },
-      { "width": "50%", "targets": 1 },
+      { "width": "30%", "targets": 0 },
+      { "width": "30%", "targets": 1 },
     ],
     language: {
       "url": "/assets/js/German.json",
@@ -159,46 +161,20 @@ $(document).ready(function () {
     }
   });
 
-  $(
-    `
-    <button id="New" title="Neuen Artikel hinzufügen">
-      Neu
-    </button>
-    <button id="Edit" disabled title="Wähle eine Zeile aus um sie bearbeiten zu können">
-      Bearbeiten
-    </button>
-    <button id="Delete" disabled title="Wähle mindestens eine Zeile aus um sie löschen zu können">
-      Löschen
-    </button>
-    
-    <label for="OnlyWarnRows">
-    <span>Nur Reihen mit Warnungen anzeigen</span>
-    </label>
-
-    <label for="OnlyWarnRows" class="switch">
-      <input id="OnlyWarnRows" type="checkbox">
-      <span class="slider round"></span>
-    </label>
-    `
-  ).insertBefore("#table");
 
   //save all rows with errors in array warnArr
-  var warnArr = [];
-  table.rows().eq(0).each(function (index) {  //loop every row
-    var number = $($('table.dataTable').DataTable().row(index).node()).children().eq(2).text().trim();
-    var minNum = $($('table.dataTable').DataTable().row(index).node()).children().eq(3).text().trim();
 
-    if (parseInt(number) < parseInt(minNum)) {
-      warnArr.push($($('table.dataTable').DataTable().row(index).node()));
-    }
-
-  });
 
   //search for warn rows
   $.fn.dataTable.ext.search.push(
     function (settings, data, dataIndex) {
       if ($('#OnlyWarnRows').prop('checked')) {
-        console.log(warnArr);
+
+        var warnArr = [];
+    
+        if (parseInt(data[2]) < parseInt(data[3])) {
+          warnArr.push($($('table.dataTable').DataTable().row(dataIndex).node()));
+        }
         for (var i = 0; i < warnArr.length; i++) {
           if (warnArr[i][0] == $($('table.dataTable').DataTable().row(dataIndex).node())[0]) {
             return true;
@@ -306,13 +282,12 @@ $(document).ready(function () {
 
   $("#Delete").click(function () {
     var counter = table.rows(".selected").data().length;
-    console.log(counter);
-    var artikel = table.rows(".selected").data()[0][1];
     $("#PopUpDelete").show();
     $("#cover").show();
     if (counter > 1) {
       $(".PopUpDelete_middle").html(`<span>Sind Sie sicher, dass Sie ${counter} Einträge löschen möchten?<span>`);
     } else {
+      var artikel = table.rows(".selected").data()[0].name;
       $(".PopUpDelete_middle").html(`<span>Sind Sie sicher, dass Sie "${artikel}" löschen möchten?<span>`);
     }
     
@@ -331,12 +306,10 @@ $(document).ready(function () {
 
     var post_url = $(this).attr("action"); //get form action url
     var deleteRows = table.rows(".selected").data().to$();
-
     for (var i = 0; i < deleteRows.length; i++) {
-      var id = table.rows(".selected").data().to$()[i][0];
+      var id = table.rows(".selected").data().to$()[i].artikelid;
 
       post_urlNew = post_url + "/" + id;
-
       $.ajax({
         url: post_urlNew,
         type: "DELETE",
