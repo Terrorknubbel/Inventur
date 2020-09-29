@@ -23,7 +23,10 @@
 <body>
     <%- include('navbar'); %>
 
-    <h1><u>Stammdaten</u></h1>
+    <div class="container-fluid mt-3 mb-3 d-flex justify-content-center">
+            <h1><u>Stammdaten</u></h1>
+
+    </div>
 
     <div class="row Stamm_container">
         <div class="Stamm_div col">
@@ -38,12 +41,10 @@
                     </thead>
                     <tfoot>
                         <tr>
-                            <td class="AddRow" style="text-align:right;">
-                                Neuer
+                            <td class="AddRow" colspan="2">
+                             Neuer Eintrag <i class="fas fa-chevron-down"></i>
                             </td>
-                            <td class="AddRow">
-                             Eintrag <i class="fas fa-chevron-down"></i>
-                            </td>
+                        </tr>
                     </tfoot>
 
                 </table>
@@ -61,11 +62,8 @@
                     </thead>
                     <tfoot>
                         <tr>
-                            <td class="AddRow" style="text-align:right;">
-                                Neuer
-                            </td>
-                            <td class="AddRow">
-                             Eintrag <i class="fas fa-chevron-down"></i>
+                            <td class="AddRow" colspan="2">
+                                Neuer Eintrag <i class="fas fa-chevron-down"></i>
                             </td>
                         </tr>
                     </tfoot>
@@ -84,11 +82,8 @@
                     </thead>
                     <tfoot>
                         <tr>
-                            <td class="AddRow" style="text-align:right;">
-                                Neuer
-                            </td>
-                            <td class="AddRow">
-                             Eintrag <i class="fas fa-chevron-down"></i>
+                            <td class="AddRow" colspan="2">
+                                Neuer Eintrag <i class="fas fa-chevron-down"></i>
                             </td>
                         </tr>
                     </tfoot>

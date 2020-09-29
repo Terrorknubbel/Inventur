@@ -29,15 +29,15 @@ $(document).ready(function () {
         if (parseInt(data.number) > 0) {
           $(row).find("td:nth-child(3)").addClass("notEnough_left");
           $(row).find("td:nth-child(4)").addClass("notEnough_right");
-          $(row).find("td:nth-child(3) .warn").remove();
-          $(row).find("td:nth-child(3)").prepend(`<img class="warn" title="Die Mindestanzahl ist unterschritten!" src="assets/iconfinder_warn.svg" alt="">`);
+          // $(row).find("td:nth-child(3) .warn").remove();
+          // $(row).find("td:nth-child(3)").prepend(`<img class="warn" title="Die Mindestanzahl ist unterschritten!" src="assets/iconfinder_warn.svg" alt="">`);
         } else {
           $(row).find("td:nth-child(3)").addClass("notEnough2_left");
           $(row).find("td:nth-child(4)").addClass("notEnough2_right");
 
           // console.log(0);
-          $(row).find("td:nth-child(3) .error").remove();
-          $(row).find("td:nth-child(3)").prepend(`<img class="error" title="Es sind keine Artikel mehr vorhanden" src="assets/iconfinder_error.svg" alt="">`);
+          // $(row).find("td:nth-child(3) .error").remove();
+          // $(row).find("td:nth-child(3)").prepend(`<img class="error" title="Es sind keine Artikel mehr vorhanden" src="assets/iconfinder_error.svg" alt="">`);
         }
 
       }
@@ -113,7 +113,8 @@ $(document).ready(function () {
     language: {
       "url": "/assets/js/German.json",
       "searchPlaceholder": "Suchen..."
-    }
+    },
+    responsive: true
   });
 
   var kategorieTable = $('#kategorieTable').DataTable({
@@ -222,10 +223,12 @@ $(document).ready(function () {
       that.toggleClass("selected");
     } else {
       table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-        //console.log(this);
         this.nodes().to$().removeClass("selected");
+        console.log(this.nodes().to$());
+
       });
       if (!thisClass) {
+        // console.log(that);
         that.toggleClass("selected");
       }
     }

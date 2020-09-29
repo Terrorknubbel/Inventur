@@ -65,7 +65,7 @@ $(function () {
           $('<tr/>').append(
             $('<td/>', {'text': 'Anzahl:'})
           ).append(
-            $('<td/>').append(
+            $('<td/>', {'style': 'text-align:center'}).append(
               $('<input/>', {'type': 'text', 'id': 'number', 'name': 'number', 'maxlength': '10'})
             )
           ).append(
@@ -75,6 +75,12 @@ $(function () {
               $('<input/>', {'type': 'text', 'id': 'minimum_number', 'name': 'minimum_number', 'maxlength': '10'})
             )
           )
+        // ).append(
+        //   $('<tr/>', {'colspan': '2'}).append(
+        //     $('<td/>').append(
+        //       $('<button/>', {'class': 'numberButton', 'text': '+10'})
+        //     )
+        //   )
         ).append(
           $('<tr/>').append(
             $('<td/>', {'text': 'Kategorie:'})
@@ -284,6 +290,7 @@ $(function () {
     })
 
     popup = toUpdatePopup(popup);
+    console.log(popup);
     console.log(result);
     $('#tableDiv').after(popup);
     popup.fadeIn();
@@ -343,19 +350,35 @@ $(function () {
 
   function toCreatePopup(popup){
     popup.find(".PopUp_topBar").text("Neuen Artikel anlegen");
+    popup.find(".PopUp_topBar").append('<div id="mdiv"><div class="mdiv"><div class="md"></div></div></div>')
     popup.find("form").prop("action", "/create");
-    popup.remove(".numberButton");
+    popup.find(".numberButton").remove();
+    
     return popup;
 
   }
 
   function toUpdatePopup(popup){
     popup.find(".PopUp_topBar").text("Artikel bearbeiten");
+    popup.find(".PopUp_topBar").append('<div id="mdiv"><div class="mdiv"><div class="md"></div></div></div>')
     popup.find("form").prop("action", "/entry");
+
+    popup.find(".numberButton").remove();
+    console.log(popup.find("tr").eq(1));
+    // popup.find("tr").eq(1).after(`
+    // <tr>
+    //   <td colspan="2">
+    //     <button class="numberButton">+10</button>
+    //   </td>
+    // </tr>
+    // `);
+
+    // popup.find('#number').css('margin-top', '30px');
     popup.find("#number").after('<button class="numberButton">+10</button>');
     popup.find("#number").after('<button class="numberButton">+1</button>');
     popup.find("#number").after('<button class="numberButton">-1</button>');
     popup.find("#number").after('<button class="numberButton">-10</button>');
+
     return popup;
   }
 

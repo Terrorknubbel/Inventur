@@ -6,7 +6,7 @@ $(".AddRow").click(function () {
         //console.log($(this));
         $(this).parent().after(`
             <tr>
-            <td><input maxlength="32" class="StammInput" type="text" placeholder="${th}..."></td>
+            <td><input maxlength="20" class="StammInput" type="text" placeholder="${th}..."></td>
             <td><input type="submit" value="Speichern" onclick="addStamm(this)" class="StammSave" /></td>
             </tr>
     `);
@@ -87,7 +87,7 @@ $("table").on("click", ".fa-trash", function () {
             <form>
             <div class="popup_top">
                 Stammdatum von "${table}" löschen
-                <span>x</span>
+                <div id="mdiv"><div class="mdiv"><div class="md"></div></div></div>
             </div>
             <div class="popup_mid">
             `+popUpMid+`

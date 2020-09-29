@@ -81,8 +81,7 @@ module.exports = function (app) {
   });
 
   app.get("/entry/:value", async (req, res) => {
-    //if (req.session.loggedin) {
-      // try {
+
         var value = req.params.value;
         var num = /\d/.test(value);
         console.log("num: " + num);
@@ -91,46 +90,8 @@ module.exports = function (app) {
 
           res.send(result);
         }else{
-            var sql = `SELECT
-                  artikel.name,
-                  artikel.category,
-                  artikel.keywords,
-                  artikelliste.*
-              FROM artikelliste
-              LEFT JOIN artikel ON artikel.id = artikelliste.artikelid WHERE`;
-            
-             console.log(value.split("&"));
-             var valueArr = value.split("&");
-             for(var i = 0; i++; valueArr.length){
-
-             }
+          res.status("404").send("404 Not Found");
         }
-          //   Object.keys(req.params.value).forEach(function (key) {
-          //   //build WHERE clause with get params
-          //   key = key.replace(/['"`]+/g, "");
-          //   req.query[key] = req.query[key].replace(/['"`]+/g, "");
-
-          //   if (key == "id") {
-          //     newKey = "artikelliste." + key;
-          //     sql += `${newKey} = ${req.query[key]} AND `;
-          //   } else {
-          //     sql += key + " = '" + req.query[key] + "' AND ";
-          //   }
-          // });
-
-          // if (Object.keys(req.query).length === 0) {
-          //   sql = sql.substring(0, sql.length - 7); //cut 'WHERE'
-          // } else {
-          //   sql = sql.substring(0, sql.length - 5); //cut last 'AND'
-          // }
-        //}
-      // } catch (err) {
-      //   res.status(404).send("Internal Server Error");
-      // }
-    // }else{
-    //   res.render("login", { err: req.query.err }); //redirect to login page if not logged in
-
-    // }
   });
 
   app.get("/entry/name/:name", async (req, res) => {
@@ -186,31 +147,47 @@ module.exports = function (app) {
           req.session.title = searchRes.title;
           req.session.username = searchRes.sAMAccountName;
 
-          res.redirect("/"); //redirect to home
+          var redirectTo = req.session.redirectTo || '/';
+          res.redirect(redirectTo); //redirect to home
+
         } else {
           res.redirect("/?err=FalseCred"); //Error message if username or password is incorrect
         }
         res.end();
       });
     } else {
-
       //if no username/passwort exists
       res.end();
     }
   });
 
-  app.get("/stammdaten", async (req, res) => {
-    // if (req.session.loggedin) {
-      try {
-        res.render("stammdaten", { session: req.session });
-      } catch (e) {
-        res.status(404).send("404 Not Found");
-        console.log(e);
-      }
-    // } else {
-    //   res.redirect("/"); //redirect to home
+  app.get("/data/:id", async (req, res) => {
+    if (req.session.loggedin) {
 
-    // }
+      var id = req.params.id;
+      var num = /\d/.test(id);
+      if(num){
+        const result = await functions.getEntryById(id);
+        console.log(result.name);
+        res.render("item", { session: req.session, item: result});
+
+      }else{
+        res.status("404").send("404 Not Found");
+      }
+
+    }else{
+      req.session.redirectTo = `/${req.params.id}`;
+      res.render("login", { err: req.query.err}); //redirect to login page if not logged in
+    }
+  })
+
+  app.get("/stammdaten", async (req, res) => {
+    if (req.session.loggedin) {
+        res.render("stammdaten", { session: req.session });
+     } else {
+      req.session.redirectTo = `/stammdaten`;
+      res.render("login", { err: req.query.err}); //redirect to login page if not logged in
+     }
   });
 
   app.get("/stammdaten/:table", async (req, res) => {
