@@ -23,6 +23,13 @@ h2{
   margin-right: auto;
 }
 
+@media only screen and (max-width: 1024px){
+  .Stamm_container{
+    display: inherit !important;
+  }
+}
+
+
 @media only screen and (max-width: 770px) {
   #inputTr {
     display: none !important;
@@ -38,6 +45,18 @@ h2{
     width: 50% !important;
   }
 
+  #notification{
+    left: 23vw !important;
+  }
+
+  #ortTable_wrapper, #kategorieTable_wrapper, #keywordsTable_wrapper{
+    min-width: 200px !important;
+  }
+
+  .paging_simple_numbers{
+    margin-top: -100px !important;
+    margin-right: 5px !important;
+  }
 
   div.dataTables_filter span.input {
     margin: 0 !important;
@@ -57,7 +76,7 @@ h2{
 
   .PopUp_middle table, .PopUp_middle table td, .PopUp_middle table tr, .PopUp_middle table th { display: block; text-align: left; } 
   .PopUp_middle table th, .PopUp_middle table td { margin: 0; padding-left: 25px;  }
-  .PopUp_middle table td  { margin-left: 30%; width:60%;padding-top: 0 !important;list-style: none; text-align: left !important; display: list-item; padding-left: 0; }
+  .PopUp_middle table td  { margin-left: 30%; width:60%;padding-top: 2px !important;list-style: none; text-align: left !important; display: list-item; padding-left: 0; }
   .PopUp_middle table thead { display: none; }
 
   #PopUpDelete{
@@ -65,8 +84,6 @@ h2{
     width: 95% !important;
   }
 }
-
-
 
 #mdiv {
   width: 28px;
@@ -166,14 +183,14 @@ h2{
   margin-right: 0;
 }
 
-
+/* 
 #table > tbody > tr > td {
   word-break: break-all;
 }
 
 table{
   border: 1px solid #0000004f !important;
-}
+} */
 
 input[type="search"]{
   border: 1px solid #0000004f !important;
@@ -186,10 +203,10 @@ input[type="search"]{
 .dt-table{
   padding: 20px;
 }
-
+/* 
 .Stamm_container{
   overflow-x: scroll;
-}
+} */
 
 .Stamm_div{
   width: 30%;
@@ -742,7 +759,7 @@ input:checked + .slider:before {
   margin-top: 2%;
   width: 100%;
   table-layout: fixed;
-  margin-left: -7.5%;
+  /* margin-left: -7.5%; */
   text-align: right;
   border: none !important;
 }
@@ -751,20 +768,13 @@ input:checked + .slider:before {
   padding: 10px;
 }
 
-.ErrMsg, #notification{
+#notification{
   color: red;
   font-weight: normal;
   text-align: left;
   position: absolute;
-  right: 59%;
-}
-
-.ErrMsg2{
-  color: red;
-  font-weight: normal;
-  text-align: left;
-  position: absolute;
-  right: 9%;
+  width: 200%;
+  left: 7vw;
 }
 
 .PopUp_topBar {
@@ -798,6 +808,10 @@ input:checked + .slider:before {
 
 .PopUp_topBar span:hover {
   cursor: pointer;
+}
+
+.PopUp_middle{
+  width: 90%;
 }
 
 #keywords, #keywords_update{

@@ -66,21 +66,15 @@ $(function () {
             $('<td/>', {'text': 'Anzahl:'})
           ).append(
             $('<td/>', {'style': 'text-align:center'}).append(
-              $('<input/>', {'type': 'text', 'id': 'number', 'name': 'number', 'maxlength': '10'})
+              $('<input/>', {'type': 'number', 'id': 'number', 'name': 'number', 'maxlength': '10'})
             )
           ).append(
             $('<td/>', {'text': 'Mindestanzahl:'})
           ).append(
             $('<td>').append(
-              $('<input/>', {'type': 'text', 'id': 'minimum_number', 'name': 'minimum_number', 'maxlength': '10'})
+              $('<input/>', {'type': 'number', 'id': 'minimum_number', 'name': 'minimum_number', 'maxlength': '10'})
             )
           )
-        // ).append(
-        //   $('<tr/>', {'colspan': '2'}).append(
-        //     $('<td/>').append(
-        //       $('<button/>', {'class': 'numberButton', 'text': '+10'})
-        //     )
-        //   )
         ).append(
           $('<tr/>').append(
             $('<td/>', {'text': 'Kategorie:'})
@@ -129,10 +123,9 @@ $(function () {
   //Need to be updated!
   $("body").on("change, keyup", "#name", function () {
     var artikel = $("#name").val();
-    console.log($("#createForm").attr("action"));
+  
     if (artikel !== "" && $("#createForm").attr("action") == "/create") {
       $.get(`entry/name/${artikel}`, function (data) {
-        console.log(data);
         if (data) {
           if (!$("#notification").length) {
             $("#name")
@@ -154,54 +147,9 @@ $(function () {
     }
   });
 
-  //Number input fields in Create PopUp
-  $("body").on("keyup", "#number", function(){
-    
-    //Remove Error Messages
-    $(this).parent().find(".ErrBr").remove();
-    $(this).parent().find(".ErrMsg").remove();  
-
-    //Remove Error Border
-    $(this).css("border", "none");
-    $(this).css("border-bottom", "1px solid rgb(0,60,121");
-
-    //If the input is not a number
-    if (!/^\d+$/.test($(this).val()) && $(this).val().length != 0) {
-      $(this).parent().append("<br class='ErrBr'><span class='ErrMsg'>Bitte geben Sie hier nur Zahlen ein.</span>"); //Error message
-      $(this).css("border", "1px solid red"); //Error Border
-      $("#PopUpSubmit").prop("disabled", true);
-    }
-
-    checkError();
-
-
-  })
-
-  $("body").on("keyup", "#minimum_number", function(){
-    
-    //Remove Error Messages
-    $(this).parent().find(".ErrBr2").remove();
-    $(this).parent().find(".ErrMsg2").remove();  
-
-    //Remove Error Border
-    $(this).css("border", "none");
-    $(this).css("border-bottom", "1px solid rgb(0,60,121");
-
-    //If the input is not a number
-    if (!/^\d+$/.test($(this).val()) && $(this).val().length != 0) {
-      $(this).parent().append("<br class='ErrBr2'><span class='ErrMsg2'>Bitte geben Sie hier nur Zahlen ein.</span>"); //Error message
-      $(this).css("border", "1px solid red"); //Error Border
-      $("#PopUpSubmit").prop("disabled", true);
-    }
-
-    checkError();
-
-  })
-
   function checkError(){
     if($(".ErrMsg").length == 0 && $(".ErrMsg2").length == 0 && !$("#notification").length){
       $("#PopUpSubmit").prop("disabled", false);
-      console.log("false");
     }
   }
 
@@ -228,7 +176,6 @@ $(function () {
             autocomplete: true,
             icon: "fa fa-times",
             onChange: value => {
-                  console.log(value);
                   //var element = document.getElementsByClassName('.select-pure__label')[0];
                   //element.scrollTop = element.scrollHeight;
                   var element = $(".select-pure__label");
@@ -290,8 +237,6 @@ $(function () {
     })
 
     popup = toUpdatePopup(popup);
-    console.log(popup);
-    console.log(result);
     $('#tableDiv').after(popup);
     popup.fadeIn();
 
@@ -310,7 +255,6 @@ $(function () {
             autocomplete: true,
             icon: "fa fa-times",
             onChange: value => {
-                  console.log(value);
                   //var element = document.getElementsByClassName('.select-pure__label')[0];
                   //element.scrollTop = element.scrollHeight;
                   var element = $(".select-pure__label");
@@ -364,16 +308,7 @@ $(function () {
     popup.find("form").prop("action", "/entry");
 
     popup.find(".numberButton").remove();
-    console.log(popup.find("tr").eq(1));
-    // popup.find("tr").eq(1).after(`
-    // <tr>
-    //   <td colspan="2">
-    //     <button class="numberButton">+10</button>
-    //   </td>
-    // </tr>
-    // `);
 
-    // popup.find('#number').css('margin-top', '30px');
     popup.find("#number").after('<button class="numberButton">+10</button>');
     popup.find("#number").after('<button class="numberButton">+1</button>');
     popup.find("#number").after('<button class="numberButton">-1</button>');
@@ -382,7 +317,7 @@ $(function () {
     return popup;
   }
 
-  $("#cover, .PopUp_topBar span").click(function () {
+  $("body").on("click", "#cover, .navbar, #mdiv",function () {
     //when grey background or x button is clicked
     if($(".select-pure__select--opened").length == 0){
 

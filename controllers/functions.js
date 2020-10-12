@@ -11,7 +11,13 @@ function getAll() {
     return new Promise((resolve, reject) => {
         var res = {"data":[]};
         con.query(
-            "SELECT artikel.name, artikel.category, artikel.keywords, artikelliste.* FROM artikelliste LEFT JOIN artikel ON artikel.id = artikelliste.artikelid WHERE deleted = false",
+            `
+            SELECT artikel.name, artikel.category, artikel.keywords, artikelliste.*, regal.regalname
+            FROM artikelliste
+            LEFT JOIN artikel ON artikel.id = artikelliste.artikelid
+            LEFT JOIN regal ON regal.id = artikelliste.regalid
+            WHERE artikelliste.deleted = false
+            `,
             function (err, result) {
                 //send results
                 if (err) reject(err);
@@ -116,7 +122,6 @@ function markEntryAsDeleteById(id, username) {
 }
 
 function createEntry(artikelid, number, minimum_number, location, creator, change_by, date, time) {
-    console.log("create Entry function");
     return new Promise((resolve, reject) => {
         con.query(
             `INSERT INTO artikelliste 
@@ -142,9 +147,11 @@ function createEntry(artikelid, number, minimum_number, location, creator, chang
                 time,
             ],
             function (err, result) {
-                if (err) reject(err);
-                console.log(result);
-                console.log(err);
+                if (err){
+                    reject(err);
+                    console.log(err);
+
+                } 
                 resolve(result);
             }
         );
@@ -159,7 +166,6 @@ function getLatestEntry() {
                 if (err) {
                     reject(err)
                     console.log(err);
-                    console.log("getLatestEntry error");
                 };
                 resolve(result[0]);
             }
@@ -168,7 +174,6 @@ function getLatestEntry() {
 }
 
 function createItem(name, category, keywords) {
-    console.log("create Entry function");
     return new Promise((resolve, reject) => {
         con.query(
             "INSERT INTO artikel (name, category, keywords) VALUES (?, ?, ?)",
@@ -178,9 +183,10 @@ function createItem(name, category, keywords) {
                 keywords,
             ],
             function (err, result) {
-                if (err) reject(err);
-                console.log(result);
-                console.log(err);
+                if (err){
+                    reject(err);
+                    console.log(err);
+                } 
                 resolve(result);
             }
         );
@@ -244,10 +250,9 @@ function getStammdaten(table) {
             function (err, result) {
                 if (err) {
                     reject(err);
-                    console.log(`Cant get ${table}`);
+                    console.log(err);
                 } else {
                     res.data = result;
-                    console.log(res);
                     resolve(res);
                 }
 
@@ -267,6 +272,63 @@ function getStammdatenByName(table, name){
             }
         );
     }); 
+}
+
+async function getRaumAll(){
+    var raum = await getRaum();
+
+    return new Promise((resolve, reject) => {
+        var res = {};
+        var arr = [];
+        con.query(
+            `SELECT raum.id AS raumid, raum.raumname, regal.id AS regalid, regal.regalname, regal.fachanzahl  FROM regal LEFT JOIN raum ON regal.raumId = raum.id`,
+            function (err, result) {
+                if (err) reject(err);
+                console.log(result.length);
+                for(var i = 0; i < raum.length; i++){
+                    arr = [];
+                    for(var j = 0; j < result.length; j++){
+                        if(raum[i].raumname == result[j].raumname){
+                            arr.push(result[j]);    
+                        }
+                    }
+                    res[raum[i].raumname] = arr;
+
+        
+                }
+                console.log(res);
+                resolve(res);
+            }
+        );
+    });
+}
+
+/*
+{
+    "Keller": [
+        {
+            "regalid": 1,
+            "regalname": "Regal1",
+            "fachanzahl": 35
+        },
+        {
+            ...
+        }
+    ]
+}
+*/
+
+function getRaum(){
+    return new Promise((resolve, reject) => {
+        con.query(
+            `SELECT * FROM raum`,
+            function (err, result) {
+                if (err) reject(err);
+                console.log(result);
+                resolve(result);
+            }
+        );
+    });
 }
 
 function autoFill(title, table, value){
@@ -289,7 +351,6 @@ function autoFill(title, table, value){
                       }
                     }
                     resolve(autoFillResults);
-                    console.log(autoFillResults);
                 }
             }
         );
@@ -304,7 +365,7 @@ function getKeywordsByName(name) {
             function (err, result) {
                 if (err) {
                     reject(err)
-                    console.log("Cant get keywords");
+                    console.log(err);
                 } else {
                     resolve(result);
                 }
@@ -316,16 +377,13 @@ function getKeywordsByName(name) {
 
 function saveStammdaten(table, value) {
     return new Promise((resolve, reject) => {
-        console.log(table, value);
         con.query(
             'INSERT INTO ' + table + ' (' + table + ') VALUES ("' + value + '")',
             function (err, result) {
                 if (err) {
-                    //reject(err)
-                    console.log("---------");
-                    console.log("Cant save Stammdaten");
+                    reject(err)
                     console.log(err);
-                    console.log("---------");
+
                 } else {
                     resolve(result);
 
@@ -341,16 +399,12 @@ function incrementStammdatenNumber(table, name) {
         name = name.split(",");
         for (var i = 0; i < name.length; i++) {
             let sql = `UPDATE ${table} SET number = number + 1 WHERE ${table} = "${name[i]}"`;
-            console.log(sql);
             con.query(`UPDATE ${table} SET number = number + 1 WHERE ${table} = ?`,
                 [name[i]],
                 function (err, result) {
                     if (err) {
                         reject(err);
-                        console.log(err);
-                        console.log("increment Stammdaten error");
                     }
-                    console.log(result);
                 });
         }
         resolve("incremented");
@@ -368,11 +422,7 @@ function decrementStammdatenNumber(table, name) {
                 function (err, result) {
                     if (err) {
                         reject(err);
-                        console.log(err);
-                        console.log("decrement Stammdaten error");
                     }
-                    console.log(result);
-
                 });
         }
         resolve("decremented");
@@ -383,17 +433,13 @@ function decrementStammdatenNumber(table, name) {
 
 function deleteStammdaten(table, value) {
     return new Promise((resolve, reject) => {
-        console.log(table, value);
         con.query(
             `DELETE FROM ${table} WHERE ${table} = ?`,
             [value],
             function (err, result) {
                 if (err) {
                     reject(err)
-                    console.log("---------");
-                    console.log("Cant delete Stammdaten");
                     console.log(err);
-                    console.log("---------");
                 } else {
                     resolve(result);
 
@@ -413,9 +459,6 @@ function UserSearch(client, base, search_options) {
                 console.log('Error occurred while ldap search');
             } else {
                 resSearch.on('searchEntry', function (entry) {
-                    //console.log('Entry', JSON.stringify(entry.object));
-                    // console.log(entry.object.title);
-                    // test = entry.object.title;
                     resolve(entry.object);
                 });
             }
@@ -427,10 +470,6 @@ async function log(id, event) {
     var data = await getAllById(id);
 
     return new Promise((resolve, reject) => {
-        console.log("----");
-        console.log(data);
-        console.log("----");
-
         con.query(
             "INSERT INTO `log`(`event`, `artikelnummer`, `name`, `category`, `keywords`, `location`, `date`, `time`, `creator`, `change_by`, `number`, `minimum_number`, `deleted`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [event, data[0].id, data[0].name, data[0].category, data[0].keywords, data[0].location, data[0].date, data[0].time, data[0].creator, data[0].change_by, data[0].number, data[0].minimum_number, data[0].deleted],
@@ -454,7 +493,7 @@ function getLog() {
                 //send results
                 if (err) {
                     reject(err);
-                    console.log("getLog error");
+                    console.log(err);
                 }
                 resolve(result);
             }
@@ -470,7 +509,7 @@ function getLogByArtikelnummer(artikelnummer) {
                 //send results
                 if (err) {
                     reject(err);
-                    console.log("getLog error");
+                    console.log(err);
                 }
                 resolve(result);
             }
@@ -487,10 +526,8 @@ function updateItem(name, category, keywords, artikelId) {
                 if (err) {
                     reject(err);
                     console.log(err);
-                    console.log("update item error");
                 }
                 resolve(result);
-                console.log("1 artikel updated");
             });
     });
 }
@@ -503,11 +540,8 @@ function updateEntry(number, minimum_number, location_update, username, id) {
                 if (err) {
                     reject(err);
                     console.log(err);
-                    console.log("entry update error");
                 }
                 resolve(result);
-                console.log("1 entry updated");
-
             });
     });
 }
@@ -539,5 +573,6 @@ module.exports = {
     autoFill,
     getEntryByName,
     getStammdatenByName,
-    getFullStammdaten
+    getFullStammdaten,
+    getRaumAll
 }

@@ -21,8 +21,9 @@
 
 <body>
     <%- include('navbar'); %>
-
-    <h1><u>Logs</u></h1>
+    <div class="container-fluid mt-3 mb-3 d-flex justify-content-center">
+        <h1><u>Logs</u></h1>
+    </div>
 
     <div id="logsDiv">
 
@@ -41,7 +42,6 @@
                     <th>Zuletzt geändert von</th>
                     <th>Anzahl</th>
                     <th>Mindestanzahl</th>
-                    <th>Gelöscht</th>
                 </tr>
             </thead>
             <tbody>
@@ -82,9 +82,6 @@
                     </td>
                     <td>
                         <%= result[i].minimum_number %>
-                    </td>
-                    <td>
-                        <%= result[i].deleted %>
                     </td>
                 </tr>
                 <% } %>

@@ -12,8 +12,9 @@ $(document).ready(function () {
       { data: "id" }, 
       { data: "name" }, 
       { data: "number" },
-      { data: "minimum_number" }, 
-      { data: "location" }, 
+      { data: "minimum_number" },
+      { data: "regalname"},
+      { data: "lagerplatz" }, 
       { data: "category" }, 
       { data: "creator" }, 
       { data: "change_by" }, 
@@ -90,31 +91,6 @@ $(document).ready(function () {
       "url": "/assets/js/German.json",
       "searchPlaceholder": "Suchen..."
     },
-  });
-
-  var ortTable = $('#ortTable').DataTable({
-    "processing": true,
-    "ajax": {
-      // "url": "/assets/js/data.json",
-      "url": "/stammdaten/ort",
-      "type": "GET"
-    },
-    "columns": [
-      { data: "ort"}, 
-      { data: "number" ,
-      render : function(data, type, row) {
-        return ''+data+'<i class="fas fa-trash"></i>'
-    }  },
-    ],
-    "columnDefs": [
-      { "width": "30%", "targets": 0 },
-      { "width": "30%", "targets": 1 },
-    ],
-    language: {
-      "url": "/assets/js/German.json",
-      "searchPlaceholder": "Suchen..."
-    },
-    responsive: true
   });
 
   var kategorieTable = $('#kategorieTable').DataTable({

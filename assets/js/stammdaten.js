@@ -1,3 +1,4 @@
+
 $(".AddRow").click(function () {
     $(this).parent().children().eq(1).find("i").toggleClass("fa-chevron-down fa-chevron-up");
     var th = $(this).parent().parent().parent().find("th:eq(0)").html();
@@ -24,8 +25,91 @@ $(".AddRow").click(function () {
 
 });
 
+//dynamically create location tree menu
+function createTree(){
+    $.get( "/lagerorte", function( data ) {
+        let ulRäume = $("#myUL li ul");
+        $(ulRäume).empty();
+        let räume = [];
+    
+        //create rooms
+        $.each(data, function(key, value){
+            $(ulRäume).append(
+                $("<li/>").append(
+                    $("<span/>", {"class": "caret Raum", "text": key})
+                ).append(
+                    $("<ul/>", {"class": "nested"})
+                )
+            );
+    
+            //fill array with room names
+            räume.push(key);
+        });
+    
+        //add button to create another room
+        $(ulRäume).append(
+            $("<li/>").append(
+                $("<button/>", {"class": "btn btn-outline-primary RaumBtn mt-2", "text": "Raum hinzufügen"})
+            )
+        );
+    
+        //create shelfs 
+        $(ulRäume).find("ul").each(function(index){ //for each room..
+            for(var i = 0; i < data[räume[index]].length; i++){ //for each shell..
+                $(this).append(
+                    $("<li/>").append(
+                        $("<span/>", {"class": "caret", "text": data[räume[index]][i].regalname})
+                    ).append(
+                        $("<ul/>", {"class": "nested"}).append(
+                            $("<li/>", {"text": `Fächer: ${data[räume[index]][i].fachanzahl}`})
+                        )
+                    )
+                )
+      
+            }
+    
+            //add button to create another shelf
+            $(this).append(
+                $("<li/>").append(
+                    $("<button/>", {"class": "btn btn-outline-primary RegalBtn", "text": "Regal hinzufügen"})
+                )
+            )
+        });
+    
+      });
+}
+createTree();
+
 $(function(){
     $(".AddRow").prop("colspan", 2);
+
+    var toggler = document.getElementsByClassName("caret");
+    var i;
+
+    // for (i = 0; i < toggler.length; i++) {
+    $("#myUL").on("click", ".caret", function() {
+        this.parentElement.querySelector(".nested").classList.toggle("active");
+        this.classList.toggle("caret-down");
+        console.log(this.parentElement);
+        if($(this).hasClass("Räume")){
+
+            // $(".RegalBtn").hide();
+            // $(".RaumBtn").show();   
+            $(".nested:not(:first)").removeClass("active");
+            $(".caret:not(:first)").removeClass("caret-down");
+        }
+
+        // if($(this).hasClass("Regal")){
+        //     if(!$(".Regal").hasClass('caret-down')){
+        //         $(".RaumBtn").show();
+        //     }else{
+        //         $(".RegalBtn").show();
+        //         $(".RaumBtn").hide();
+        //     }
+        // }
+
+    });
+    
 });
 
 $(".AddRow").hover(function () {

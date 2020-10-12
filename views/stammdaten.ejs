@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css">
     <link rel="stylesheet" href="assets/dataTables.semanticui.min.css">
     <link rel="stylesheet" href="assets/main.css">
+    <link rel="stylesheet" href="assets/css/stammdaten.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/8abfe07619.js" crossorigin="anonymous"></script>
 
@@ -30,25 +31,68 @@
 
     <div class="row Stamm_container">
         <div class="Stamm_div col">
-            <form>
-                <table id="ortTable" class="ui celled table display" style="width:100%">
-                    <h2>Ort</h2>
-                    <thead>
-                        <tr>
-                            <th>Ort</th>
-                            <th>Aktuell von Artikeln genutzt</th>
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        <tr>
-                            <td class="AddRow" colspan="2">
-                             Neuer Eintrag <i class="fas fa-chevron-down"></i>
-                            </td>
-                        </tr>
-                    </tfoot>
 
-                </table>
-            </form>
+            <h2>Ort</h2>
+            <div style="height: 100%">
+                <ul id="myUL" class="border pl-5 pt-5 pb-5" style="font-size:1.2em;">
+                    <li>
+                        <span class="caret Räume caret-down">Räume</span>
+                        <ul class="nested active">
+                            <!-- <li><span class="caret Raum caret-down">Keller</span>
+                                <ul class="nested active">
+                                    <li><span class="caret">Regal1</span>
+                                    <ul class="nested">
+                                        <li>Sencha</li>
+                                        <li>Gyokuro</li>
+                                        <li>Matcha</li>
+                                        <li>Pi Lo Chun</li>
+                                    </ul>
+                                    </li>
+                                    <li><span class="caret">Regal2</span>
+                                        <ul class="nested">
+                                            <li>Sencha</li>
+                                            <li>Gyokuro</li>
+                                            <li>Matcha</li>
+                                            <li>Pi Lo Chun</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <button class="btn btn-outline-primary RegalBtn">
+                                            Regal hinzufügen
+                                        </button>
+                                    </li>
+                                </ul>
+                            </li>  
+                            <li><span class="caret Raum caret-down">Raum2</span>
+                                <ul class="nested active">
+                                    <li><span class="caret">Regal1</span>
+                                    <ul class="nested">
+                                        <li>Sencha</li>
+                                        <li>Gyokuro</li>
+                                        <li>Matcha</li>
+                                        <li>Pi Lo Chun</li>
+                                    </ul>
+                                    </li>
+                                    <li>
+                                        <button class="btn btn-outline-primary RegalBtn">
+                                            Regal hinzufügen
+                                        </button>
+                                    </li>
+                                </ul>
+                    
+                            </li> 
+                            <li>
+                                <button class="btn btn-outline-primary RaumBtn" style="display: none">
+                                    Raum hinzufügen
+                                </button>
+                            </li> -->
+                        </ul>
+            
+                    </li>
+                </ul>
+            </div>
+
+   
         </div>
         <div class="Stamm_div col">
             <form>
